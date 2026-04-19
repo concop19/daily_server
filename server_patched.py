@@ -6,6 +6,12 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 from advice_engine import build_explanation, legacy_explain_list
 DB_PATH = Path(os.environ.get("DB_PATH", r"D:\dream_project\daily_mate_code\daily_mate_all\demo_server\recipe.db"))
+import shutil
+BUNDLED_DB = Path(__file__).parent / "recipe.db"
+if not DB_PATH.exists() and BUNDLED_DB.exists():
+    DB_PATH.parent.mkdir(parents=True, exist_ok=True)
+    shutil.copy(BUNDLED_DB, DB_PATH)
+    print(f"[INIT] Copied DB to {DB_PATH}")
 app = Flask(__name__)
 CORS(app)
 
