@@ -19,7 +19,7 @@ pwsh -Command "iwr https://fly.io/install.ps1 -useb | iex"
 
 **Sau khi cài xong, đăng ký / login:**
 ```bash
-fly auth signup   # lần đầu
+    # lần đầu
 # hoặc
 fly auth login    # đã có tài khoản
 ```

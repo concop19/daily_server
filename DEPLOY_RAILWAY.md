@@ -78,7 +78,7 @@ railway login
 railway link
 
 # Copy file db lên volume
-railway run cp /local/path/recipe.db /app/data/recipe.db
+railway run cp D:\dream_project\daily_mate_code\demo_server\recipe.db /app/data/recipe.db
 ```
 
 **Hoặc dùng script upload khi server start:**
