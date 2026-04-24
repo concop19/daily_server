@@ -15,10 +15,10 @@ except ImportError:
 
 # ── Constants ────────────────────────────────────────────────────────────────
 ACTIVITY_MULT = {
-    "sedentary":        1.2,
-    "lightly_active":   1.375,
-    "moderately_active":1.55,
-    "very_active":      1.725,
+    "sedentary":         1.2,
+    "lightly_active":    1.375,
+    "moderately_active": 1.55,
+    "very_active":       1.725,
 }
 
 TASTE_DEFAULTS = {
@@ -27,14 +27,33 @@ TASTE_DEFAULTS = {
 }
 
 ALLERGY_CATEGORY_MAP: dict[str, set[str]] = {
-    "seafood": {"seafood", "marine invertebrates", "aquatic vegetables", "halophytes", "seaweed"},
-    "dairy":   {"dairy", "dairy/poultry"},
-    "nut":     {"nut_seed"},
-    "gluten":  {"grain", "grains", "processed", "processed meat"},
-    "egg":     {"egg", "dairy/poultry"},
-    "soy":     {"soy products", "legume"},
-    "meat":    {"meat", "processed meat", "protein"},
-    "pork":    {"meat", "processed meat"},
+    "seafood":   {"Hải sản"},
+    "meat":      {"Thịt"},
+    "dairy":     {"Sữa & Trứng"},
+    "egg":       {"Sữa & Trứng"},
+    "nut":       {"Đậu & Hạt"},
+    "gluten":    {"Ngũ cốc & Tinh bột", "Đã chế biến"},
+    "soy":       {"Đậu & Hạt", "Đã chế biến"},
+    "pork":      {"Thịt"},
+    "fish":      {"Hải sản"},
+    "shellfish": {"Hải sản"},
+    "wheat":     {"Ngũ cốc & Tinh bột"},
+}
+
+# Purine risk theo (category, source_type) — dùng cho gout_risk_score
+# 1.0 = nguy hiểm cao nhất, 0.0 = an toàn
+GOUT_PURINE_RISK: dict[tuple[str, str], float] = {
+    ("Hải sản",    "aquatic_coast"):  1.0,   # tôm, cua, mực
+    ("Hải sản",    "processed"):      0.7,   # hải sản chế biến
+    ("Thịt",       "livestock"):      0.7,   # thịt đỏ, nội tạng
+    ("Thịt",       "processed"):      0.6,   # xúc xích, thịt hộp
+    ("Hải sản",    "aquatic_inland"): 0.4,   # cá nước ngọt
+    ("Thịt",       "aquatic_inland"): 0.4,   # ếch, ba ba
+    ("Đã chế biến","processed"):      0.3,   # unknown mixed
+    ("Đậu & Hạt",  "farm_local"):     0.2,   # đậu tươi
+    ("Đậu & Hạt",  "processed"):      0.2,   # đậu chế biến
+    # Tất cả còn lại: 0.0 (Rau củ, Trái cây, Ngũ cốc, Sữa & Trứng,
+    #                       Gia vị, Dầu & Mỡ, Thực phẩm bổ dưỡng, Đồ uống)
 }
 
 CLIMATE_MODIFIER = {
@@ -44,6 +63,14 @@ CLIMATE_MODIFIER = {
     "highland":         {"warming": 1.3, "cooling": 0.7, "hydration": 0.9},
     "temperate":        {"warming": 1.1, "cooling": 0.9, "hydration": 1.0},
 }
+
+# Sodium limit theo hypertension (mg/serving)
+SODIUM_LIMIT_HYPERTENSION = 600.0
+SODIUM_LIMIT_NORMAL        = 1500.0
+
+# Glycemic load limit
+GL_LIMIT_DIABETES = 10.0
+GL_LIMIT_NORMAL   = 25.0
 
 
 # ── STEP 02 — Location ───────────────────────────────────────────────────────
@@ -73,11 +100,11 @@ def resolve_location(lat: float, lon: float, db) -> dict:
 
     if closest:
         return {
-            "province":                 closest["province_name"],
-            "food_region":              closest["food_region"],
-            "climate_type":             closest["climate_type"] or "tropical",
-            "regional_flavor":          closest["regional_flavor"] or "",
-            "cuisine_culture":          closest["cuisine_culture"] or "",
+            "province":                  closest["province_name"],
+            "food_region":               closest["food_region"],
+            "climate_type":              closest["climate_type"] or "tropical",
+            "regional_flavor":           closest["regional_flavor"] or "",
+            "cuisine_culture":           closest["cuisine_culture"] or "",
             "traditional_compatibility": 0.9,
         }
     return {
@@ -135,6 +162,7 @@ def compute_personal_vector(p: dict) -> dict:
         "gout":         "gout"         in health,
         "ibs":          "ibs"          in health,
     }
+
     raw_prefs    = p.get("taste_preference", [])
     taste_weight = dict(TASTE_DEFAULTS)
     for t in raw_prefs:
@@ -174,10 +202,13 @@ def compute_demand(wv: dict, pv: dict, climate_type: str) -> dict:
         "electrolyte_need":      round(e,  4),
         "thermoregulation_need": round(th, 4),
         "energy_need":           round(en, 2),
-        "glycemic_control_need": 1.0 if df.get("diabetes")     else 0.0,
-        "sodium_control_need":   1.0 if df.get("hypertension") else 0.0,
         "warming_food_need":     round(w,  4),
         "cooling_food_need":     round(c,  4),
+        # Disease control needs — dùng trong explanation, không dùng trong DIMS scoring
+        "sodium_control_need":   1.0 if df.get("hypertension") else 0.0,
+        "glycemic_control_need": 1.0 if df.get("diabetes")     else 0.0,
+        "gout_control_need":     1.0 if df.get("gout")         else 0.0,
+        "ibs_control_need":      1.0 if df.get("ibs")          else 0.0,
     }
 
 
@@ -206,18 +237,24 @@ def resolve_allergy_ingredient_ids(allergies: list, db) -> set[int]:
 
 
 def build_constraint_profile(pv: dict, db) -> dict:
-    df = pv["disease_flags"]
-    raw_allergies = pv.get("allergies", [])
+    df  = pv["disease_flags"]
+    raw_allergies = list(pv.get("allergies", []))
     allergy_categories = [x for x in raw_allergies if isinstance(x, str) and not x.isdigit()]
+
+    # Gout → thêm blacklist shellfish + hải sản ven biển vào allergy
+    # (hard filter bổ sung, ngoài gout_risk_score dùng trong scoring)
+    if df.get("gout") and "shellfish" not in allergy_categories:
+        allergy_categories.append("shellfish")
 
     return {
         "allergy_blacklist":      allergy_categories,
         "allergy_ingredient_ids": resolve_allergy_ingredient_ids(raw_allergies, db),
         "diet_type":              pv.get("diet_type", "omnivore"),
-        "sodium_limit_mg":        600.0  if df.get("hypertension") else 1500.0,
-        "glycemic_load_limit":    10.0   if df.get("diabetes")     else 25.0,
+        "sodium_limit_mg":        SODIUM_LIMIT_HYPERTENSION if df.get("hypertension") else SODIUM_LIMIT_NORMAL,
+        "glycemic_load_limit":    GL_LIMIT_DIABETES         if df.get("diabetes")     else GL_LIMIT_NORMAL,
         "calorie_target":         round(pv["energy_need"] * 0.35, 0),
         "max_prep_time":          pv.get("max_prep_time", 60),
+        "disease_flags":          df,
     }
 
 
@@ -240,7 +277,7 @@ def _get_dish_ingredient_ids(recipe_ids: list, db) -> dict[int, set[int]]:
 def filter_dishes(db, cuisine_scope: str, selected_nation: str | None,
                   profile: dict, current_season: str,
                   dish_type_filter: str = "all") -> list[dict]:
-    max_time = profile.get("max_prep_time", 60)
+    max_time    = profile.get("max_prep_time", 60)
     hard_ceiling = None if max_time >= 999 else max_time + 10
 
     if cuisine_scope == "vietnam":
@@ -251,9 +288,9 @@ def filter_dishes(db, cuisine_scope: str, selected_nation: str | None,
         nation_sql, nation_params = "", {}
 
     if dish_type_filter == "soup":
-        type_sql = "AND cm.method_name = 'nau_canh'"
+        type_sql = "AND (cm.method_name = 'nau_canh' OR cm.method_name = 'nau_soup')"
     elif dish_type_filter == "main_dish":
-        type_sql = "AND (cm.method_name IS NULL OR cm.method_name != 'nau_canh')"
+        type_sql = "AND (cm.method_name IS NULL OR cm.method_name NOT IN ('nau_canh','nau_soup'))"
     else:
         type_sql = ""
 
@@ -268,7 +305,11 @@ def filter_dishes(db, cuisine_scope: str, selected_nation: str | None,
                d.adj_satiety_score,     d.dish_satiety_score,
                d.adj_energy_total,      d.dish_energy_total,
                d.adj_sodium_total,      d.dish_sodium_total,
-               d.adj_glycemic_load,     d.dish_glycemic_load
+               d.adj_glycemic_load,     d.dish_glycemic_load,
+               d.sodium_safety_score,
+               d.gl_safety_score,
+               d.gout_risk_score,
+               d.cost_level
         FROM dishes d
         LEFT JOIN cooking_methods cm ON d.cooking_method_id = cm.method_id
         WHERE 1=1 {nation_sql} {type_sql} LIMIT 2000
@@ -278,29 +319,39 @@ def filter_dishes(db, cuisine_scope: str, selected_nation: str | None,
         "id", "title", "nation", "cook_time_minutes", "cooking_method_id", "image_url", "url",
         "is_vegan", "is_vegetarian", "allergen_summary", "taste_profile",
         "season_suitability", "total_weight_g",
-        "adj_hydration_score", "dish_hydration_score",
+        "adj_hydration_score",   "dish_hydration_score",
         "adj_thermogenic_score", "dish_thermogenic_score",
-        "adj_warming_score", "dish_warming_score",
-        "adj_cooling_score", "dish_cooling_score",
-        "adj_satiety_score", "dish_satiety_score",
-        "adj_energy_total", "dish_energy_total",
-        "adj_sodium_total", "dish_sodium_total",
-        "adj_glycemic_load", "dish_glycemic_load",
+        "adj_warming_score",     "dish_warming_score",
+        "adj_cooling_score",     "dish_cooling_score",
+        "adj_satiety_score",     "dish_satiety_score",
+        "adj_energy_total",      "dish_energy_total",
+        "adj_sodium_total",      "dish_sodium_total",
+        "adj_glycemic_load",     "dish_glycemic_load",
+        "sodium_safety_score",
+        "gl_safety_score",
+        "gout_risk_score",
+        "cost_level",
     ]
     dishes = [dict(zip(cols, r)) for r in rows]
     dish_ingredient_map = _get_dish_ingredient_ids([d["id"] for d in dishes], db)
 
     allergy_ing_ids = profile.get("allergy_ingredient_ids", set())
     allergy_groups  = set(profile.get("allergy_blacklist", []))
+    df              = profile.get("disease_flags", {})
 
     passed = []
     for d in dishes:
+        # ── Prep time ──────────────────────────────────────────────────────
         if hard_ceiling is not None:
             ct = d.get("cook_time_minutes") or 0
             if ct > hard_ceiling:
                 continue
+
+        # ── Allergy ingredient ID ──────────────────────────────────────────
         if allergy_ing_ids and (dish_ingredient_map.get(d["id"], set()) & allergy_ing_ids):
             continue
+
+        # ── Allergy group (allergen_summary) ──────────────────────────────
         if allergy_groups:
             try:
                 allergens = set(json.loads(d.get("allergen_summary") or "[]"))
@@ -308,16 +359,29 @@ def filter_dishes(db, cuisine_scope: str, selected_nation: str | None,
                 allergens = set()
             if allergens & allergy_groups:
                 continue
+
+        # ── Sodium hard filter (hypertension) ─────────────────────────────
         sodium = d.get("adj_sodium_total") or d.get("dish_sodium_total") or 0
         if sodium and sodium > profile["sodium_limit_mg"]:
             continue
+
+        # ── Glycemic load hard filter (diabetes) ──────────────────────────
         gl = d.get("adj_glycemic_load") or d.get("dish_glycemic_load") or 0
         if gl and gl > profile["glycemic_load_limit"]:
             continue
+
+        # ── Gout hard filter — loại món gout_risk_score quá thấp ──────────
+        if df.get("gout"):
+            gout_score = d.get("gout_risk_score")
+            if gout_score is not None and gout_score < 0.3:
+                continue   # risk quá cao → loại hẳn
+
+        # ── Diet type ──────────────────────────────────────────────────────
         if profile["diet_type"] == "vegan" and not d.get("is_vegan"):
             continue
         if profile["diet_type"] == "vegetarian" and not d.get("is_vegetarian"):
             continue
+
         passed.append(d)
     return passed
 
@@ -395,9 +459,58 @@ def compute_dish_boost(recipe_id: int, selected_set: set, boost_strategy: str, d
     return round(coverage, 4)
 
 
+def _compute_disease_score(dish: dict, profile: dict) -> float | None:
+    """
+    Tính disease score tổng hợp từ các pre-computed safety scores trong DB.
+    Trả về None nếu user không có bệnh nào.
+
+    Scoring:
+      hypertension → sodium_safety_score  (1.0=ít muối, 0.0=nhiều muối)
+      diabetes     → gl_safety_score      (1.0=GL thấp, 0.0=GL cao)
+      gout         → gout_risk_score      (1.0=an toàn, 0.0=nguy hiểm)
+
+    Fallback khi cột NULL: 0.5 (neutral)
+    """
+    df = profile.get("disease_flags", {})
+    scores = []
+
+    if df.get("hypertension"):
+        s = dish.get("sodium_safety_score")
+        if s is None:
+            # fallback: tính từ adj_sodium_total nếu cột chưa được populate
+            sodium = dish.get("adj_sodium_total") or dish.get("dish_sodium_total") or 0
+            s = max(0.0, 1.0 - sodium / SODIUM_LIMIT_HYPERTENSION) if sodium else 0.5
+        scores.append(float(s))
+
+    if df.get("diabetes"):
+        s = dish.get("gl_safety_score")
+        if s is None:
+            gl = dish.get("adj_glycemic_load") or dish.get("dish_glycemic_load") or 0
+            s = max(0.0, 1.0 - gl / GL_LIMIT_DIABETES) if gl else 0.5
+        scores.append(float(s))
+
+    if df.get("gout"):
+        s = dish.get("gout_risk_score")
+        scores.append(float(s) if s is not None else 0.5)
+
+    if not scores:
+        return None
+    return sum(scores) / len(scores)
+
+
 def score_dish(dish: dict, demand: dict, soft_mult: float, taste_weight: dict,
                trad_compat: float, dish_avail: float, ingredient_boost: float,
+               profile: dict | None = None,
                recent_ids_ordered: list | None = None) -> float:
+    """
+    Tính điểm cuối cho một món ăn.
+
+    Weight mặc định (không có bệnh):
+      65% demand_score + 15% taste_score + 10% loc_bonus + 10% ingredient_boost
+
+    Weight khi có bệnh:
+      50% demand_score + 15% disease_score + 15% taste_score + 10% loc_bonus + 10% ingredient_boost
+    """
     DIMS = [
         ("hydration_need",        "adj_hydration_score",   "dish_hydration_score"),
         ("electrolyte_need",      "adj_hydration_score",   None),
@@ -408,18 +521,12 @@ def score_dish(dish: dict, demand: dict, soft_mult: float, taste_weight: dict,
     demand_sum = sum(demand.get(d, 0) for d, _, _ in DIMS)
     if demand_sum > 0:
         raw_score = sum(
-            demand.get(d, 0) * _dv(dish, a, r) * soft_mult for d, a, r in DIMS
+            demand.get(d, 0) * _dv(dish, a, r) for d, a, r in DIMS
         ) / demand_sum
     else:
         raw_score = 0.0
 
-    season = get_current_season()
-    try:
-        sm = json.loads(dish.get("season_suitability") or "{}")
-        season_s = sm.get(season, 0.6)
-    except Exception:
-        season_s = 0.6
-
+    # Taste score
     weight_sum = sum(taste_weight.values()) or 1.0
     try:
         tp = json.loads(dish.get("taste_profile") or "{}")
@@ -427,10 +534,42 @@ def score_dish(dish: dict, demand: dict, soft_mult: float, taste_weight: dict,
         tp = {}
     taste_b = sum(taste_weight.get(t, 0) * tp.get(t, 0) for t in taste_weight) / weight_sum
 
-    loc_bonus = trad_compat * season_s * dish_avail
-    boost = ingredient_boost if ingredient_boost > 0 else 0.0
-    final = (0.65 * raw_score + 0.15 * taste_b + 0.10 * loc_bonus + 0.10 * boost)
+    # Season score cho loc_bonus
+    season = get_current_season()
+    try:
+        sm = json.loads(dish.get("season_suitability") or "{}")
+        season_s = sm.get(season, 0.6)
+    except Exception:
+        season_s = 0.6
 
+    loc_bonus = trad_compat * season_s * dish_avail
+    boost     = ingredient_boost if ingredient_boost > 0 else 0.0
+
+    # ── Disease scoring ──────────────────────────────────────────────────────
+    disease_score = _compute_disease_score(dish, profile or {})
+
+    if disease_score is not None:
+        # Có bệnh: demand nhường 15% cho disease
+        final = (
+            0.50 * raw_score
+            + 0.15 * disease_score
+            + 0.15 * taste_b
+            + 0.10 * loc_bonus
+            + 0.10 * boost
+        )
+    else:
+        # Không có bệnh: weight gốc
+        final = (
+            0.65 * raw_score
+            + 0.15 * taste_b
+            + 0.10 * loc_bonus
+            + 0.10 * boost
+        )
+
+    # Áp soft_mult sau khi tổng hợp
+    final *= soft_mult
+
+    # ── Repetition decay ─────────────────────────────────────────────────────
     if recent_ids_ordered:
         dish_id_str = str(dish.get("id", ""))
         REPETITION_DECAY = {0: 0.5, 1: 0.65, 2: 0.8}
@@ -487,11 +626,13 @@ def rank_and_explain(scores: dict, dish_pool: list, boosts: dict, demand: dict,
                     loc=_loc, season=_season, basket_ingredient_ids=_basket,
                     db=db, temperature=temperature,
                 )
+                print(explanation_obj)
             except Exception:
                 explanation_obj = _fallback_explanation(dish)
         else:
             explanation_obj = _fallback_explanation(dish)
 
+        df = profile.get("disease_flags", {})
         result.append({
             "rank":            rank,
             "dish_id":         did,
@@ -501,10 +642,14 @@ def rank_and_explain(scores: dict, dish_pool: list, boosts: dict, demand: dict,
             "nation":          dish.get("nation", ""),
             "final_score":     scores[did],
             "score_breakdown": {
-                "hydration": demand["hydration_need"],
-                "warming":   demand["warming_food_need"],
-                "cooling":   demand["cooling_food_need"],
-                "boost":     boost,
+                "hydration":      demand["hydration_need"],
+                "warming":        demand["warming_food_need"],
+                "cooling":        demand["cooling_food_need"],
+                "boost":          boost,
+                # Disease scores để debug / hiển thị UI
+                "sodium_safety":  dish.get("sodium_safety_score") if df.get("hypertension") else None,
+                "gl_safety":      dish.get("gl_safety_score")     if df.get("diabetes")     else None,
+                "gout_safety":    dish.get("gout_risk_score")     if df.get("gout")         else None,
             },
             "ingredient_boost":   boost,
             "cook_time_min":      dish.get("cook_time_minutes"),
@@ -513,3 +658,54 @@ def rank_and_explain(scores: dict, dish_pool: list, boosts: dict, demand: dict,
         })
 
     return result, sorted_ids[top_k: top_k + 5]
+
+
+# ── SQL helper — chạy 1 lần để populate các safety score columns ─────────────
+POPULATE_SAFETY_SCORES_SQL = """
+-- 1. Thêm các cột nếu chưa có
+ALTER TABLE dishes ADD COLUMN IF NOT EXISTS sodium_safety_score REAL DEFAULT NULL;
+ALTER TABLE dishes ADD COLUMN IF NOT EXISTS gl_safety_score     REAL DEFAULT NULL;
+ALTER TABLE dishes ADD COLUMN IF NOT EXISTS gout_risk_score     REAL DEFAULT NULL;
+
+-- 2. sodium_safety_score (hypertension)
+UPDATE dishes
+SET sodium_safety_score = MAX(0.0, 1.0 - (
+    COALESCE(adj_sodium_total, dish_sodium_total, 0) / 600.0
+));
+
+-- 3. gl_safety_score (diabetes)
+UPDATE dishes
+SET gl_safety_score = MAX(0.0, 1.0 - (
+    COALESCE(adj_glycemic_load, dish_glycemic_load, 0) / 10.0
+));
+
+-- 4. gout_risk_score — weighted purine risk từ nguyên liệu chính
+UPDATE dishes
+SET gout_risk_score = (
+    SELECT ROUND(MAX(0.0, 1.0 - SUM(
+        CASE
+            WHEN i.category = 'Hải sản'     AND i.source_type = 'aquatic_coast'  THEN 1.0
+            WHEN i.category = 'Hải sản'     AND i.source_type = 'processed'      THEN 0.7
+            WHEN i.category = 'Thịt'        AND i.source_type = 'livestock'      THEN 0.7
+            WHEN i.category = 'Thịt'        AND i.source_type = 'processed'      THEN 0.6
+            WHEN i.category = 'Hải sản'     AND i.source_type = 'aquatic_inland' THEN 0.4
+            WHEN i.category = 'Thịt'        AND i.source_type = 'aquatic_inland' THEN 0.4
+            WHEN i.category = 'Đã chế biến' AND i.source_type = 'processed'      THEN 0.3
+            WHEN i.category = 'Đậu & Hạt'  AND i.source_type IN ('farm_local','processed') THEN 0.2
+            ELSE 0.0
+        END * (di.quantity_g / total.total_g)
+    )), 4)
+    FROM dish_ingredient di
+    JOIN ingredients i ON di.ingredient_id = i.id
+    JOIN (
+        SELECT recipe_id, SUM(quantity_g) AS total_g
+        FROM dish_ingredient
+        WHERE is_main = 1 AND quantity_g > 0
+        GROUP BY recipe_id
+    ) total ON di.recipe_id = total.recipe_id
+    WHERE di.recipe_id = dishes.id
+      AND di.is_main   = 1
+      AND di.quantity_g > 0
+)
+WHERE id IN (SELECT DISTINCT recipe_id FROM dish_ingredient);
+"""

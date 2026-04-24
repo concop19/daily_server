@@ -1,0 +1,35 @@
+UPDATE dishes
+SET gout_risk_score = (
+    SELECT ROUND(MAX(0.0, 1.0 - SUM(
+        CASE
+            -- HIGH risk
+            WHEN i.category = 'Hải sản' AND i.source_type = 'aquatic_coast'  THEN 1.0
+            WHEN i.category = 'Thịt'    AND i.source_type = 'livestock'      THEN 0.7
+            WHEN i.category = 'Hải sản' AND i.source_type = 'processed'      THEN 0.7
+            WHEN i.category = 'Thịt'    AND i.source_type = 'processed'      THEN 0.6
+
+            -- MEDIUM risk
+            WHEN i.category = 'Hải sản'  AND i.source_type = 'aquatic_inland' THEN 0.4
+            WHEN i.category = 'Thịt'     AND i.source_type = 'aquatic_inland' THEN 0.4
+            WHEN i.category = 'Đã chế biến' AND i.source_type = 'processed'  THEN 0.3
+            WHEN i.category = 'Đậu & Hạt'                                    THEN 0.2
+
+            -- LOW / SAFE (plant-based, dairy, egg, grain, veg, fruit)
+            -- Sữa & Trứng: purine rất thấp, an toàn
+            -- Rau củ, Trái cây, Ngũ cốc: gần như 0
+            ELSE 0.0
+        END * (di.quantity_g / total.total_g)
+    )), 4)
+    FROM dish_ingredient di
+    JOIN ingredients i ON di.ingredient_id = i.id
+    JOIN (
+        SELECT recipe_id, SUM(quantity_g) AS total_g
+        FROM dish_ingredient
+        WHERE is_main = 1 AND quantity_g > 0
+        GROUP BY recipe_id
+    ) total ON di.recipe_id = total.recipe_id
+    WHERE di.recipe_id = dishes.id
+      AND di.is_main = 1
+      AND di.quantity_g > 0
+)
+WHERE id IN (SELECT DISTINCT recipe_id FROM dish_ingredient);

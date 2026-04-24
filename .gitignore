@@ -29,6 +29,7 @@ recipe.db-wal
 recipe.db-shm
 
 # IDE
+backup/
 .vscode/
 .idea/
 *.swp
