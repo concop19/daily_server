@@ -3,3 +3,5 @@ flask-cors>=4.0
 requests>=2.31
 python-dotenv>=1.0
 gunicorn>=21.2
+PyJWT[cryptography]>=2.8      # jwt.decode + PyJWKClient
+cryptography>=41.0            # ES256 algorithm support

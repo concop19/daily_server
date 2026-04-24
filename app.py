@@ -12,8 +12,8 @@ import sqlite3
 from datetime import datetime, timezone
 from pathlib import Path
 
-from fastapi import requests
-from flask import Flask, jsonify, request
+import requests
+from flask import Flask, jsonify, request,g
 from flask_cors import CORS
 from auth_middleware import require_auth, require_admin
 from monitoring import init_monitoring
@@ -56,7 +56,7 @@ _HEADERS = {
 }
 app = Flask(__name__)
 CORS(app)
-
+init_monitoring(app) 
 
 def get_db():
     if not DB_PATH.exists():
@@ -64,9 +64,15 @@ def get_db():
     conn = sqlite3.connect(str(DB_PATH))
     conn.row_factory = sqlite3.Row
     return conn
-
-
-# ── Routes ────────────────────────────────────────────────────────────────────
+def _group_by_endpoint(rows: list) -> dict:
+    """Đếm số request theo từng endpoint."""
+    result = {}
+    for r in rows:
+        ep = r.get("endpoint") or "unknown"
+        result[ep] = result.get(ep, 0) + 1
+    # Sắp xếp giảm dần theo lượt gọi
+    return dict(sorted(result.items(), key=lambda x: x[1], reverse=True))
+# app.py# ── Routes ────────────────────────────────────────────────────────────────────
 @app.route("/health")
 def health():
     try:
@@ -81,7 +87,7 @@ def health():
 
 
 @app.route("/api/weather")
-
+@require_auth
 def get_weather():
     """GET /api/weather?lat=16.047&lon=108.206"""
     lat = float(request.args.get("lat", 16.047))
@@ -116,7 +122,7 @@ def admin_stats():
         "req_today":        len(rows),
         "active_users":     len({r["uid"] for r in rows if r["uid"]}),
         "avg_latency_ms":   round(sum(r["latency_ms"] for r in rows) / max(len(rows), 1), 1),
-        "top_endpoints":    ...,   # group by endpoint
+        "top_endpoints":    _group_by_endpoint(rows),   # group by endpoint
     })
 
 @app.route("/api/v1/recommend", methods=["POST"])
@@ -246,6 +252,7 @@ def recommend():
 
 
 @app.route("/api/v1/feedback", methods=["POST"])
+@require_auth
 def feedback():
     """POST /api/v1/feedback  body: { session_uuid, dish_id, action, rating? }"""
     body         = request.get_json(force=True)
@@ -288,6 +295,7 @@ def feedback():
 
 
 @app.route("/api/v1/challenge")
+@require_auth
 def get_challenge():
     """GET /api/v1/challenge?lat=16.047&lon=108.206 — Món thử thách trong ngày."""
     lat  = float(request.args.get("lat", 16.047))
