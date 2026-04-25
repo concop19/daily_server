@@ -299,7 +299,6 @@ def feedback():
 
 
 @app.route("/api/v1/challenge")
-@require_auth
 def get_challenge():
     """GET /api/v1/challenge?lat=16.047&lon=108.206 — Món thử thách trong ngày."""
     lat  = float(request.args.get("lat", 16.047))
