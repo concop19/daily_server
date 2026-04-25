@@ -626,7 +626,7 @@ def rank_and_explain(scores: dict, dish_pool: list, boosts: dict, demand: dict,
                     loc=_loc, season=_season, basket_ingredient_ids=_basket,
                     db=db, temperature=temperature,
                 )
-                print(explanation_obj)
+                
             except Exception:
                 explanation_obj = _fallback_explanation(dish)
         else:
