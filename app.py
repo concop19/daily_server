@@ -173,7 +173,12 @@ def recommend():
                 JOIN ingredients i ON di.ingredient_id = i.id
                 WHERE di.recipe_id = ?
                 AND di.is_main = 1
-                AND LOWER(i.category) NOT IN ('gia vị', 'dầu & mỡ', 'đồ uống')
+                AND i.category NOT IN (
+              'Gia vị',
+              'Dầu & Mỡ',
+              'Đồ uống',
+              'Thực phẩm bổ dưỡng'
+          )
             """, (dish_id,)).fetchall()
             
             main_non_spice_ids = {r[0] for r in rows}
