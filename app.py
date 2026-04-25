@@ -87,7 +87,6 @@ def health():
 
 
 @app.route("/api/weather")
-@require_auth
 def get_weather():
     """GET /api/weather?lat=16.047&lon=108.206"""
     lat = float(request.args.get("lat", 16.047))
