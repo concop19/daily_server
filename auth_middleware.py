@@ -17,6 +17,10 @@ _jwks_client = PyJWKClient(
 def require_auth(f):
     @wraps(f)
     def decorated(*args, **kwargs):
+        # Preflight OPTIONS request không có token — phải pass qua để CORS xử lý
+        if request.method == "OPTIONS":
+            return "", 204
+
         header = request.headers.get("Authorization", "")
         if not header.startswith("Bearer "):
             return jsonify({"error": "Missing token"}), 401

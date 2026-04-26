@@ -55,8 +55,31 @@ _HEADERS = {
     "Content-Type":  "application/json",
 }
 app = Flask(__name__)
-CORS(app)
-init_monitoring(app) 
+
+# ── CORS — cho phép frontend gọi từ mọi origin (production + dev) ────────────
+# Nếu muốn chặt hơn: thay "*" bằng domain thật, ví dụ "https://daily-mate.vercel.app"
+CORS(
+    app,
+    resources={r"/api/*": {"origins": "*"}, r"/admin/*": {"origins": "*"}},
+    supports_credentials=True,
+    allow_headers=["Authorization", "Content-Type", "Accept"],
+    methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    expose_headers=["Content-Type"],
+)
+
+# Đảm bảo mọi OPTIONS preflight đều trả 200 — không bị chặn bởi middleware nào
+@app.before_request
+def handle_preflight():
+    if request.method == "OPTIONS":
+        from flask import make_response
+        res = make_response("", 204)
+        res.headers["Access-Control-Allow-Origin"]  = request.headers.get("Origin", "*")
+        res.headers["Access-Control-Allow-Headers"] = "Authorization, Content-Type, Accept"
+        res.headers["Access-Control-Allow-Methods"] = "GET, POST, PUT, DELETE, OPTIONS"
+        res.headers["Access-Control-Max-Age"]       = "3600"
+        return res
+
+init_monitoring(app)
 
 def get_db():
     if not DB_PATH.exists():
