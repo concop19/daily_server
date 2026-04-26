@@ -87,6 +87,7 @@ def health():
 
 
 @app.route("/api/weather")
+@require_auth
 def get_weather():
     """GET /api/weather?lat=16.047&lon=108.206"""
     lat = float(request.args.get("lat", 16.047))
@@ -171,26 +172,20 @@ def recommend():
                 FROM dish_ingredient di
                 JOIN ingredients i ON di.ingredient_id = i.id
                 WHERE di.recipe_id = ?
-                AND di.is_main = 1
+                AND di.quantity_g > 0
                 AND i.category NOT IN (
-              'Gia vị',
-              'Dầu & Mỡ',
-              'Đồ uống',
-              'Thực phẩm bổ dưỡng'
-          )
+                    'Dầu & Mỡ', 'Sữa & Trứng', 'Ngũ cốc & Tinh bột', 'Gia vị'
+                )
             """, (dish_id,)).fetchall()
-            
-            main_non_spice_ids = {r[0] for r in rows}
-            if not main_non_spice_ids:
-                return False
-            
-            # Ít nhất 50% nguyên liệu chính phải nằm trong basket
-            overlap = len(selected_ids & main_non_spice_ids)
-            return overlap / len(main_non_spice_ids) >= 0.5
 
-        dish_pool = [d for d in dish_pool if dish_matches_basket(d["id"])]
-        
-        # Fallback nếu filter quá chặt → nới lỏng xuống 30%
+            non_pantry_ids = {r[0] for r in rows}
+            if not non_pantry_ids:
+                return False
+
+            coverage = len(selected_ids & non_pantry_ids) / len(non_pantry_ids)
+            return coverage >= 0.75
+
+        # Fallback nới lỏng xuống 50% nếu pool < 5
         if len(dish_pool) < 5:
             dish_pool_relaxed = []
             for d in filter_dishes(db, cuisine_scope, selected_nation, profile, season, dish_type_filter):
@@ -199,13 +194,15 @@ def recommend():
                     FROM dish_ingredient di
                     JOIN ingredients i ON di.ingredient_id = i.id
                     WHERE di.recipe_id = ?
-                    AND di.is_main = 1
-                    AND LOWER(i.category) NOT IN ('gia vị', 'dầu & mỡ', 'đồ uống')
+                    AND di.quantity_g > 0
+                    AND i.category NOT IN (
+                        'Dầu & Mỡ', 'Sữa & Trứng', 'Ngũ cốc & Tinh bột', 'Gia vị'
+                    )
                 """, (d["id"],)).fetchall()
-                main_ids = {r[0] for r in rows}
-                if main_ids and len(selected_ids & main_ids) / len(main_ids) >= 0.3:
+                non_pantry_ids = {r[0] for r in rows}
+                if non_pantry_ids and len(selected_ids & non_pantry_ids) / len(non_pantry_ids) >= 0.50:
                     dish_pool_relaxed.append(d)
-            dish_pool = dish_pool_relaxed or dish_pool  # nếu vẫn rỗng thì giữ nguyên
+            dish_pool = dish_pool_relaxed or dish_pool
     if not dish_pool:
         dish_pool = filter_dishes(db, cuisine_scope, selected_nation, profile, season, "all")
     if not dish_pool:
@@ -332,6 +329,7 @@ def get_challenge():
             TASTE_DEFAULTS, trad_compat,
             get_dish_availability(d["id"], loc["food_region"], db),
             0.0,
+            profile=profile,
         )
         for d in dish_pool
     }

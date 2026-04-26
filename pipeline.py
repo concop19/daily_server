@@ -20,7 +20,12 @@ ACTIVITY_MULT = {
     "moderately_active": 1.55,
     "very_active":       1.725,
 }
-
+PANTRY_CATEGORIES = frozenset({
+    'Dầu & Mỡ',
+    'Sữa & Trứng',
+    'Ngũ cốc & Tinh bột',
+    'Gia vị',
+})
 TASTE_DEFAULTS = {
     "spicy": 0.5, "sweet": 0.5, "sour": 0.4,
     "umami": 0.6, "salty": 0.4, "bitter": 0.2, "astringent": 0.1,
@@ -119,8 +124,12 @@ def get_dish_availability(recipe_id: int, food_region: str, db) -> float:
         SELECT i.distribution_reach, di.quantity_g
         FROM dish_ingredient di
         JOIN ingredients i ON di.ingredient_id = i.id
-        WHERE di.recipe_id = ? AND di.is_main = 1
-          AND di.quantity_g > 0 AND i.distribution_reach IS NOT NULL
+        WHERE di.recipe_id = ?
+          AND di.quantity_g > 0
+          AND i.distribution_reach IS NOT NULL
+          AND i.category NOT IN (
+              'Dầu & Mỡ', 'Sữa & Trứng', 'Ngũ cốc & Tinh bột', 'Gia vị'
+          )
     """, (recipe_id,)).fetchall()
 
     if not rows:
@@ -139,7 +148,6 @@ def get_dish_availability(recipe_id: int, food_region: str, db) -> float:
         score = sr["availability_score"] if sr else 0.8
         weighted += score * r["quantity_g"]
     return round(weighted / total, 4)
-
 
 # ── STEP 03 — Personal vector ────────────────────────────────────────────────
 def compute_personal_vector(p: dict) -> dict:
@@ -312,7 +320,7 @@ def filter_dishes(db, cuisine_scope: str, selected_nation: str | None,
                d.cost_level
         FROM dishes d
         LEFT JOIN cooking_methods cm ON d.cooking_method_id = cm.method_id
-        WHERE 1=1 {nation_sql} {type_sql} LIMIT 2000
+        WHERE 1=1 {nation_sql} {type_sql} LIMIT 5000
     """
     rows = db.execute(sql, nation_params).fetchall()
     cols = [
@@ -442,22 +450,32 @@ def compute_soft_mult(dish: dict, profile: dict, current_season: str) -> float:
 
     return round(mult, 4)
 
+BASKET_COVERAGE_THRESHOLD = 0.68
 
 def compute_dish_boost(recipe_id: int, selected_set: set, boost_strategy: str, db) -> float:
     if not selected_set or boost_strategy == "none":
         return 0.0
-    rows = db.execute(
-        "SELECT ingredient_id FROM dish_ingredient WHERE recipe_id=? AND is_main=1",
-        (recipe_id,)
-    ).fetchall()
-    main_ids = {r[0] for r in rows if r[0]}
-    if not main_ids:
-        return 0.0
-    coverage = len(selected_set & main_ids) / len(main_ids)
-    if boost_strategy == "strict":
-        return round(coverage, 4) if coverage >= 0.5 else 0.0
-    return round(coverage, 4)
 
+    rows = db.execute("""
+        SELECT di.ingredient_id
+        FROM dish_ingredient di
+        JOIN ingredients i ON di.ingredient_id = i.id
+        WHERE di.recipe_id = ?
+          AND di.quantity_g > 0
+          AND i.category NOT IN (
+              'Dầu & Mỡ', 'Sữa & Trứng', 'Ngũ cốc & Tinh bột', 'Gia vị'
+          )
+    """, (recipe_id,)).fetchall()
+
+    non_pantry_ids = {r[0] for r in rows if r[0]}
+    if not non_pantry_ids:
+        return 0.0
+
+    coverage = len(selected_set & non_pantry_ids) / len(non_pantry_ids)
+
+    if boost_strategy == "strict":
+        return round(coverage, 4) if coverage >= BASKET_COVERAGE_THRESHOLD else 0.0
+    return round(coverage, 4)
 
 def _compute_disease_score(dish: dict, profile: dict) -> float | None:
     """

@@ -19,6 +19,7 @@ ENV/
 .env
 .env.*
 !.env.example
+a.txt
 
 # SQLite database (QUAN TRỌNG: không commit db lên git)
 # Nếu muốn commit db mẫu để Railway copy lần đầu → comment dòng dưới
