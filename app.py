@@ -25,6 +25,7 @@ from weather import (
     get_or_compute_weather,
 )
 from pipeline import (
+    PANTRY_CATEGORIES,
     TASTE_DEFAULTS,
     build_constraint_profile,
     compute_demand,
@@ -165,7 +166,7 @@ def recommend():
     basket = body.get("market_basket", {})
     if isinstance(basket, list):
         basket = {"selected_ingredient_ids": basket, "is_skipped": len(basket) == 0}
-    selected_ids   = set(basket.get("selected_ingredient_ids", []))
+    selected_ids   = {int(x) for x in basket.get("selected_ingredient_ids", []) if str(x).strip().isdigit()}
     is_skipped     = basket.get("is_skipped", True)
     boost_strategy = basket.get("boost_strategy", "strict")
     if is_skipped:
@@ -184,51 +185,40 @@ def recommend():
     profile["cost_preference"]       = cost_preference
 
     season    = get_current_season()
-    dish_pool = filter_dishes(db, cuisine_scope, selected_nation, profile, season, dish_type_filter)
-    # Sau dòng: dish_pool = filter_dishes(...)
-# Thêm filter basket VÀO ĐÂY — trước khi score
+    full_pool = filter_dishes(db, cuisine_scope, selected_nation, profile, season, dish_type_filter)
 
-    if not is_skipped and selected_ids:
-        def dish_matches_basket(dish_id: int) -> bool:
-            rows = db.execute("""
-                SELECT di.ingredient_id
+    # ── Build ingredient map 1 lần (Fix #3: tránh N+1 query) ────────────────
+    if not is_skipped and selected_ids and full_pool:
+        all_ids      = [d["id"] for d in full_pool]
+        placeholders = ",".join("?" * len(all_ids))
+        pantry_ph    = ",".join("?" * len(PANTRY_CATEGORIES))
+        ingr_rows    = db.execute(
+            f"""SELECT di.recipe_id, di.ingredient_id
                 FROM dish_ingredient di
                 JOIN ingredients i ON di.ingredient_id = i.id
-                WHERE di.recipe_id = ?
-                AND di.quantity_g > 0
-                AND i.category NOT IN (
-                    'Dầu & Mỡ', 'Sữa & Trứng', 'Ngũ cốc & Tinh bột', 'Gia vị'
-                )
-            """, (dish_id,)).fetchall()
+                WHERE di.recipe_id IN ({placeholders})
+                  AND di.quantity_g > 0
+                  AND i.category NOT IN ({pantry_ph})""",
+            all_ids + list(PANTRY_CATEGORIES),
+        ).fetchall()
+        ingr_map: dict[int, set[int]] = {}
+        for recipe_id, ing_id in ingr_rows:
+            ingr_map.setdefault(recipe_id, set()).add(ing_id)
 
-            non_pantry_ids = {r[0] for r in rows}
-            if not non_pantry_ids:
+        # Fix #2: ngưỡng 40% thay vì 75%
+        def coverage_ok(dish_id: int, threshold: float) -> bool:
+            non_pantry = ingr_map.get(dish_id, set())
+            if not non_pantry:
                 return False
+            return len(selected_ids & non_pantry) / len(non_pantry) >= threshold
 
-            coverage = len(selected_ids & non_pantry_ids) / len(non_pantry_ids)
-            return coverage >= 0.75
+        dish_pool = [d for d in full_pool if coverage_ok(d["id"], 0.40)]
 
-        # [FIX #1] Áp filter 75% lên toàn bộ pool trước khi fallback
-        dish_pool = [d for d in dish_pool if dish_matches_basket(d["id"])]
-
-        # Fallback nới lỏng xuống 50% nếu pool < 5 sau khi filter
+        # Fallback nới thêm xuống 20% nếu pool < 5
         if len(dish_pool) < 5:
-            dish_pool_relaxed = []
-            for d in filter_dishes(db, cuisine_scope, selected_nation, profile, season, dish_type_filter):
-                rows = db.execute("""
-                    SELECT di.ingredient_id
-                    FROM dish_ingredient di
-                    JOIN ingredients i ON di.ingredient_id = i.id
-                    WHERE di.recipe_id = ?
-                    AND di.quantity_g > 0
-                    AND i.category NOT IN (
-                        'Dầu & Mỡ', 'Sữa & Trứng', 'Ngũ cốc & Tinh bột', 'Gia vị'
-                    )
-                """, (d["id"],)).fetchall()
-                non_pantry_ids = {r[0] for r in rows}
-                if non_pantry_ids and len(selected_ids & non_pantry_ids) / len(non_pantry_ids) >= 0.50:
-                    dish_pool_relaxed.append(d)
-            dish_pool = dish_pool_relaxed or dish_pool
+            dish_pool = [d for d in full_pool if coverage_ok(d["id"], 0.20)] or full_pool
+    else:
+        dish_pool = full_pool
     if not dish_pool:
         dish_pool = filter_dishes(db, cuisine_scope, selected_nation, profile, season, "all")
     if not dish_pool:

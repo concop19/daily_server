@@ -381,8 +381,10 @@ def filter_dishes(db, cuisine_scope: str, selected_nation: str | None,
         # ── Gout hard filter — loại món gout_risk_score quá thấp ──────────
         if df.get("gout"):
             gout_score = d.get("gout_risk_score")
-            if gout_score is not None and gout_score < 0.3:
-                continue   # risk quá cao → loại hẳn
+            # NULL = chưa populate → coi như nguy hiểm, loại luôn
+            # < 0.3 = risk quá cao (nội tạng, hải sản ven biển, thịt đỏ...)
+            if gout_score is None or gout_score < 0.3:
+                continue
 
         # ── Diet type ──────────────────────────────────────────────────────
         if profile["diet_type"] == "vegan" and not d.get("is_vegan"):
