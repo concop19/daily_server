@@ -208,7 +208,10 @@ def recommend():
             coverage = len(selected_ids & non_pantry_ids) / len(non_pantry_ids)
             return coverage >= 0.75
 
-        # Fallback nới lỏng xuống 50% nếu pool < 5
+        # [FIX #1] Áp filter 75% lên toàn bộ pool trước khi fallback
+        dish_pool = [d for d in dish_pool if dish_matches_basket(d["id"])]
+
+        # Fallback nới lỏng xuống 50% nếu pool < 5 sau khi filter
         if len(dish_pool) < 5:
             dish_pool_relaxed = []
             for d in filter_dishes(db, cuisine_scope, selected_nation, profile, season, dish_type_filter):
@@ -241,6 +244,7 @@ def recommend():
         boost = compute_dish_boost(dish["id"], selected_ids, boost_strategy, db)
         scores[dish["id"]] = score_dish(
             dish, demand, soft, taste, trad_compat, avail, boost,
+            profile=profile,
             recent_ids_ordered=recent_dish_ids_ordered,
         )
         boosts[dish["id"]] = boost
