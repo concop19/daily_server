@@ -285,30 +285,33 @@ def feedback():
     if action not in ("eaten", "skipped", "rated"):
         return jsonify({"status": "error", "detail": "action phải là eaten/skipped/rated"}), 400
 
-    db = get_db()
+    if not SUPABASE_URL or not SUPABASE_KEY:
+        return jsonify({"status": "error", "detail": "Supabase chưa được cấu hình (SUPABASE_URL / SUPABASE_SERVICE_ROLE_KEY)"}), 500
+
+    payload = {
+        "session_uuid": session_uuid,
+        "dish_id":      str(dish_id),
+        "action":       action,
+        "rating":       rating,
+        "feedback_at":  feedback_at,
+        "created_at":   datetime.utcnow().isoformat(),
+    }
     try:
-        db.execute("""
-            CREATE TABLE IF NOT EXISTS session_feedback (
-                id           INTEGER PRIMARY KEY AUTOINCREMENT,
-                session_uuid TEXT,
-                dish_id      TEXT NOT NULL,
-                action       TEXT NOT NULL,
-                rating       INTEGER,
-                feedback_at  TEXT NOT NULL,
-                created_at   TEXT NOT NULL
-            )
-        """)
-        db.execute("""
-            INSERT INTO session_feedback
-            (session_uuid, dish_id, action, rating, feedback_at, created_at)
-            VALUES (?, ?, ?, ?, ?, ?)
-        """, (session_uuid, dish_id, action, rating,
-              feedback_at, datetime.utcnow().isoformat()))
-        db.commit()
-        db.close()
+        resp = requests.post(
+            f"{SUPABASE_URL}/rest/v1/session_feedback",
+            json=payload,
+            headers={**_HEADERS, "Prefer": "return=minimal"},
+            timeout=10,
+        )
+        if resp.status_code not in (200, 201):
+            return jsonify({
+                "status": "error",
+                "detail": f"Supabase trả về {resp.status_code}: {resp.text}",
+            }), 502
         return jsonify({"status": "ok"})
+    except requests.exceptions.Timeout:
+        return jsonify({"status": "error", "detail": "Supabase timeout"}), 504
     except Exception as e:
-        db.close()
         return jsonify({"status": "error", "detail": str(e)}), 500
 
 
