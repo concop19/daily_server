@@ -164,6 +164,7 @@ def recommend():
     recent_dish_ids_ordered = [str(x) for x in body.get("recent_dish_ids", [])]
 
     basket = body.get("market_basket", {})
+    print(basket)
     if isinstance(basket, list):
         basket = {"selected_ingredient_ids": basket, "is_skipped": len(basket) == 0}
     selected_ids   = {int(x) for x in basket.get("selected_ingredient_ids", []) if str(x).strip().isdigit()}
@@ -185,40 +186,17 @@ def recommend():
     profile["cost_preference"]       = cost_preference
 
     season    = get_current_season()
-    full_pool = filter_dishes(db, cuisine_scope, selected_nation, profile, season, dish_type_filter)
+    # Nếu có basket: filter_dishes chỉ trả về món có ít nhất 1 ingredient trong basket (tại DB)
+    basket_for_filter = selected_ids if (not is_skipped and selected_ids) else None
+    full_pool = filter_dishes(db, cuisine_scope, selected_nation, profile, season,
+                              dish_type_filter, basket_ingredient_ids=basket_for_filter)
 
-    # ── Build ingredient map 1 lần (Fix #3: tránh N+1 query) ────────────────
-    if not is_skipped and selected_ids and full_pool:
-        all_ids      = [d["id"] for d in full_pool]
-        placeholders = ",".join("?" * len(all_ids))
-        pantry_ph    = ",".join("?" * len(PANTRY_CATEGORIES))
-        ingr_rows    = db.execute(
-            f"""SELECT di.recipe_id, di.ingredient_id
-                FROM dish_ingredient di
-                JOIN ingredients i ON di.ingredient_id = i.id
-                WHERE di.recipe_id IN ({placeholders})
-                  AND di.quantity_g > 0
-                  AND i.category NOT IN ({pantry_ph})""",
-            all_ids + list(PANTRY_CATEGORIES),
-        ).fetchall()
-        ingr_map: dict[int, set[int]] = {}
-        for recipe_id, ing_id in ingr_rows:
-            ingr_map.setdefault(recipe_id, set()).add(ing_id)
+    # ── Fallback: chỉ bỏ basket filter khi pool RỖNG HOÀN TOÀN ─────────────
+    # KHÔNG fallback khi pool < 5 — sẽ trả về món không có ingredient basket
+    if basket_for_filter and len(full_pool) == 0:
+        full_pool = filter_dishes(db, cuisine_scope, selected_nation, profile, season, dish_type_filter)
 
-        # Fix #2: ngưỡng 40% thay vì 75%
-        def coverage_ok(dish_id: int, threshold: float) -> bool:
-            non_pantry = ingr_map.get(dish_id, set())
-            if not non_pantry:
-                return False
-            return len(selected_ids & non_pantry) / len(non_pantry) >= threshold
-
-        dish_pool = [d for d in full_pool if coverage_ok(d["id"], 0.40)]
-
-        # Fallback nới thêm xuống 20% nếu pool < 5
-        if len(dish_pool) < 5:
-            dish_pool = [d for d in full_pool if coverage_ok(d["id"], 0.20)] or full_pool
-    else:
-        dish_pool = full_pool
+    dish_pool = full_pool
     if not dish_pool:
         dish_pool = filter_dishes(db, cuisine_scope, selected_nation, profile, season, "all")
     if not dish_pool:

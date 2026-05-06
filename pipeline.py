@@ -300,7 +300,8 @@ def _get_dish_ingredient_ids(recipe_ids: list, db) -> dict[int, set[int]]:
 
 def filter_dishes(db, cuisine_scope: str, selected_nation: str | None,
                   profile: dict, current_season: str,
-                  dish_type_filter: str = "all") -> list[dict]:
+                  dish_type_filter: str = "all",
+                  basket_ingredient_ids: set | None = None) -> list[dict]:
     max_time    = profile.get("max_prep_time", 60)
     hard_ceiling = None if max_time >= 999 else max_time + 10
 
@@ -317,6 +318,26 @@ def filter_dishes(db, cuisine_scope: str, selected_nation: str | None,
         type_sql = "AND (cm.method_name IS NULL OR cm.method_name NOT IN ('nau_canh','nau_soup'))"
     else:
         type_sql = ""
+
+    # ── Basket pre-filter: chỉ lấy món có ít nhất 1 ingredient trong basket ──
+    # Dùng EXISTS subquery để filter tại DB, tránh load toàn bộ 5000 món về RAM
+    if basket_ingredient_ids:
+        basket_list = list(basket_ingredient_ids)
+        basket_ph   = ",".join("?" * len(basket_list))
+        basket_sql  = f"""
+            AND EXISTS (
+                SELECT 1 FROM dish_ingredient di
+                JOIN ingredients i ON di.ingredient_id = i.id
+                WHERE di.recipe_id = d.id
+                  AND di.ingredient_id IN ({basket_ph})
+                  AND di.quantity_g > 0
+                  AND i.category NOT IN (
+                      'Dầu & Mỡ', 'Sữa & Trứng', 'Ngũ cốc & Tinh bột', 'Gia vị'
+                  )
+            )"""
+    else:
+        basket_sql  = ""
+        basket_list = []
 
     sql = f"""
         SELECT d.id, d.title, d.nation, d.cook_time_minutes, d.cooking_method_id,
@@ -336,9 +357,12 @@ def filter_dishes(db, cuisine_scope: str, selected_nation: str | None,
                d.cost_level
         FROM dishes d
         LEFT JOIN cooking_methods cm ON d.cooking_method_id = cm.method_id
-        WHERE 1=1 {nation_sql} {type_sql} LIMIT 5000
+        WHERE 1=1 {nation_sql} {type_sql} {basket_sql} LIMIT 5000
     """
-    rows = db.execute(sql, nation_params).fetchall()
+
+    # nation_params là dict (named placeholder) → convert sang list để concat basket_list
+    nation_param_list = list(nation_params.values()) if isinstance(nation_params, dict) else list(nation_params)
+    rows = db.execute(sql, nation_param_list + basket_list).fetchall()
     cols = [
         "id", "title", "nation", "cook_time_minutes", "cooking_method_id", "image_url", "url",
         "is_vegan", "is_vegetarian", "allergen_summary", "taste_profile",
