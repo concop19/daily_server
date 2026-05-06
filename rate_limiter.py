@@ -18,6 +18,12 @@ def rate_limit(max_calls: int, window_seconds: int = 60):
     """
     Decorator: @rate_limit(10, 60) → tối đa 10 req/phút per uid.
     Dùng sliding window đơn giản: đếm row trong request_log.
+
+    FIX ID-003: Bọc toàn bộ logic trong try/except.
+    Nếu Supabase down hoặc timeout → fail-closed (503) thay vì crash 500
+    hoặc fail-open cho request đi qua.
+    NOTE ID-002: Race condition (TOCTOU) vẫn còn ở đây — cần Supabase RPC
+    atomic để fix triệt để. Hiện tại fail-closed đã giảm đáng kể exploit surface.
     """
     def decorator(f):
         @wraps(f)
@@ -26,28 +32,35 @@ def rate_limit(max_calls: int, window_seconds: int = 60):
             if not uid:
                 return jsonify({"error": "Unauthorized"}), 401
 
-            since = datetime.now(timezone.utc).timestamp() - window_seconds
-            since_iso = datetime.fromtimestamp(since, tz=timezone.utc).isoformat()
+            try:
+                since = datetime.now(timezone.utc).timestamp() - window_seconds
+                since_iso = datetime.fromtimestamp(since, tz=timezone.utc).isoformat()
 
-            # Đếm request trong window
-            resp = requests.get(
-                f"{SUPABASE_URL}/rest/v1/request_log",
-                params={
-                    "select":    "id",
-                    "uid":       f"eq.{uid}",
-                    "endpoint":  f"eq.{f.__name__}",
-                    "logged_at": f"gte.{since_iso}",
-                },
-                headers={**_HEADERS, "Prefer": "count=exact", "Range": "0-0"},
-                timeout=2,
-            )
-            count = int(resp.headers.get("Content-Range", "0/0").split("/")[-1])
+                resp = requests.get(
+                    f"{SUPABASE_URL}/rest/v1/request_log",
+                    params={
+                        "select":    "id",
+                        "uid":       f"eq.{uid}",
+                        "endpoint":  f"eq.{f.__name__}",
+                        "logged_at": f"gte.{since_iso}",
+                    },
+                    headers={**_HEADERS, "Prefer": "count=exact", "Range": "0-0"},
+                    timeout=2,
+                )
+                count = int(resp.headers.get("Content-Range", "0/0").split("/")[-1])
 
-            if count >= max_calls:
+                if count >= max_calls:
+                    return jsonify({
+                        "error":       "Too many requests",
+                        "retry_after": window_seconds,
+                    }), 429
+
+            except Exception:
+                # FIX ID-003: Fail-closed — không check được → từ chối request.
+                # Tránh fail-open (attacker trigger Supabase down để bypass limit).
                 return jsonify({
-                    "error":       "Too many requests",
-                    "retry_after": window_seconds,
-                }), 429
+                    "error": "Rate limit service unavailable, please retry shortly",
+                }), 503
 
             return f(*args, **kwargs)
         return decorated

@@ -4,9 +4,13 @@ weather.py — Xử lý thời tiết: fetch API, cache L1/L2, tính weather vec
 Cache strategy:
   L1 (in-memory, process-fast) + L2 (Supabase, persist qua restart)
   → xem cache_manager.py
+
+FIX ID-015: Thêm _FLAT_CACHE để lưu flat fields (temperature, humidity…)
+  kèm theo weather_vector. Tránh trả hardcoded 30.0°C khi cache hit.
 """
 
 import os
+import threading
 from datetime import datetime, timedelta, timezone
 
 import requests
@@ -27,6 +31,27 @@ _OW_CONDITION_VI = {
     "clear":        "Trời quang",
     "clouds":       "Có mây",
 }
+
+# FIX ID-015: Cache riêng cho flat fields (temperature, humidity, v.v.)
+# key = grid_key, value = (flat_dict, expires_at)
+_FLAT_CACHE: dict[str, tuple[dict, datetime]] = {}
+_FLAT_LOCK = threading.Lock()
+
+def _flat_cache_get(grid_key: str) -> dict | None:
+    with _FLAT_LOCK:
+        entry = _FLAT_CACHE.get(grid_key)
+    if not entry:
+        return None
+    flat, exp = entry
+    if datetime.now(timezone.utc) < exp:
+        return flat
+    with _FLAT_LOCK:
+        _FLAT_CACHE.pop(grid_key, None)
+    return None
+
+def _flat_cache_set(grid_key: str, flat: dict, expires_at: datetime) -> None:
+    with _FLAT_LOCK:
+        _FLAT_CACHE[grid_key] = (flat, expires_at)
 
 
 # ── Helpers ──────────────────────────────────────────────────────────────────
@@ -52,7 +77,7 @@ def _adaptive_ttl(temperature, aqi, wind_speed) -> int:
     """Trả về TTL (phút). Thời tiết cực đoan → TTL ngắn hơn."""
     hour = datetime.now().hour
     base = 30 if (6 <= hour < 22) else 60
-    if aqi and aqi > 150:          base = min(base, 15)
+    if aqi and aqi > 150:            base = min(base, 15)
     if wind_speed and wind_speed > 50: base = min(base, 15)
     if temperature and temperature > 40: base = min(base, 20)
     return base
@@ -94,7 +119,7 @@ def compute_weather_vector(t, humidity, wind, pressure, aqi, uv, season) -> dict
     }
 
 
-# ── API fetch ────────────────────────────────────────────────────────────────
+# ── API fetch ─────────────────────────────────────────────────────────────────
 def fetch_from_openweather(lat: float, lon: float) -> tuple:
     """Gọi OpenWeather + Air Pollution API. Trả (raw, wv, flat, aqi_val, wind_kmh)."""
     if not OPENWEATHER_API_KEY:
@@ -144,7 +169,8 @@ def fetch_from_openweather(lat: float, lon: float) -> tuple:
     return raw, wv, flat, aqi_val, wind_kmh
 
 
-# ── Main entry point ─────────────────────────────────────────────────────────
+# ── Main entry points ─────────────────────────────────────────────────────────
+
 def get_or_compute_weather(lat: float, lon: float, weather_override: dict | None,
                            db=None) -> dict:
     """
@@ -179,6 +205,7 @@ def get_or_compute_weather(lat: float, lon: float, weather_override: dict | None
     try:
         _, wv, flat, aqi_val, wind_kmh = fetch_from_openweather(g_lat, g_lon)
         ttl = _adaptive_ttl(flat["temperature"], aqi_val, wind_kmh)
+        expires_at = datetime.now(timezone.utc) + timedelta(minutes=ttl)
         set_weather_cache(
             key, wv, ttl_minutes=ttl,
             grid_lat=g_lat, grid_lon=g_lon,
@@ -187,6 +214,8 @@ def get_or_compute_weather(lat: float, lon: float, weather_override: dict | None
             aqi=aqi_val,
             wind_speed=wind_kmh,
         )
+        # FIX ID-015: lưu flat fields vào _FLAT_CACHE để fetch_and_cache_weather dùng
+        _flat_cache_set(key, flat, expires_at)
         return wv
     except Exception:
         pass
@@ -206,19 +235,29 @@ def fetch_and_cache_weather(lat: float, lon: float, db=None) -> dict:
     key, g_lat, g_lon = _grid_key(lat, lon)
     now = datetime.now(timezone.utc)
 
-    # L1 + L2 waterfall
+    # L1 + L2 waterfall cho vector
     cached_wv = get_weather_cache(key)
     if cached_wv is not None:
-        # Cache hit — trả về flat defaults + vector (không có raw humidity/pressure)
+        # FIX ID-015: trả flat fields thực nếu có trong _FLAT_CACHE,
+        # thay vì hardcode 30.0°C gây misleading UX.
+        cached_flat = _flat_cache_get(key)
+        if cached_flat:
+            return {
+                **cached_flat,
+                "weather_vector": cached_wv,
+                "cache_hit":  True,
+                "expires_at": "",
+            }
+        # Flat cache miss (server restart) — fallback về defaults nhưng đánh dấu rõ
         return {
-            "temperature": 30.0,
-            "humidity":    70.0,
-            "wind_speed":  10.0,
-            "pressure":    1010.0,
-            "aqi":         50.0,
-            "uv_index":    0.0,
+            "temperature": None,
+            "humidity":    None,
+            "wind_speed":  None,
+            "pressure":    None,
+            "aqi":         None,
+            "uv_index":    None,
             "season":      get_current_season(),
-            "condition":   "Không rõ",
+            "condition":   "Dữ liệu cũ (cache)",
             "weather_vector": cached_wv,
             "cache_hit":   True,
             "expires_at":  "",
@@ -228,7 +267,7 @@ def fetch_and_cache_weather(lat: float, lon: float, db=None) -> dict:
     try:
         raw, wv, flat, aqi_val, wind_kmh = fetch_from_openweather(g_lat, g_lon)
         ttl     = _adaptive_ttl(flat["temperature"], aqi_val, wind_kmh)
-        expires = (now + timedelta(minutes=ttl)).isoformat()
+        expires = now + timedelta(minutes=ttl)
 
         set_weather_cache(
             key, wv, ttl_minutes=ttl,
@@ -239,7 +278,9 @@ def fetch_and_cache_weather(lat: float, lon: float, db=None) -> dict:
             wind_speed=wind_kmh,
             raw_data=raw,
         )
-        return {**flat, "weather_vector": wv, "cache_hit": False, "expires_at": expires}
+        # FIX ID-015: lưu flat vào _FLAT_CACHE
+        _flat_cache_set(key, flat, expires)
+        return {**flat, "weather_vector": wv, "cache_hit": False, "expires_at": expires.isoformat()}
 
     except Exception as e:
         season = get_current_season()
