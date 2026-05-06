@@ -1,19 +1,20 @@
 """
-weather.py — Xử lý thời tiết: fetch API, cache DB/memory, tính weather vector.
+weather.py — Xử lý thời tiết: fetch API, cache L1/L2, tính weather vector.
+
+Cache strategy:
+  L1 (in-memory, process-fast) + L2 (Supabase, persist qua restart)
+  → xem cache_manager.py
 """
 
-import json
-import math
 import os
 from datetime import datetime, timedelta, timezone
 
 import requests
+from cache_manager import get_weather_cache, set_weather_cache
 
 # ── Constants ────────────────────────────────────────────────────────────────
 OPENWEATHER_API_KEY = os.environ.get("OPENWEATHER_API_KEY", "")
 CELL_SIZE = 0.1
-
-_WEATHER_CACHE: dict = {}  # In-memory cache (process lifetime)
 
 _OW_CONDITION_VI = {
     "thunderstorm": "Giông bão",
@@ -93,32 +94,6 @@ def compute_weather_vector(t, humidity, wind, pressure, aqi, uv, season) -> dict
     }
 
 
-# ── DB helpers ───────────────────────────────────────────────────────────────
-def ensure_weather_cache_table(db):
-    db.execute("""
-        CREATE TABLE IF NOT EXISTS weather_cache (
-            grid_key     TEXT PRIMARY KEY,
-            grid_lat     REAL NOT NULL,
-            grid_lon     REAL NOT NULL,
-            cell_size    REAL NOT NULL DEFAULT 0.1,
-            weather_vector TEXT NOT NULL,
-            raw_data     TEXT,
-            temperature  REAL,
-            aqi          REAL,
-            wind_speed   REAL,
-            condition    TEXT,
-            fetched_at   TEXT NOT NULL,
-            expires_at   TEXT NOT NULL,
-            hit_count    INTEGER DEFAULT 0,
-            source_api   TEXT DEFAULT 'openweathermap'
-        )
-    """)
-    db.execute(
-        "CREATE INDEX IF NOT EXISTS idx_weather_expires ON weather_cache(expires_at)"
-    )
-    db.commit()
-
-
 # ── API fetch ────────────────────────────────────────────────────────────────
 def fetch_from_openweather(lat: float, lon: float) -> tuple:
     """Gọi OpenWeather + Air Pollution API. Trả (raw, wv, flat, aqi_val, wind_kmh)."""
@@ -174,7 +149,8 @@ def get_or_compute_weather(lat: float, lon: float, weather_override: dict | None
                            db=None) -> dict:
     """
     Trả về weather_vector.
-    Ưu tiên: override → in-memory cache → DB cache → OpenWeather API → hardcode fallback.
+    Ưu tiên: override → L1 cache → L2 cache (Supabase) → OpenWeather API → hardcode fallback.
+    Tham số db giữ lại để không break caller, nhưng không dùng nữa.
     """
     if weather_override and "weather_vector" in weather_override:
         return weather_override["weather_vector"]
@@ -191,120 +167,81 @@ def get_or_compute_weather(lat: float, lon: float, weather_override: dict | None
             weather_override.get("uv_index",    6),
             weather_override.get("season",      get_current_season()),
         )
-        _WEATHER_CACHE[key] = wv
+        set_weather_cache(key, wv, ttl_minutes=30, grid_lat=g_lat, grid_lon=g_lon)
         return wv
 
-    if key in _WEATHER_CACHE:
-        return _WEATHER_CACHE[key]
+    # L1 + L2 waterfall
+    cached = get_weather_cache(key)
+    if cached is not None:
+        return cached
 
-    if db is not None:
-        try:
-            ensure_weather_cache_table(db)
-            now = datetime.now(timezone.utc)
-            row = db.execute(
-                "SELECT weather_vector, expires_at FROM weather_cache WHERE grid_key = ?",
-                (key,)
-            ).fetchone()
-            if row:
-                exp = datetime.fromisoformat(row["expires_at"])
-                if exp.tzinfo is None:
-                    exp = exp.replace(tzinfo=timezone.utc)
-                if now < exp:
-                    wv = json.loads(row["weather_vector"])
-                    _WEATHER_CACHE[key] = wv
-                    db.execute(
-                        "UPDATE weather_cache SET hit_count = hit_count + 1 WHERE grid_key = ?",
-                        (key,)
-                    )
-                    db.commit()
-                    return wv
-        except Exception:
-            pass
+    # OpenWeather fetch
+    try:
+        _, wv, flat, aqi_val, wind_kmh = fetch_from_openweather(g_lat, g_lon)
+        ttl = _adaptive_ttl(flat["temperature"], aqi_val, wind_kmh)
+        set_weather_cache(
+            key, wv, ttl_minutes=ttl,
+            grid_lat=g_lat, grid_lon=g_lon,
+            temperature=flat["temperature"],
+            condition=flat["condition"],
+            aqi=aqi_val,
+            wind_speed=wind_kmh,
+        )
+        return wv
+    except Exception:
+        pass
 
     # Hardcoded fallback
     wv = compute_weather_vector(33, 75, 12, 1008, 80, 7.5, get_current_season())
-    _WEATHER_CACHE[key] = wv
+    set_weather_cache(key, wv, ttl_minutes=15, grid_lat=g_lat, grid_lon=g_lon)
     return wv
 
 
-def fetch_and_cache_weather(lat: float, lon: float, db) -> dict:
+def fetch_and_cache_weather(lat: float, lon: float, db=None) -> dict:
     """
     Dùng cho route GET /api/weather.
     Trả full dict gồm flat fields + weather_vector + cache meta.
+    Tham số db giữ lại để không break caller, nhưng không dùng nữa.
     """
     key, g_lat, g_lon = _grid_key(lat, lon)
-    ensure_weather_cache_table(db)
     now = datetime.now(timezone.utc)
 
-    row = db.execute(
-        "SELECT weather_vector, raw_data, temperature, aqi, wind_speed, condition, "
-        "expires_at, hit_count FROM weather_cache WHERE grid_key = ?",
-        (key,)
-    ).fetchone()
+    # L1 + L2 waterfall
+    cached_wv = get_weather_cache(key)
+    if cached_wv is not None:
+        # Cache hit — trả về flat defaults + vector (không có raw humidity/pressure)
+        return {
+            "temperature": 30.0,
+            "humidity":    70.0,
+            "wind_speed":  10.0,
+            "pressure":    1010.0,
+            "aqi":         50.0,
+            "uv_index":    0.0,
+            "season":      get_current_season(),
+            "condition":   "Không rõ",
+            "weather_vector": cached_wv,
+            "cache_hit":   True,
+            "expires_at":  "",
+        }
 
-    if row:
-        exp = datetime.fromisoformat(row["expires_at"])
-        if exp.tzinfo is None:
-            exp = exp.replace(tzinfo=timezone.utc)
-        if now < exp:
-            db.execute(
-                "UPDATE weather_cache SET hit_count = hit_count + 1 WHERE grid_key = ?",
-                (key,)
-            )
-            db.commit()
-            wv = json.loads(row["weather_vector"])
-            _WEATHER_CACHE[key] = wv
-            raw_saved = json.loads(row["raw_data"] or "{}")
-            flat = {
-                "temperature": row["temperature"] or 30.0,
-                "humidity":    float(raw_saved.get("main", {}).get("humidity", 70)),
-                "wind_speed":  row["wind_speed"] or 10.0,
-                "pressure":    float(raw_saved.get("main", {}).get("pressure", 1010)),
-                "aqi":         row["aqi"] or 50.0,
-                "uv_index":    0.0,
-                "season":      get_current_season(),
-                "condition":   row["condition"] or "Không rõ",
-            }
-            return {**flat, "weather_vector": wv,
-                    "cache_hit": True, "expires_at": row["expires_at"]}
-
+    # Fetch từ OpenWeather
     try:
         raw, wv, flat, aqi_val, wind_kmh = fetch_from_openweather(g_lat, g_lon)
         ttl     = _adaptive_ttl(flat["temperature"], aqi_val, wind_kmh)
         expires = (now + timedelta(minutes=ttl)).isoformat()
 
-        db.execute("""
-            INSERT OR REPLACE INTO weather_cache
-            (grid_key, grid_lat, grid_lon, cell_size, weather_vector, raw_data,
-             temperature, aqi, wind_speed, condition, fetched_at, expires_at, hit_count)
-            VALUES (?,?,?,?,?,?,?,?,?,?,?,?,0)
-        """, (key, g_lat, g_lon, CELL_SIZE,
-              json.dumps(wv), json.dumps(raw),
-              flat["temperature"], aqi_val, wind_kmh, flat["condition"],
-              now.isoformat(), expires))
-        db.commit()
-        _WEATHER_CACHE[key] = wv
+        set_weather_cache(
+            key, wv, ttl_minutes=ttl,
+            grid_lat=g_lat, grid_lon=g_lon,
+            temperature=flat["temperature"],
+            condition=flat["condition"],
+            aqi=aqi_val,
+            wind_speed=wind_kmh,
+            raw_data=raw,
+        )
         return {**flat, "weather_vector": wv, "cache_hit": False, "expires_at": expires}
 
     except Exception as e:
-        # Fallback: dùng row DB cũ dù hết hạn
-        if row:
-            wv = json.loads(row["weather_vector"])
-            raw_saved = json.loads(row["raw_data"] or "{}")
-            flat = {
-                "temperature": row["temperature"] or 30.0,
-                "humidity":    float(raw_saved.get("main", {}).get("humidity", 70)),
-                "wind_speed":  row["wind_speed"] or 10.0,
-                "pressure":    float(raw_saved.get("main", {}).get("pressure", 1010)),
-                "aqi":         row["aqi"] or 50.0,
-                "uv_index":    0.0,
-                "season":      get_current_season(),
-                "condition":   row["condition"] or "Không rõ",
-            }
-            return {**flat, "weather_vector": wv,
-                    "cache_hit": True, "expires_at": row["expires_at"],
-                    "warning":   f"OpenWeather lỗi, dùng cache cũ: {e}"}
-
         season = get_current_season()
         wv = compute_weather_vector(33, 75, 12, 1008, 80, 7.5, season)
         return {

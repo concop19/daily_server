@@ -164,7 +164,6 @@ def recommend():
     recent_dish_ids_ordered = [str(x) for x in body.get("recent_dish_ids", [])]
 
     basket = body.get("market_basket", {})
-    print(basket)
     if isinstance(basket, list):
         basket = {"selected_ingredient_ids": basket, "is_skipped": len(basket) == 0}
     selected_ids   = {int(x) for x in basket.get("selected_ingredient_ids", []) if str(x).strip().isdigit()}
