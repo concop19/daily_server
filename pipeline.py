@@ -179,6 +179,7 @@ def compute_personal_vector(p: dict) -> dict:
 
     return {
         "BMI":                  bmi,
+        "age":                  age,
         "bmr":                  round(bmr, 2),
         "activity_level_mult":  mult,
         "energy_need":          tdee,
@@ -205,6 +206,18 @@ def compute_demand(wv: dict, pv: dict, climate_type: str) -> dict:
     w = min(1.0, w * mod["warming"])
     c = min(1.0, c * mod["cooling"])
     df = pv["disease_flags"]
+
+    # ── BMI-aware dimensions ─────────────────────────────────────────────────
+    bmi = pv.get("BMI", 22.0)
+
+    # Người gầy (BMI < 18.5): cần calo cao → ưu tiên dish energy cao
+    # 0.583 tại BMI 15 → 0.0 tại BMI 18.5 trở lên
+    high_energy_need = round(max(0.0, min(1.0, (18.5 - bmi) / 6.0)), 4)
+
+    # Người thừa cân (BMI > 25): cần no lâu với ít calo → ưu tiên satiety cao
+    # 0.0 tại BMI 25 → 0.333 tại BMI 30 → cap 0.70 tại BMI 39+
+    low_calorie_need = round(min(0.70, max(0.0, (bmi - 25.0) / 15.0)), 4)
+
     return {
         "hydration_need":        round(h,  4),
         "electrolyte_need":      round(e,  4),
@@ -212,6 +225,8 @@ def compute_demand(wv: dict, pv: dict, climate_type: str) -> dict:
         "energy_need":           round(en, 2),
         "warming_food_need":     round(w,  4),
         "cooling_food_need":     round(c,  4),
+        "high_energy_need":      high_energy_need,   # BMI < 18.5: ưu tiên calo cao
+        "low_calorie_need":      low_calorie_need,   # BMI > 25:   ưu tiên satiety
         # Disease control needs — dùng trong explanation, không dùng trong DIMS scoring
         "sodium_control_need":   1.0 if df.get("hypertension") else 0.0,
         "glycemic_control_need": 1.0 if df.get("diabetes")     else 0.0,
@@ -261,6 +276,7 @@ def build_constraint_profile(pv: dict, db) -> dict:
         "sodium_limit_mg":        SODIUM_LIMIT_HYPERTENSION if df.get("hypertension") else SODIUM_LIMIT_NORMAL,
         "glycemic_load_limit":    GL_LIMIT_DIABETES         if df.get("diabetes")     else GL_LIMIT_NORMAL,
         "calorie_target":         round(pv["energy_need"] * 0.35, 0),
+        "age":                    pv.get("age", 30),
         "max_prep_time":          pv.get("max_prep_time", 60),
         "disease_flags":          df,
     }
@@ -428,6 +444,25 @@ def _dv(dish, adj, raw=None):
     return 0.0
 
 
+def _normalize_dish_energy(dish: dict, calorie_target: float) -> float:
+    """
+    Chuyển adj_energy_total (kcal) thành score [0,1] relative to calorie_target.
+
+    Dùng cho high_energy_need (BMI < 18.5 — người gầy):
+    score cao nếu dish calo cao hơn target.
+    calorie_target = 35% TDEE / serving từ build_constraint_profile().
+    """
+    if calorie_target <= 0:
+        return 0.5
+    cal = dish.get("adj_energy_total") or dish.get("dish_energy_total") or 0.0
+    if cal <= 0:
+        return 0.5
+    # Normalize: 1.0 nếu đúng bằng target, giảm dần cả 2 phía
+    # /2 vì calorie_target là 35% TDEE, dish thực tế có thể lên đến 70%
+    ratio = float(cal) / calorie_target
+    return round(min(1.0, ratio / 2.0), 4)
+
+
 def compute_soft_mult(dish: dict, profile: dict, current_season: str) -> float:
     mult = 1.0
     prep = dish.get("cook_time_minutes") or 0
@@ -537,14 +572,33 @@ def score_dish(dish: dict, demand: dict, soft_mult: float, taste_weight: dict,
         ("thermoregulation_need", "adj_thermogenic_score", "dish_thermogenic_score"),
         ("warming_food_need",     "adj_warming_score",     "dish_warming_score"),
         ("cooling_food_need",     "adj_cooling_score",     "dish_cooling_score"),
+        ("low_calorie_need",      "adj_satiety_score",     "dish_satiety_score"),   # BMI > 25: no lâu
+        ("high_energy_need",      None,                    None),                   # BMI < 18.5: calo cao (xử lý riêng)
     ]
-    demand_sum = sum(demand.get(d, 0) for d, _, _ in DIMS)
-    if demand_sum > 0:
-        raw_score = sum(
-            demand.get(d, 0) * _dv(dish, a, r) for d, a, r in DIMS
-        ) / demand_sum
-    else:
-        raw_score = 0.0
+
+    # Pre-compute normalized energy score cho high_energy_need
+    _profile       = profile or {}
+    calorie_target = _profile.get("calorie_target", 0)
+    _dish_energy_score = (
+        _normalize_dish_energy(dish, calorie_target)
+        if calorie_target > 0 and demand.get("high_energy_need", 0) > 0
+        else 0.0
+    )
+
+    demand_sum = 0.0
+    raw_score  = 0.0
+    for d, a, r in DIMS:
+        d_val = demand.get(d, 0.0)
+        if d_val <= 0:
+            continue
+        if d == "high_energy_need":
+            dish_val = _dish_energy_score
+        else:
+            dish_val = _dv(dish, a, r) if a else 0.0
+        demand_sum += d_val
+        raw_score  += d_val * dish_val
+
+    raw_score = raw_score / demand_sum if demand_sum > 0 else 0.0
 
     # Taste score
     weight_sum = sum(taste_weight.values()) or 1.0
