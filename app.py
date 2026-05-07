@@ -21,6 +21,8 @@ from flask_cors import CORS
 from auth_middleware import require_auth, require_admin
 from monitoring import init_monitoring
 from rate_limiter import rate_limit
+from fcm_service import send_push_notification
+from notification_scheduler import init_scheduler
 from weather import (
     compute_weather_vector,
     fetch_and_cache_weather,
@@ -106,6 +108,31 @@ init_monitoring(app)
 
 
 # ── Helpers ────────────────────────────────────────────────────────────────────
+
+def init_db():
+    """Tạo bảng device_tokens nếu chưa có (idempotent)."""
+    conn = sqlite3.connect(str(DB_PATH))
+    conn.execute("""
+        CREATE TABLE IF NOT EXISTS device_tokens (
+            id          INTEGER PRIMARY KEY AUTOINCREMENT,
+            device_id   TEXT NOT NULL,
+            fcm_token   TEXT NOT NULL,
+            platform    TEXT DEFAULT 'android',
+            lat         REAL,
+            lon         REAL,
+            province    TEXT,
+            created_at  TEXT DEFAULT (datetime('now')),
+            updated_at  TEXT DEFAULT (datetime('now')),
+            UNIQUE(device_id)
+        )
+    """)
+    conn.commit()
+    conn.close()
+
+# Tạo bảng ngay khi module load (an toàn gọi nhiều lần)
+if DB_PATH.exists():
+    init_db()
+
 
 def get_db():
     if not DB_PATH.exists():
@@ -580,6 +607,163 @@ def pipeline_debug():
     })
 
 
+# ── Push Notification Endpoints ───────────────────────────────────────────────
+
+@app.route("/api/v1/device/register", methods=["POST"])
+def register_device():
+    """
+    Mobile gọi khi khởi động để lưu FCM/Expo push token.
+    Body: { device_id, fcm_token, lat?, lon?, province? }
+    """
+    body = request.get_json(force=True) or {}
+    device_id = body.get("device_id", "").strip()
+    fcm_token  = body.get("fcm_token",  "").strip()
+
+    if not device_id or not fcm_token:
+        return jsonify({"error": "device_id và fcm_token là bắt buộc"}), 400
+
+    lat = _parse_float(body.get("lat"), None, -90, 90)
+    lon = _parse_float(body.get("lon"), None, -180, 180)
+
+    with get_db_ctx() as db:
+        db.execute("""
+            INSERT INTO device_tokens (device_id, fcm_token, lat, lon, province, updated_at)
+            VALUES (?, ?, ?, ?, ?, datetime('now'))
+            ON CONFLICT(device_id) DO UPDATE SET
+                fcm_token  = excluded.fcm_token,
+                lat        = COALESCE(excluded.lat, lat),
+                lon        = COALESCE(excluded.lon, lon),
+                province   = COALESCE(excluded.province, province),
+                updated_at = datetime('now')
+        """, (device_id, fcm_token, lat, lon, body.get("province")))
+        db.commit()
+
+    return jsonify({"status": "ok"}), 200
+
+
+@app.route("/api/v1/device/location", methods=["PUT"])
+def update_device_location():
+    """
+    Cập nhật vị trí GPS của device (gọi khi user cho phép location).
+    Body: { device_id, lat, lon, province? }
+    """
+    body = request.get_json(force=True) or {}
+    device_id = body.get("device_id", "").strip()
+    if not device_id:
+        return jsonify({"error": "device_id là bắt buộc"}), 400
+
+    lat = _parse_float(body.get("lat"), None, -90, 90)
+    lon = _parse_float(body.get("lon"), None, -180, 180)
+
+    with get_db_ctx() as db:
+        cur = db.execute("""
+            UPDATE device_tokens
+            SET lat=?, lon=?, province=?, updated_at=datetime('now')
+            WHERE device_id=?
+        """, (lat, lon, body.get("province"), device_id))
+        db.commit()
+        if cur.rowcount == 0:
+            return jsonify({"error": "device không tồn tại"}), 404
+
+    return jsonify({"status": "ok"}), 200
+
+
+@app.route("/api/v1/device/test-push", methods=["POST"])
+def test_push():
+    """
+    Gửi test notification ngay lập tức — chỉ dùng khi dev/test.
+    Body: { fcm_token } hoặc { device_id }
+    """
+    body = request.get_json(force=True) or {}
+    fcm_token = body.get("fcm_token", "").strip()
+
+    if not fcm_token and body.get("device_id"):
+        with get_db_ctx() as db:
+            row = db.execute(
+                "SELECT fcm_token FROM device_tokens WHERE device_id=?",
+                (body["device_id"],)
+            ).fetchone()
+            if row:
+                fcm_token = row["fcm_token"]
+
+    if not fcm_token:
+        return jsonify({"error": "fcm_token hoặc device_id hợp lệ là bắt buộc"}), 400
+
+    ok = send_push_notification(
+        fcm_token,
+        title="🍽️ Test từ Daily Mate",
+        body="Push notification đang hoạt động! 🎉",
+        data={"screen": "MealReminder", "mealId": "lunch"},
+    )
+    if ok is True:
+        return jsonify({"sent": True}), 200
+    elif ok == "invalid_token":
+        return jsonify({"sent": False, "detail": "Token không hợp lệ hoặc đã hết hạn"}), 400
+    else:
+        return jsonify({"sent": False, "detail": "Gửi thất bại, kiểm tra log server"}), 500
+
+
+# ── Recommend function dùng bởi scheduler ────────────────────────────────────
+
+def _recommend_for_device(device: dict, meal_type: str):
+    """
+    Chạy recommendation pipeline cho 1 device, trả về top dish dict hoặc None.
+    device: dict với keys device_id, fcm_token, lat, lon
+    meal_type: 'lunch' | 'dinner'
+    """
+    try:
+        lat = float(device.get("lat") or 16.047)
+        lon = float(device.get("lon") or 108.206)
+
+        with get_db_ctx() as db:
+            wv  = get_or_compute_weather(lat, lon, None, db=db)
+            loc = resolve_location(lat, lon, db)
+            pv  = compute_personal_vector({})
+
+            demand  = compute_demand(wv, pv, loc["climate_type"])
+            profile = build_constraint_profile(pv, db)
+            profile["sodium_control_need"]   = demand["sodium_control_need"]
+            profile["glycemic_control_need"] = demand["glycemic_control_need"]
+            profile["cost_preference"]       = 2
+
+            season    = get_current_season()
+            dish_pool = filter_dishes(db, "vietnam", None, profile, season, "all")
+            if not dish_pool:
+                dish_pool = filter_dishes(db, "global", None, profile, season, "all")
+            if not dish_pool:
+                return None
+
+            taste       = resolve_taste_weight(pv, loc)
+            trad_compat = loc["traditional_compatibility"]
+
+            scores = {
+                d["id"]: score_dish(
+                    d, demand,
+                    compute_soft_mult(d, profile, season),
+                    taste, trad_compat,
+                    get_dish_availability(d["id"], loc["food_region"], db),
+                    0.0,
+                    profile=profile,
+                )
+                for d in dish_pool
+            }
+
+            ranked, _ = rank_and_explain(
+                scores, dish_pool, {d["id"]: 0.0 for d in dish_pool},
+                demand, profile,
+                loc=loc, season=season,
+                basket_ingredient_ids=set(),
+                db=db,
+            )
+
+        return ranked[0] if ranked else None
+
+    except Exception as e:
+        import logging
+        logging.getLogger(__name__).error(f"[Push] _recommend_for_device failed: {e}")
+        return None
+
+
 # ── Entry point ────────────────────────────────────────────────────────────────
 if __name__ == "__main__":
     print(f"\n{'=' * 60}")
@@ -587,4 +771,10 @@ if __name__ == "__main__":
     print(f"  DB: {DB_PATH}")
     print(f"  Running at: http://localhost:5001")
     print(f"{'=' * 60}\n")
+
+    # Khởi động push notification scheduler nếu được bật
+    if os.environ.get("ENABLE_PUSH_SCHEDULER", "false").lower() == "true":
+        init_scheduler(get_db_ctx, _recommend_for_device)
+        print("[Push] Scheduler started — 8 notification slots/day active")
+
     app.run(debug=True, port=5001, host="0.0.0.0")
