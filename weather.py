@@ -248,7 +248,28 @@ def fetch_and_cache_weather(lat: float, lon: float, db=None) -> dict:
                 "cache_hit":  True,
                 "expires_at": "",
             }
-        # Flat cache miss (server restart) — fallback về defaults nhưng đánh dấu rõ
+        # Flat cache miss (server restart): _FLAT_CACHE bị xóa nhưng L2 vẫn còn
+        # weather_vector. Thử fetch fresh từ OpenWeather để lấy lại flat fields
+        # thay vì trả về None / "Dữ liệu cũ (cache)" gây misleading UX.
+        try:
+            raw, wv, flat, aqi_val, wind_kmh = fetch_from_openweather(g_lat, g_lon)
+            ttl     = _adaptive_ttl(flat["temperature"], aqi_val, wind_kmh)
+            expires = now + timedelta(minutes=ttl)
+            set_weather_cache(
+                key, wv, ttl_minutes=ttl,
+                grid_lat=g_lat, grid_lon=g_lon,
+                temperature=flat["temperature"],
+                condition=flat["condition"],
+                aqi=aqi_val,
+                wind_speed=wind_kmh,
+                raw_data=raw,
+            )
+            _flat_cache_set(key, flat, expires)
+            return {**flat, "weather_vector": wv, "cache_hit": False, "expires_at": expires.isoformat()}
+        except Exception:
+            pass
+        # OpenWeather cũng thất bại → trả stale vector + báo rõ lý do
+        season = get_current_season()
         return {
             "temperature": None,
             "humidity":    None,
@@ -256,11 +277,12 @@ def fetch_and_cache_weather(lat: float, lon: float, db=None) -> dict:
             "pressure":    None,
             "aqi":         None,
             "uv_index":    None,
-            "season":      get_current_season(),
-            "condition":   "Dữ liệu cũ (cache)",
+            "season":      season,
+            "condition":   "Không thể kết nối thời tiết",
             "weather_vector": cached_wv,
             "cache_hit":   True,
             "expires_at":  "",
+            "warning":     "Flat cache miss sau server restart, OpenWeather không khả dụng",
         }
 
     # Fetch từ OpenWeather

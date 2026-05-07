@@ -48,7 +48,7 @@ from pipeline import (
 # ── App & DB setup ─────────────────────────────────────────────────────────────
 # FIX ID-014: Bỏ Windows path hardcode — dùng relative fallback "recipe.db"
 # kế cạnh app.py, hoạt động cả Linux lẫn Windows.
-DB_PATH = Path(os.environ.get("DB_PATH", "recipe.db"))
+DB_PATH = Path(os.environ.get("DB_PATH", r"D:\dream_project\daily_mate_code\daily_mate_all\database\recipe.db"))
 BUNDLED_DB = Path(__file__).parent / "recipe.db"
 if not DB_PATH.exists() and BUNDLED_DB.exists():
     DB_PATH.parent.mkdir(parents=True, exist_ok=True)
