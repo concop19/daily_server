@@ -703,17 +703,31 @@ def _fallback_explanation(dish: dict) -> dict:
 
 def rank_and_explain(scores: dict, dish_pool: list, boosts: dict, demand: dict,
                      profile: dict, top_k: int = 20,
+                     page: int = 1, page_size: int = 10,
                      loc: dict | None = None, season: str | None = None,
                      basket_ingredient_ids: set | None = None,
-                     db=None, temperature=None) -> tuple[list, list]:
+                     db=None, temperature=None) -> tuple[list, list, int, int, bool]:
     sorted_ids = sorted(scores, key=lambda x: scores[x], reverse=True)
     dish_map   = {d["id"]: d for d in dish_pool}
     _loc    = loc    or {"traditional_compatibility": 0.8}
     _season = season or get_current_season()
     _basket = basket_ingredient_ids or set()
 
+    # Tổng = toàn bộ pool đã score — không cắt cứng bởi top_k
+    # Cùng profile + điều kiện → score deterministic → thứ tự luôn nhất quán giữa các page
+    total = len(sorted_ids)
+
+    # Slice theo page — chỉ build explanation cho phần này
+    start    = (page - 1) * page_size
+    end      = start + page_size
+    page_ids = sorted_ids[start:end]
+
+    total_pages = math.ceil(total / page_size) if page_size > 0 else 1
+    has_next    = page < total_pages
+
     result = []
-    for rank, did in enumerate(sorted_ids[:top_k], 1):
+    for idx, did in enumerate(page_ids):
+        rank_abs = start + idx + 1   # rank tuyệt đối trong toàn bộ danh sách
         dish  = dish_map.get(did, {})
         boost = boosts.get(did, 0.0)
 
@@ -724,7 +738,6 @@ def rank_and_explain(scores: dict, dish_pool: list, boosts: dict, demand: dict,
                     loc=_loc, season=_season, basket_ingredient_ids=_basket,
                     db=db, temperature=temperature,
                 )
-                
             except Exception:
                 explanation_obj = _fallback_explanation(dish)
         else:
@@ -732,7 +745,7 @@ def rank_and_explain(scores: dict, dish_pool: list, boosts: dict, demand: dict,
 
         df = profile.get("disease_flags", {})
         result.append({
-            "rank":            rank,
+            "rank":            rank_abs,
             "dish_id":         did,
             "title":           dish.get("title", ""),
             "image_url":       dish.get("image_url", ""),
@@ -755,7 +768,7 @@ def rank_and_explain(scores: dict, dish_pool: list, boosts: dict, demand: dict,
             "explanation":        explanation_obj,
         })
 
-    return result, sorted_ids[top_k: top_k + 5]
+    return result, sorted_ids[top_k: top_k + 5], total, total_pages, has_next
 
 
 # ── SQL helper — chạy 1 lần để populate các safety score columns ─────────────

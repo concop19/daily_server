@@ -274,6 +274,10 @@ def recommend():
     lat = _parse_float(body.get("lat"), 16.047, -90, 90)
     lon = _parse_float(body.get("lon"), 108.206, -180, 180)
 
+    # ── Phân trang: đọc page / page_size từ body ──────────────────────────────
+    page      = max(1, _parse_int(body.get("page"), 1, lo=1))
+    page_size = max(1, min(20, _parse_int(body.get("page_size"), 10, lo=1, hi=20)))
+
     # FIX ID-006: dùng get_db_ctx() để đảm bảo db.close() khi exception
     with get_db_ctx() as db:
         wv  = get_or_compute_weather(lat, lon, body.get("weather"), db=db)
@@ -317,8 +321,10 @@ def recommend():
 
         _temperature = (body.get("weather", {}).get("temperature")
                         if isinstance(body.get("weather"), dict) else None)
-        ranked, fallback_ids = rank_and_explain(
+        ranked, fallback_ids, total_dishes, total_pages, has_next_page = rank_and_explain(
             scores, dish_pool, boosts, demand, profile,
+            page=page,
+            page_size=page_size,
             loc=loc, season=season,
             basket_ingredient_ids=selected_ids,
             db=db, temperature=_temperature,
@@ -337,7 +343,12 @@ def recommend():
         "basket_skipped":   is_skipped,
         "dish_pool_size":   len(dish_pool),
         "ranked_dishes":    ranked,
-        "page_size":        10,
+        # ── Pagination fields ──────────────────────────────────────────────
+        "page":             page,
+        "page_size":        page_size,
+        "total_dishes":     total_dishes,
+        "total_pages":      total_pages,
+        "has_next_page":    has_next_page,
         "fallback_ids":     fallback_ids,
         "generated_at":     t0.isoformat(),
     })
@@ -748,7 +759,7 @@ def _recommend_for_device(device: dict, meal_type: str):
                 for d in dish_pool
             }
 
-            ranked, _ = rank_and_explain(
+            ranked, _, _, _, _ = rank_and_explain(
                 scores, dish_pool, {d["id"]: 0.0 for d in dish_pool},
                 demand, profile,
                 loc=loc, season=season,
