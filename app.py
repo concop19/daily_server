@@ -295,7 +295,28 @@ def recommend():
         full_pool = filter_dishes(db, cuisine_scope, selected_nation, profile, season,
                                   dish_type_filter, basket_ingredient_ids=basket_for_filter)
 
-        if basket_for_filter and len(full_pool) == 0:
+        # ── Basket small-pool logic ────────────────────────────────────────────
+        # Nếu basket trả về 1–9 món: KHÔNG fallback, giữ nguyên pool nhỏ,
+        # nhưng đính kèm basket_warning để mobile hiển thị disclaimer.
+        BASKET_SMALL_POOL_THRESHOLD = 10
+        basket_warning = None
+
+        if basket_for_filter and 0 < len(full_pool) < BASKET_SMALL_POOL_THRESHOLD:
+            # Giữ pool nhỏ — KHÔNG fallback — chỉ thêm warning field
+            basket_warning = {
+                "type":  "small_basket_pool",
+                "count": len(full_pool),
+                "message": (
+                    f"Chỉ tìm thấy {len(full_pool)} món từ nguyên liệu bạn đã chọn. "
+                    "Những món này đúng với giỏ nguyên liệu của bạn, nhưng có thể chưa "
+                    "được lọc đầy đủ theo tình trạng sức khỏe cá nhân. "
+                    "Để đảm bảo an toàn, bạn nên tìm kiếm thêm trên Google hoặc "
+                    "các nền tảng y tế để xác nhận món ăn phù hợp với sức khỏe của bạn."
+                ),
+                "health_params_shown": True,
+            }
+        elif basket_for_filter and len(full_pool) == 0:
+            # Pool rỗng hoàn toàn → fallback như cũ
             full_pool = filter_dishes(db, cuisine_scope, selected_nation, profile, season, dish_type_filter)
 
         dish_pool = full_pool
@@ -341,6 +362,7 @@ def recommend():
         "dish_type_filter": dish_type_filter,
         "cost_preference":  cost_preference,
         "basket_skipped":   is_skipped,
+        "basket_warning":   basket_warning,   # None bình thường, object khi pool < 10
         "dish_pool_size":   len(dish_pool),
         "ranked_dishes":    ranked,
         # ── Pagination fields ──────────────────────────────────────────────

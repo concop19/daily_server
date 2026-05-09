@@ -1,20 +1,72 @@
 UPDATE dishes
 SET gout_risk_score = (
-    SELECT MIN(
-        (SUM(di.quantity_g * i.purine_score) / NULLIF(SUM(di.quantity_g), 0))
-        * MIN(d2.total_weight_g / 300.0, 1.5),
-        1.0
-    )
-    FROM dish_ingredient di
-    JOIN ingredients i ON di.ingredient_id = i.id
-    JOIN dishes d2 ON d2.id = di.recipe_id
-    WHERE di.recipe_id = dishes.id
-      AND i.purine_score IS NOT NULL
+  SELECT ROUND(
+    LEAST(
+      -- Thành phần A: purine từ nguyên liệu chính (tách riêng is_main)
+      COALESCE(
+        (
+          SELECT SUM(di_m.quantity_g * i_m.purine_score) / NULLIF(SUM(di_m.quantity_g), 0)
+          FROM dish_ingredient di_m
+          JOIN ingredients i_m ON di_m.ingredient_id = i_m.id
+          WHERE di_m.recipe_id = dishes.id
+            AND i_m.purine_score IS NOT NULL
+            AND di_m.is_main = 1
+        ),
+        -- Fallback nếu không có is_main: dùng tất cả nguyên liệu
+        (
+          SELECT SUM(di_a.quantity_g * i_a.purine_score) / NULLIF(SUM(di_a.quantity_g), 0)
+          FROM dish_ingredient di_a
+          JOIN ingredients i_a ON di_a.ingredient_id = i_a.id
+          WHERE di_a.recipe_id = dishes.id
+            AND i_a.purine_score IS NOT NULL
+        )
+      )
+      -- Thành phần B: cooking method multiplier (purine retention factor)
+      * CASE dishes.cooking_method_id
+          WHEN 1  THEN 0.50   -- luộc: leach mạnh
+          WHEN 2  THEN 0.85   -- hấp: giữ tốt
+          WHEN 3  THEN 1.25   -- chiên ngập dầu: cô đặc mạnh
+          WHEN 4  THEN 1.20   -- chiên ít dầu
+          WHEN 5  THEN 1.10   -- xào: cô đặc nhẹ
+          WHEN 6  THEN 1.25   -- nướng: bay hơi nước
+          WHEN 7  THEN 1.15   -- kho: ngấm gia vị
+          WHEN 8  THEN 0.55   -- hầm: leach vào nước dùng
+          WHEN 9  THEN 1.30   -- rang: cô đặc nhất
+          WHEN 10 THEN 1.00   -- trộn gỏi: không thay đổi
+          WHEN 11 THEN 1.00   -- ăn sống: baseline
+          WHEN 12 THEN 0.85   -- hấp cách thuỷ
+          WHEN 13 THEN 0.90   -- om chua: acid giúp denature nhẹ
+          WHEN 14 THEN 1.20   -- rim: cô đặc
+          WHEN 15 THEN 0.70   -- nấu canh: leach vừa (ăn cả nước)
+          WHEN 16 THEN 0.80   -- muối chua: lên men
+          WHEN 17 THEN 1.30   -- quay: mỡ + cô đặc
+          WHEN 18 THEN 1.15   -- khía nước dừa
+          ELSE 1.00
+        END
+      -- Thành phần C: condiment high-purine penalty
+      + COALESCE((
+          SELECT MIN(0.08,
+            SUM(di_c.quantity_g * i_c.purine_score) /
+            NULLIF((SELECT SUM(di_t.quantity_g) FROM dish_ingredient di_t WHERE di_t.recipe_id = dishes.id), 0)
+          )
+          FROM dish_ingredient di_c
+          JOIN ingredients i_c ON di_c.ingredient_id = i_c.id
+          WHERE di_c.recipe_id = dishes.id
+            AND i_c.purine_score > 0.7
+            AND i_c.ingredient_type IN ('condiment','processed_food')
+        ), 0.0),
+      1.0  -- hard cap tại 1.0
+    ), 4
+  )
+  FROM dish_ingredient di2
+  JOIN ingredients i2 ON di2.ingredient_id = i2.id
+  WHERE di2.recipe_id = dishes.id AND i2.purine_score IS NOT NULL
+  LIMIT 1
 )
 WHERE EXISTS (
-    SELECT 1 FROM dish_ingredient di2
-    JOIN ingredients i2 ON di2.ingredient_id = i2.id
-    WHERE di2.recipe_id = dishes.id AND i2.purine_score IS NOT NULL
+  SELECT 1 FROM dish_ingredient di3
+  JOIN ingredients i3 ON di3.ingredient_id = i3.id
+  WHERE di3.recipe_id = dishes.id AND i3.purine_score IS NOT NULL
 );
 
 UPDATE dishes
