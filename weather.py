@@ -76,10 +76,10 @@ def _norm(v, lo, hi):
 def _adaptive_ttl(temperature, aqi, wind_speed) -> int:
     """Trả về TTL (phút). Thời tiết cực đoan → TTL ngắn hơn."""
     hour = datetime.now().hour
-    base = 30 if (6 <= hour < 22) else 60
-    if aqi and aqi > 150:            base = min(base, 15)
-    if wind_speed and wind_speed > 50: base = min(base, 15)
-    if temperature and temperature > 40: base = min(base, 20)
+    base = 15 if (6 <= hour < 22) else 30   # giảm từ 30/60 → 15/30
+    if aqi and aqi > 150:              base = min(base, 10)
+    if wind_speed and wind_speed > 50: base = min(base, 10)
+    if temperature and temperature > 40: base = min(base, 10)
     return base
 
 
