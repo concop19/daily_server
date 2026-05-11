@@ -1,0 +1,183 @@
+{
+  "version": "1.0",
+  "exported_at": "2026-05-11T06:02:46.503752+00:00",
+  "table": "ingredient_availability_matrix",
+  "count": 35,
+  "data": [
+    {
+      "distribution_reach": "nationwide",
+      "food_region": "urban_major",
+      "availability_score": 1.0
+    },
+    {
+      "distribution_reach": "nationwide",
+      "food_region": "red_river_delta",
+      "availability_score": 1.0
+    },
+    {
+      "distribution_reach": "nationwide",
+      "food_region": "northern_highland",
+      "availability_score": 1.0
+    },
+    {
+      "distribution_reach": "nationwide",
+      "food_region": "central_coast",
+      "availability_score": 1.0
+    },
+    {
+      "distribution_reach": "nationwide",
+      "food_region": "central_highland",
+      "availability_score": 1.0
+    },
+    {
+      "distribution_reach": "nationwide",
+      "food_region": "southeast",
+      "availability_score": 1.0
+    },
+    {
+      "distribution_reach": "nationwide",
+      "food_region": "mekong_delta",
+      "availability_score": 1.0
+    },
+    {
+      "distribution_reach": "regional",
+      "food_region": "urban_major",
+      "availability_score": 1.0
+    },
+    {
+      "distribution_reach": "regional",
+      "food_region": "red_river_delta",
+      "availability_score": 1.0
+    },
+    {
+      "distribution_reach": "regional",
+      "food_region": "northern_highland",
+      "availability_score": 0.6
+    },
+    {
+      "distribution_reach": "regional",
+      "food_region": "central_coast",
+      "availability_score": 0.9
+    },
+    {
+      "distribution_reach": "regional",
+      "food_region": "central_highland",
+      "availability_score": 0.7
+    },
+    {
+      "distribution_reach": "regional",
+      "food_region": "southeast",
+      "availability_score": 1.0
+    },
+    {
+      "distribution_reach": "regional",
+      "food_region": "mekong_delta",
+      "availability_score": 1.0
+    },
+    {
+      "distribution_reach": "coastal_only",
+      "food_region": "urban_major",
+      "availability_score": 0.9
+    },
+    {
+      "distribution_reach": "coastal_only",
+      "food_region": "red_river_delta",
+      "availability_score": 0.8
+    },
+    {
+      "distribution_reach": "coastal_only",
+      "food_region": "northern_highland",
+      "availability_score": 0.4
+    },
+    {
+      "distribution_reach": "coastal_only",
+      "food_region": "central_coast",
+      "availability_score": 1.0
+    },
+    {
+      "distribution_reach": "coastal_only",
+      "food_region": "central_highland",
+      "availability_score": 0.5
+    },
+    {
+      "distribution_reach": "coastal_only",
+      "food_region": "southeast",
+      "availability_score": 0.7
+    },
+    {
+      "distribution_reach": "coastal_only",
+      "food_region": "mekong_delta",
+      "availability_score": 0.8
+    },
+    {
+      "distribution_reach": "highland_only",
+      "food_region": "urban_major",
+      "availability_score": 0.7
+    },
+    {
+      "distribution_reach": "highland_only",
+      "food_region": "red_river_delta",
+      "availability_score": 0.5
+    },
+    {
+      "distribution_reach": "highland_only",
+      "food_region": "northern_highland",
+      "availability_score": 1.0
+    },
+    {
+      "distribution_reach": "highland_only",
+      "food_region": "central_coast",
+      "availability_score": 0.6
+    },
+    {
+      "distribution_reach": "highland_only",
+      "food_region": "central_highland",
+      "availability_score": 1.0
+    },
+    {
+      "distribution_reach": "highland_only",
+      "food_region": "southeast",
+      "availability_score": 0.5
+    },
+    {
+      "distribution_reach": "highland_only",
+      "food_region": "mekong_delta",
+      "availability_score": 0.4
+    },
+    {
+      "distribution_reach": "urban_only",
+      "food_region": "urban_major",
+      "availability_score": 1.0
+    },
+    {
+      "distribution_reach": "urban_only",
+      "food_region": "red_river_delta",
+      "availability_score": 0.5
+    },
+    {
+      "distribution_reach": "urban_only",
+      "food_region": "northern_highland",
+      "availability_score": 0.2
+    },
+    {
+      "distribution_reach": "urban_only",
+      "food_region": "central_coast",
+      "availability_score": 0.5
+    },
+    {
+      "distribution_reach": "urban_only",
+      "food_region": "central_highland",
+      "availability_score": 0.3
+    },
+    {
+      "distribution_reach": "urban_only",
+      "food_region": "southeast",
+      "availability_score": 0.6
+    },
+    {
+      "distribution_reach": "urban_only",
+      "food_region": "mekong_delta",
+      "availability_score": 0.4
+    }
+  ]
+}

@@ -49,8 +49,9 @@ def _build_body(dish: dict) -> str:
     return "Hôm nay thử món này đi~ 😋"
 
 
-def _cleanup_invalid_tokens(get_db_ctx, messages: list, tickets: list):
-    """Xóa device token bị DeviceNotRegistered khỏi DB."""
+def _cleanup_invalid_tokens(messages: list, tickets: list):
+    """Xóa device token bị DeviceNotRegistered khỏi data_store."""
+    import data_store as _ds
     invalid = [
         msg["to"] for msg, ticket in zip(messages, tickets)
         if ticket.get("status") == "error"
@@ -58,14 +59,16 @@ def _cleanup_invalid_tokens(get_db_ctx, messages: list, tickets: list):
     ]
     if not invalid:
         return
-    with get_db_ctx() as db:
-        for token in invalid:
-            db.execute("DELETE FROM device_tokens WHERE fcm_token = ?", (token,))
-        db.commit()
-    logger.info(f"[Push] Removed {len(invalid)} invalid tokens")
+    invalid_set = set(invalid)
+    # Upsert với fcm_token rỗng không đủ — xóa hẳn khỏi _device_tokens
+    with _ds._tokens_lock:
+        before = len(_ds._device_tokens)
+        _ds._device_tokens = [t for t in _ds._device_tokens if t.get("fcm_token") not in invalid_set]
+        _ds._persist_tokens()
+    logger.info(f"[Push] Removed {before - len(_ds._device_tokens)} invalid tokens")
 
 
-def run_notification_job(get_db_ctx, recommend_fn):
+def run_notification_job(recommend_fn):
     """Job chính — chạy mỗi 30 phút, tự check có phải giờ gửi không."""
     slot = _get_current_slot()
     if not slot:
@@ -73,11 +76,9 @@ def run_notification_job(get_db_ctx, recommend_fn):
 
     logger.info(f"[Push] Slot {slot['hour']}:{slot['minute']:02d} — {slot['label']}")
 
-    # Lấy tất cả devices
-    with get_db_ctx() as db:
-        devices = db.execute(
-            "SELECT device_id, fcm_token, lat, lon FROM device_tokens WHERE fcm_token IS NOT NULL"
-        ).fetchall()
+    # Lấy tất cả devices từ data_store
+    import data_store as _ds
+    devices = [d for d in _ds.get_all_device_tokens() if d.get("fcm_token")]
 
     if not devices:
         logger.info("[Push] No devices registered, skipping")
@@ -118,19 +119,18 @@ def run_notification_job(get_db_ctx, recommend_fn):
         tickets = send_batch_notifications(chunk)
         logger.info(f"[Push] Sent {len(chunk)} notifications")
         if tickets:
-            _cleanup_invalid_tokens(get_db_ctx, chunk, tickets)
+            _cleanup_invalid_tokens(chunk, tickets)
 
 
-def init_scheduler(get_db_ctx, recommend_fn):
+def init_scheduler(recommend_fn):
     """
     Khởi động APScheduler. Gọi 1 lần trong app.py sau khi Flask init xong.
     Args:
-        get_db_ctx: context manager trả về SQLite connection
         recommend_fn: hàm (device_dict, meal_type) -> dish dict | None
     """
     scheduler = BackgroundScheduler(timezone=str(VN_TZ))
     scheduler.add_job(
-        func=lambda: run_notification_job(get_db_ctx, recommend_fn),
+        func=lambda: run_notification_job(recommend_fn),
         trigger=CronTrigger(minute="0,30", timezone=str(VN_TZ)),
         id="meal_push_job",
         replace_existing=True,

@@ -14,8 +14,9 @@ Import vào pipeline.py (không đổi):
 
 from __future__ import annotations
 import json
-import sqlite3
 from typing import Any
+
+import data_store
 
 # ─────────────────────────────────────────────────────────────────────────────
 # Internal helpers
@@ -35,26 +36,22 @@ def _fill(template: str, **kwargs) -> str:
     return result
 
 
-def _query_templates(db: sqlite3.Connection, context_type: str, trigger_dim: str,
-                     intensity: float) -> list[dict]:
-    rows = db.execute(
-        """
-        SELECT template_text, priority
-        FROM   advice_templates
-        WHERE  context_type = ?
-          AND  trigger_dim  = ?
-          AND  intensity_min <= ?
-          AND  intensity_max >= ?
-        ORDER BY priority ASC
-        LIMIT 3
-        """,
-        (context_type, trigger_dim, intensity, intensity),
-    ).fetchall()
-    return [{"text": r[0], "priority": r[1]} for r in rows]
+def _query_templates(db=None, context_type: str = "", trigger_dim: str = "",
+                     intensity: float = 0.5) -> list[dict]:
+    """Query templates từ data_store (in-memory). db parameter giữ để tương thích."""
+    all_tmpl = data_store.get_all_advice_templates()
+    matched = [
+        t for t in all_tmpl
+        if t.get("context_type") == context_type
+        and t.get("trigger_dim") == trigger_dim
+        and (t.get("intensity_min") or 0) <= intensity <= (t.get("intensity_max") or 1)
+    ]
+    matched.sort(key=lambda x: x.get("priority", 99))
+    return [{"text": t["template_text"], "priority": t.get("priority", 99)} for t in matched[:3]]
 
 
-def _get_best_template(db: sqlite3.Connection, context_type: str, trigger_dim: str,
-                       intensity: float, fallback: str, **fill_vars) -> str:
+def _get_best_template(db=None, context_type: str = "", trigger_dim: str = "",
+                       intensity: float = 0.5, fallback: str = "", **fill_vars) -> str:
     rows = _query_templates(db, context_type, trigger_dim, intensity)
     template = rows[0]["text"] if rows else fallback
     return _fill(template, **fill_vars)
@@ -205,7 +202,7 @@ PURINE_COOKING_EFFECT: dict[str, tuple[float, str]] = {
 def _build_ingredient_source_note(
     dish: dict,
     active_reasons: set[str],
-    db: sqlite3.Connection,
+    db=None,
 ) -> str | None:
     """
     Truy nguyên tại sao món có chỉ số như vậy.
@@ -237,38 +234,33 @@ def _build_ingredient_source_note(
     if not dish_id:
         return None
 
-    PANTRY = ('Dầu & Mỡ', 'Sữa & Trứng', 'Ngũ cốc & Tinh bột', 'Gia vị')
-    pantry_ph = ",".join("?" * len(PANTRY))
+    PANTRY = frozenset(['Dầu & Mỡ', 'Sữa & Trứng', 'Ngũ cốc & Tinh bột', 'Gia vị'])
 
-    # Query top-5 nguyên liệu — lấy score nếu có cột
-    if ingr_score_col:
-        ingr_query = f"""
-            SELECT i.name, di.quantity_g, i.{ingr_score_col} AS score_val
-            FROM dish_ingredient di
-            JOIN ingredients i ON di.ingredient_id = i.id
-            WHERE di.recipe_id = ?
-              AND di.quantity_g > 0
-              AND i.category NOT IN ({pantry_ph})
-            ORDER BY di.quantity_g DESC
-            LIMIT 5
-        """
-    else:
-        ingr_query = f"""
-            SELECT i.name, di.quantity_g, NULL AS score_val
-            FROM dish_ingredient di
-            JOIN ingredients i ON di.ingredient_id = i.id
-            WHERE di.recipe_id = ?
-              AND di.quantity_g > 0
-              AND i.category NOT IN ({pantry_ph})
-            ORDER BY di.quantity_g DESC
-            LIMIT 5
-        """
+    # Load top-5 non-pantry ingredients by quantity_g from data_store
+    di_rows = data_store.get_dish_ingredient_rows(dish_id)
+    enriched = []
+    for row in di_rows:
+        if not (row.get("quantity_g") or 0) > 0:
+            continue
+        ing = data_store.get_ingredient_by_id(int(row.get("ingredient_id", 0)))
+        if not ing:
+            continue
+        cat = ing.get("ingredient_type") or ing.get("category", "")
+        if cat in PANTRY:
+            continue
+        score_val = ing.get(ingr_score_col) if ingr_score_col else None
+        enriched.append({
+            "name": ing.get("name", ""),
+            "quantity_g": float(row["quantity_g"]),
+            "score_val": float(score_val) if score_val is not None else None,
+        })
+    enriched.sort(key=lambda x: x["quantity_g"], reverse=True)
+    rows_data = enriched[:5]
 
-    rows = db.execute(ingr_query, [dish_id] + list(PANTRY)).fetchall()
-    if not rows:
+    if not rows_data:
         return None
 
-    total_g = sum(float(r[1]) for r in rows if r[1])
+    total_g = sum(r["quantity_g"] for r in rows_data)
     if total_g == 0:
         return None
 
@@ -277,7 +269,8 @@ def _build_ingredient_source_note(
     weighted_sum = 0.0
     has_scores = False
 
-    for name, qty_g, score_val in rows[:3]:
+    for row_item in rows_data[:3]:
+        name, qty_g, score_val = row_item["name"], row_item["quantity_g"], row_item["score_val"]
         pct = round(float(qty_g) / total_g * 100)
         weight = float(qty_g) / total_g
         if score_val is not None:
@@ -295,7 +288,7 @@ def _build_ingredient_source_note(
     sentence = f"{dim_display.capitalize()} của món chủ yếu đến từ: {ingr_str}."
 
     # ── Câu tổng kết weighted calculation ────────────────────────────────
-    if has_scores and len(rows) >= 2:
+    if has_scores and len(rows_data) >= 2:
         if active_dim == "disease_gout":
             # gout_risk_score = 1 - weighted_purine → an toàn bao nhiêu %
             safety_pct = round((1.0 - weighted_sum) * 100)
@@ -312,16 +305,10 @@ def _build_ingredient_source_note(
     # ── Cooking method note ───────────────────────────────────────────────
     method_name_raw = None
     if dish.get("cooking_method_id"):
-        try:
-            row = db.execute(
-                "SELECT method_name FROM cooking_methods WHERE method_id = ?",
-                (dish["cooking_method_id"],)
-            ).fetchone()
-            if row:
-                method_name_raw = row[0]
-        except Exception:
-            pass
-
+        for cm in data_store.get_all_cooking_methods():
+            if cm.get("method_id") == dish["cooking_method_id"]:
+                method_name_raw = cm.get("method_name")
+                break
     if active_dim == "disease_gout":
         # Dùng PURINE_COOKING_EFFECT thay vì DIM_MULT_COL
         if method_name_raw:
@@ -334,15 +321,16 @@ def _build_ingredient_source_note(
     else:
         # Dùng DIM_MULT_COL như cũ cho các dimension khác
         mult_col = DIM_MULT_COL.get(active_dim)
-        if mult_col and method_name_raw:
+        if mult_col and method_name_raw and dish.get("cooking_method_id"):
             try:
-                row = db.execute(
-                    f"SELECT method_name, {mult_col} FROM cooking_methods WHERE method_id = ?",
-                    (dish["cooking_method_id"],)
-                ).fetchone()
-                if row and row[1] is not None:
-                    method_display = COOKING_METHOD_LABEL.get(row[0], row[0] or "chế biến")
-                    mult_val = float(row[1])
+                cm_row = next(
+                    (cm for cm in data_store.get_all_cooking_methods()
+                     if cm.get("method_id") == dish["cooking_method_id"]),
+                    None
+                )
+                if cm_row and cm_row.get(mult_col) is not None:
+                    method_display = COOKING_METHOD_LABEL.get(cm_row["method_name"], cm_row.get("method_name", "chế biến"))
+                    mult_val = float(cm_row[mult_col])
                     if mult_val >= 0.95:
                         effect = f"giữ nguyên {round(mult_val*100)}%"
                     elif mult_val >= 0.75:
@@ -380,7 +368,7 @@ def _primary_demand(demand: dict) -> tuple[str, float]:
     return tops[0] if tops else ("hydration_need", 0.0)
 
 
-def _build_headline(dish: dict, demand: dict, db: sqlite3.Connection) -> str:
+def _build_headline(dish: dict, demand: dict, db=None) -> str:
     dish_name = dish.get("title", "Món ăn")
     tops = _dominant_demands(demand, top_k=2)
     DISEASE_HEADLINES = {
@@ -407,7 +395,7 @@ def _build_headline(dish: dict, demand: dict, db: sqlite3.Connection) -> str:
 
 
 def _build_weather_reason(demand: dict, temperature: float | None,
-                           db: sqlite3.Connection) -> str:
+                           db=None) -> str:
     WEATHER_DIMS = {
         "hydration_need", "cooling_food_need", "warming_food_need",
         "infection_risk", "cold_stress_index", "electrolyte_need",
@@ -561,26 +549,30 @@ def _build_nutrition_note(dish: dict, profile: dict) -> str | None:
 
 
 def _build_ingredient_note(boost: float, basket_ingredient_ids: set,
-                            dish_id: Any, db: sqlite3.Connection) -> str | None:
+                            dish_id: Any, db=None) -> str | None:
     if boost <= 0.05 or not basket_ingredient_ids:
         return None
-    rows = db.execute(
-        """
-        SELECT i.name
-        FROM   dish_ingredient di
-        JOIN   ingredients i ON di.ingredient_id = i.id
-        WHERE  di.recipe_id = ?
-          AND  di.is_main   = 1
-          AND  di.ingredient_id IN ({})
-        ORDER BY di.quantity_g DESC
-        LIMIT 4
-        """.format(",".join("?" * len(basket_ingredient_ids))),
-        [dish_id, *list(basket_ingredient_ids)],
-    ).fetchall()
-    if not rows:
+
+    # Lấy main ingredients của dish từ data_store, lọc theo basket_ingredient_ids
+    di_rows = data_store.get_dish_ingredient_rows(dish_id)
+    basket_set = set(basket_ingredient_ids)
+    matched_names = []
+    for row in di_rows:
+        if not row.get("is_main"):
+            continue
+        ing_id = int(row.get("ingredient_id", 0))
+        if ing_id not in basket_set:
+            continue
+        ing = data_store.get_ingredient_by_id(ing_id)
+        if ing:
+            matched_names.append(ing.get("name", ""))
+        if len(matched_names) >= 4:
+            break
+
+    if not matched_names:
         return None
-    names = [r[0] for r in rows]
-    ingredient_names = ", ".join(names)
+
+    ingredient_names = ", ".join(matched_names)
     if boost >= 0.75:
         dim_key  = "boost_high"
         fallback = f"Hầu hết nguyên liệu chính ({ingredient_names}) đều có trong giỏ hàng — tiện nấu ngay!"
@@ -590,16 +582,13 @@ def _build_ingredient_note(boost: float, basket_ingredient_ids: set,
     else:
         dim_key  = "boost_low"
         fallback = f"Một số nguyên liệu bạn đã mua ({ingredient_names}) có thể dùng cho món này."
-    rows_tpl = db.execute(
-        "SELECT template_text FROM advice_templates "
-        "WHERE context_type='ingredient' AND trigger_dim=? LIMIT 1",
-        (dim_key,)
-    ).fetchone()
-    tpl = rows_tpl[0] if rows_tpl else fallback
+
+    tmpl_rows = data_store.get_advice_templates("ingredient", dim_key, "medium")
+    tpl = tmpl_rows[0]["template_text"] if tmpl_rows else fallback
     return _fill(tpl, ingredient_names=ingredient_names)
 
 
-def _build_seasonal_note(dish: dict, season: str, db: sqlite3.Connection) -> str | None:
+def _build_seasonal_note(dish: dict, season: str, db=None) -> str | None:
     sm = _safe_json(dish.get("season_suitability"), {})
     score = sm.get(season, 0.0) if isinstance(sm, dict) else 0.0
     if score < 0.55:
@@ -614,18 +603,12 @@ def _build_seasonal_note(dish: dict, season: str, db: sqlite3.Connection) -> str
 
 
 def _generate_tags(dish: dict, demand: dict, profile: dict, boost: float,
-                   season: str, db: sqlite3.Connection) -> list[str]:
+                   season: str, db=None) -> list[str]:
     tags: list[str] = []
 
     def _lookup_tag(trigger_dim: str, intensity: float) -> str | None:
-        row = db.execute(
-            "SELECT template_text FROM advice_templates "
-            "WHERE context_type='tag' AND trigger_dim=? "
-            "  AND intensity_min<=? AND intensity_max>=? "
-            "ORDER BY priority ASC LIMIT 1",
-            (trigger_dim, intensity, intensity)
-        ).fetchone()
-        return row[0] if row else None
+        rows = data_store.get_advice_templates("tag", trigger_dim, "medium")
+        return rows[0]["template_text"] if rows else None
 
     h = demand.get("hydration_need", 0)
     if h >= 0.60:
@@ -703,7 +686,7 @@ def build_explanation(
     loc: dict,
     season: str,
     basket_ingredient_ids: set,
-    db: sqlite3.Connection,
+    db=None,
     temperature: float | None = None,
 ) -> dict:
     """
@@ -780,27 +763,16 @@ def build_explanation(
     }
 
 
-def _ensure_table(db: sqlite3.Connection):
-    db.execute("""
-        CREATE TABLE IF NOT EXISTS advice_templates (
-            id              INTEGER PRIMARY KEY AUTOINCREMENT,
-            context_type    TEXT NOT NULL,
-            trigger_dim     TEXT NOT NULL,
-            intensity_min   REAL NOT NULL DEFAULT 0.0,
-            intensity_max   REAL NOT NULL DEFAULT 1.0,
-            template_text   TEXT NOT NULL,
-            priority        INTEGER NOT NULL DEFAULT 5,
-            lang            TEXT NOT NULL DEFAULT 'vi',
-            notes           TEXT
-        )
-    """)
+def _ensure_table(db=None):
+    """No-op — advice_templates loaded from JSON via data_store."""
+    pass
 
 
 # ── Backward-compat ───────────────────────────────────────────────────────────
 def legacy_explain_list(dish: dict, demand: dict, profile: dict,
                          boost: float, loc: dict, season: str,
                          basket_ingredient_ids: set,
-                         db: sqlite3.Connection,
+                         db=None,
                          temperature: float | None = None) -> list[str]:
     exp = build_explanation(dish, demand, profile, boost, loc, season,
                             basket_ingredient_ids, db, temperature)

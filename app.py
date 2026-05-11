@@ -8,11 +8,7 @@ import json
 import math
 import os
 import random as _random
-import shutil
-import sqlite3
-from contextlib import contextmanager
 from datetime import datetime, timezone
-from pathlib import Path
 from zoneinfo import ZoneInfo
 
 import requests
@@ -23,6 +19,7 @@ from monitoring import init_monitoring
 from rate_limiter import rate_limit
 from fcm_service import send_push_notification
 from notification_scheduler import init_scheduler
+import data_store
 from weather import (
     compute_weather_vector,
     fetch_and_cache_weather,
@@ -45,15 +42,10 @@ from pipeline import (
     score_dish,
 )
 
-# ── App & DB setup ─────────────────────────────────────────────────────────────
-# FIX ID-014: Bỏ Windows path hardcode — dùng relative fallback "recipe.db"
-# kế cạnh app.py, hoạt động cả Linux lẫn Windows.
-DB_PATH = Path(os.environ.get("DB_PATH", r"D:\dream_project\daily_mate_code\daily_mate_all\database\recipe.db"))
-BUNDLED_DB = Path(__file__).parent / "recipe.db"
-if not DB_PATH.exists() and BUNDLED_DB.exists():
-    DB_PATH.parent.mkdir(parents=True, exist_ok=True)
-    shutil.copy(BUNDLED_DB, DB_PATH)
-    print(f"[INIT] Copied DB to {DB_PATH}")
+# ── App & DataStore setup ──────────────────────────────────────────────────────
+# Load tất cả JSON data vào memory khi server start
+data_store.load_all()
+print(f"[INIT] DataStore ready: {data_store.get_stats()}")
 
 SUPABASE_URL = os.environ.get("SUPABASE_URL", "")
 SUPABASE_KEY = os.environ.get("SUPABASE_SERVICE_ROLE_KEY", "")
@@ -109,47 +101,6 @@ init_monitoring(app)
 
 # ── Helpers ────────────────────────────────────────────────────────────────────
 
-def init_db():
-    """Tạo bảng device_tokens nếu chưa có (idempotent)."""
-    conn = sqlite3.connect(str(DB_PATH))
-    conn.execute("""
-        CREATE TABLE IF NOT EXISTS device_tokens (
-            id          INTEGER PRIMARY KEY AUTOINCREMENT,
-            device_id   TEXT NOT NULL,
-            fcm_token   TEXT NOT NULL,
-            platform    TEXT DEFAULT 'android',
-            lat         REAL,
-            lon         REAL,
-            province    TEXT,
-            created_at  TEXT DEFAULT (datetime('now')),
-            updated_at  TEXT DEFAULT (datetime('now')),
-            UNIQUE(device_id)
-        )
-    """)
-    conn.commit()
-    conn.close()
-
-# Tạo bảng ngay khi module load (an toàn gọi nhiều lần)
-if DB_PATH.exists():
-    init_db()
-
-
-def get_db():
-    if not DB_PATH.exists():
-        raise FileNotFoundError(f"Database not found at {DB_PATH}")
-    conn = sqlite3.connect(str(DB_PATH))
-    conn.row_factory = sqlite3.Row
-    return conn
-
-# FIX ID-006: Context manager đảm bảo db.close() luôn được gọi dù exception.
-@contextmanager
-def get_db_ctx():
-    db = get_db()
-    try:
-        yield db
-    finally:
-        db.close()
-
 def _group_by_endpoint(rows: list) -> dict:
     result = {}
     for r in rows:
@@ -187,13 +138,9 @@ def _parse_int(val, default: int, lo: int = None, hi: int = None) -> int:
 
 @app.route("/health")
 def health():
-    # FIX ID-010: Không trả db_path ra ngoài — info disclosure.
-    # Exception trả generic message, không leak stack trace.
     try:
-        with get_db_ctx() as db:
-            n_dishes = db.execute("SELECT COUNT(*) FROM dishes").fetchone()[0]
-            n_ingr   = db.execute("SELECT COUNT(*) FROM ingredients").fetchone()[0]
-        return jsonify({"status": "ok", "dishes": n_dishes, "ingredients": n_ingr})
+        stats = data_store.get_stats()
+        return jsonify({"status": "ok", "dishes": stats["dishes"], "ingredients": stats["ingredients"]})
     except Exception:
         return jsonify({"status": "error", "detail": "Internal error"}), 500
 
@@ -201,12 +148,9 @@ def health():
 @app.route("/api/weather")
 @require_auth
 def get_weather():
-    """GET /api/weather?lat=16.047&lon=108.206"""
-    # FIX ID-005: parse_float với range check [-90,90] / [-180,180]
     lat = _parse_float(request.args.get("lat"), 16.047, -90, 90)
     lon = _parse_float(request.args.get("lon"), 108.206, -180, 180)
-    with get_db_ctx() as db:
-        result = fetch_and_cache_weather(lat, lon, db)
+    result = fetch_and_cache_weather(lat, lon)
     return jsonify(result), 200
 
 
@@ -278,78 +222,72 @@ def recommend():
     page      = max(1, _parse_int(body.get("page"), 1, lo=1))
     page_size = max(1, min(20, _parse_int(body.get("page_size"), 10, lo=1, hi=20)))
 
-    # FIX ID-006: dùng get_db_ctx() để đảm bảo db.close() khi exception
-    with get_db_ctx() as db:
-        wv  = get_or_compute_weather(lat, lon, body.get("weather"), db=db)
-        loc = resolve_location(lat, lon, db)
-        pv  = compute_personal_vector(body.get("personal", {}))
+    wv  = get_or_compute_weather(lat, lon, body.get("weather"))
+    loc = resolve_location(lat, lon)
+    pv  = compute_personal_vector(body.get("personal", {}))
 
-        demand  = compute_demand(wv, pv, loc["climate_type"])
-        profile = build_constraint_profile(pv, db)
-        profile["sodium_control_need"]   = demand["sodium_control_need"]
-        profile["glycemic_control_need"] = demand["glycemic_control_need"]
-        profile["cost_preference"]       = cost_preference
+    demand  = compute_demand(wv, pv, loc["climate_type"])
+    profile = build_constraint_profile(pv)
+    profile["sodium_control_need"]   = demand["sodium_control_need"]
+    profile["glycemic_control_need"] = demand["glycemic_control_need"]
+    profile["cost_preference"]       = cost_preference
 
-        season            = get_current_season()
-        basket_for_filter = selected_ids if (not is_skipped and selected_ids) else None
-        full_pool = filter_dishes(db, cuisine_scope, selected_nation, profile, season,
-                                  dish_type_filter, basket_ingredient_ids=basket_for_filter)
+    season            = get_current_season()
+    basket_for_filter = selected_ids if (not is_skipped and selected_ids) else None
+    full_pool = filter_dishes(None, cuisine_scope, selected_nation, profile, season,
+                              dish_type_filter, basket_ingredient_ids=basket_for_filter)
 
-        # ── Basket small-pool logic ────────────────────────────────────────────
-        # Nếu basket trả về 1–9 món: KHÔNG fallback, giữ nguyên pool nhỏ,
-        # nhưng đính kèm basket_warning để mobile hiển thị disclaimer.
-        BASKET_SMALL_POOL_THRESHOLD = 10
-        basket_warning = None
+    # ── Basket small-pool logic ────────────────────────────────────────────────
+    BASKET_SMALL_POOL_THRESHOLD = 10
+    basket_warning = None
 
-        if basket_for_filter and 0 < len(full_pool) < BASKET_SMALL_POOL_THRESHOLD:
-            # Giữ pool nhỏ — KHÔNG fallback — chỉ thêm warning field
-            basket_warning = {
-                "type":  "small_basket_pool",
-                "count": len(full_pool),
-                "message": (
-                    f"Chỉ tìm thấy {len(full_pool)} món từ nguyên liệu bạn đã chọn. "
-                    "Những món này đúng với giỏ nguyên liệu của bạn, nhưng có thể chưa "
-                    "được lọc đầy đủ theo tình trạng sức khỏe cá nhân. "
-                    "Để đảm bảo an toàn, bạn nên tìm kiếm thêm trên Google hoặc "
-                    "các nền tảng y tế để xác nhận món ăn phù hợp với sức khỏe của bạn."
-                ),
-                "health_params_shown": True,
-            }
-        elif basket_for_filter and len(full_pool) == 0:
-            # Pool rỗng hoàn toàn → fallback như cũ
-            full_pool = filter_dishes(db, cuisine_scope, selected_nation, profile, season, dish_type_filter)
+    if basket_for_filter and 0 < len(full_pool) < BASKET_SMALL_POOL_THRESHOLD:
+        basket_warning = {
+            "type":  "small_basket_pool",
+            "count": len(full_pool),
+            "message": (
+                f"Chỉ tìm thấy {len(full_pool)} món từ nguyên liệu bạn đã chọn. "
+                "Những món này đúng với giỏ nguyên liệu của bạn, nhưng có thể chưa "
+                "được lọc đầy đủ theo tình trạng sức khỏe cá nhân. "
+                "Để đảm bảo an toàn, bạn nên tìm kiếm thêm trên Google hoặc "
+                "các nền tảng y tế để xác nhận món ăn phù hợp với sức khỏe của bạn."
+            ),
+            "health_params_shown": True,
+        }
+    elif basket_for_filter and len(full_pool) == 0:
+        full_pool = filter_dishes(None, cuisine_scope, selected_nation, profile, season, dish_type_filter)
 
-        dish_pool = full_pool
-        if not dish_pool:
-            dish_pool = filter_dishes(db, cuisine_scope, selected_nation, profile, season, "all")
-        if not dish_pool:
-            dish_pool = filter_dishes(db, "global", None, profile, season, "all")
+    dish_pool = full_pool
+    if not dish_pool:
+        dish_pool = filter_dishes(None, cuisine_scope, selected_nation, profile, season, "all")
+    if not dish_pool:
+        dish_pool = filter_dishes(None, "global", None, profile, season, "all")
 
-        taste       = resolve_taste_weight(pv, loc)
-        trad_compat = loc["traditional_compatibility"]
+    taste       = resolve_taste_weight(pv, loc)
+    trad_compat = loc["traditional_compatibility"]
 
-        scores, boosts = {}, {}
-        for dish in dish_pool:
-            soft  = compute_soft_mult(dish, profile, season)
-            avail = get_dish_availability(dish["id"], loc["food_region"], db)
-            boost = compute_dish_boost(dish["id"], selected_ids, boost_strategy, db)
-            scores[dish["id"]] = score_dish(
-                dish, demand, soft, taste, trad_compat, avail, boost,
-                profile=profile,
-                recent_ids_ordered=recent_dish_ids_ordered,
-            )
-            boosts[dish["id"]] = boost
-
-        _temperature = (body.get("weather", {}).get("temperature")
-                        if isinstance(body.get("weather"), dict) else None)
-        ranked, fallback_ids, total_dishes, total_pages, has_next_page = rank_and_explain(
-            scores, dish_pool, boosts, demand, profile,
-            page=page,
-            page_size=page_size,
-            loc=loc, season=season,
-            basket_ingredient_ids=selected_ids,
-            db=db, temperature=_temperature,
+    scores, boosts = {}, {}
+    for dish in dish_pool:
+        soft  = compute_soft_mult(dish, profile, season)
+        avail = get_dish_availability(dish["id"], loc["food_region"])
+        boost = compute_dish_boost(dish["id"], selected_ids, boost_strategy)
+        scores[dish["id"]] = score_dish(
+            dish, demand, soft, taste, trad_compat, avail, boost,
+            profile=profile,
+            recent_ids_ordered=recent_dish_ids_ordered,
         )
+        boosts[dish["id"]] = boost
+
+    _temperature = (body.get("weather", {}).get("temperature")
+                    if isinstance(body.get("weather"), dict) else None)
+    ranked, fallback_ids, total_dishes, total_pages, has_next_page = rank_and_explain(
+        scores, dish_pool, boosts, demand, profile,
+        page=page,
+        page_size=page_size,
+        loc=loc, season=season,
+        basket_ingredient_ids=selected_ids,
+        temperature=_temperature,
+    )
 
     elapsed = (datetime.now(timezone.utc) - t0).total_seconds()
     return jsonify({
@@ -443,35 +381,34 @@ def get_challenge():
     _random.seed(seed)
 
     # FIX ID-006: context manager
-    with get_db_ctx() as db:
-        wv      = get_or_compute_weather(lat, lon, None, db=db)
-        loc     = resolve_location(lat, lon, db)
-        pv      = compute_personal_vector({})
-        demand  = compute_demand(wv, pv, loc["climate_type"])
-        profile = build_constraint_profile(pv, db)
-        season  = get_current_season()
+    wv      = get_or_compute_weather(lat, lon, None)
+    loc     = resolve_location(lat, lon)
+    pv      = compute_personal_vector({})
+    demand  = compute_demand(wv, pv, loc["climate_type"])
+    profile = build_constraint_profile(pv)
+    season  = get_current_season()
 
-        dish_pool = filter_dishes(db, "vietnam", None, profile, season)
-        if not dish_pool:
-            dish_pool = filter_dishes(db, "global", None, profile, season)
-        if not dish_pool:
-            return jsonify({"error": "no dishes available"}), 404
+    dish_pool = filter_dishes(None, "vietnam", None, profile, season)
+    if not dish_pool:
+        dish_pool = filter_dishes(None, "global", None, profile, season)
+    if not dish_pool:
+        return jsonify({"error": "no dishes available"}), 404
 
-        trad_compat = loc["traditional_compatibility"]
-        scores = {
-            d["id"]: score_dish(
-                d, demand,
-                compute_soft_mult(d, profile, season),
-                TASTE_DEFAULTS, trad_compat,
-                get_dish_availability(d["id"], loc["food_region"], db),
-                0.0,
-                profile=profile,
-            )
-            for d in dish_pool
-        }
+    trad_compat = loc["traditional_compatibility"]
+    scores = {
+        d["id"]: score_dish(
+            d, demand,
+            compute_soft_mult(d, profile, season),
+            TASTE_DEFAULTS, trad_compat,
+            get_dish_availability(d["id"], loc["food_region"]),
+            0.0,
+            profile=profile,
+        )
+        for d in dish_pool
+    }
 
-        weights = [max(scores.get(d["id"], 0.01), 0.01) for d in dish_pool]
-        chosen  = _random.choices(dish_pool, weights=weights, k=1)[0]
+    weights = [max(scores.get(d["id"], 0.01), 0.01) for d in dish_pool]
+    chosen  = _random.choices(dish_pool, weights=weights, k=1)[0]
 
     top_dim = max(
         [("hydration", demand["hydration_need"]),
@@ -511,43 +448,44 @@ def list_dishes():
     limit  = _parse_int(request.args.get("limit"), 20, 1, 100)
     offset = _parse_int(request.args.get("offset"), 0, 0)
     nation = request.args.get("nation")
-    # FIX ID-006: context manager
-    with get_db_ctx() as db:
-        if nation:
-            rows = db.execute(
-                "SELECT id,title,nation,cook_time_minutes,is_vegan,is_vegetarian "
-                "FROM dishes WHERE nation=? LIMIT ? OFFSET ?",
-                (nation, limit, offset)
-            ).fetchall()
-        else:
-            rows = db.execute(
-                "SELECT id,title,nation,cook_time_minutes,is_vegan,is_vegetarian "
-                "FROM dishes LIMIT ? OFFSET ?",
-                (limit, offset)
-            ).fetchall()
+
+    all_dishes = data_store.get_all_dishes()
+    if nation:
+        all_dishes = [d for d in all_dishes if d.get("nation") == nation]
+
+    page_dishes = all_dishes[offset: offset + limit]
     cols = ["id", "title", "nation", "cook_time_minutes", "is_vegan", "is_vegetarian"]
-    return jsonify({"dishes": [dict(zip(cols, r)) for r in rows]})
+    return jsonify({"dishes": [{k: d.get(k) for k in cols} for d in page_dishes]})
 
 
 @app.route("/api/v1/dishes/<dish_id>", methods=["GET"])
 def dish_detail(dish_id):
-    with get_db_ctx() as db:
-        row = db.execute("SELECT * FROM dishes WHERE id=?", (dish_id,)).fetchone()
-        if not row:
-            return jsonify({"error": "not found"}), 404
-        dish = dict(row)
-        for f in ("allergen_summary", "season_suitability", "climate_suitability", "taste_profile"):
+    dish = data_store.get_dish_by_id(int(dish_id))
+    if not dish:
+        return jsonify({"error": "not found"}), 404
+
+    dish = dict(dish)  # copy để tránh mutate cache
+    for f in ("allergen_summary", "season_suitability", "climate_suitability", "taste_profile"):
+        v = dish.get(f)
+        if isinstance(v, str):
             try:
-                dish[f] = json.loads(dish[f] or "null")
+                dish[f] = json.loads(v or "null")
             except Exception:
                 pass
-        ingr = db.execute("""
-            SELECT i.id, i.name, i.name_en, i.category, di.quantity_g, di.is_main
-            FROM dish_ingredient di JOIN ingredients i ON di.ingredient_id = i.id
-            WHERE di.recipe_id = ?
-            ORDER BY di.is_main DESC, di.quantity_g DESC
-        """, (dish_id,)).fetchall()
-        dish["ingredients"] = [dict(r) for r in ingr]
+
+    ingr_rows = data_store.get_ingredients_for_dish(int(dish_id))
+    dish["ingredients"] = [
+        {
+            "id":         r.get("ingredient_id"),
+            "name":       r.get("name", ""),
+            "name_en":    r.get("ing_name_en", ""),
+            "category":   r.get("category", ""),
+            "quantity_g": r.get("quantity_g"),
+            "is_main":    r.get("is_main"),
+        }
+        for r in sorted(ingr_rows,
+                        key=lambda x: (-bool(x.get("is_main")), -(x.get("quantity_g") or 0)))
+    ]
     return jsonify(dish)
 
 
@@ -556,43 +494,47 @@ def list_ingredients():
     # FIX ID-005: parse_int
     limit    = _parse_int(request.args.get("limit"), 50, 1, 200)
     category = request.args.get("category")
-    with get_db_ctx() as db:
-        if category:
-            rows = db.execute(
-                "SELECT id,name,name_en,category,is_animal_based,distribution_reach,"
-                "seasonal_availability FROM ingredients WHERE category=? LIMIT ?",
-                (category, limit)
-            ).fetchall()
-        else:
-            rows = db.execute(
-                "SELECT id,name,name_en,category,is_animal_based,distribution_reach,"
-                "seasonal_availability FROM ingredients LIMIT ?",
-                (limit,)
-            ).fetchall()
+
+    all_ingredients = data_store.get_all_ingredients()
+    if category:
+        all_ingredients = [i for i in all_ingredients if i.get("category") == category]
+    all_ingredients = all_ingredients[:limit]
+
     result = []
-    for r in rows:
+    for i in all_ingredients:
         item = {
-            "id": r[0], "name": r[1], "name_en": r[2],
-            "category": r[3], "is_animal_based": r[4],
-            "distribution_reach": r[5],
+            "id":                 i.get("id"),
+            "name":               i.get("name", ""),
+            "name_en":            i.get("name_en", ""),
+            "category":           i.get("category", ""),
+            "is_animal_based":    i.get("is_animal_based"),
+            "distribution_reach": i.get("distribution_reach", ""),
         }
-        try:
-            item["seasonal_availability"] = json.loads(r[6] or "null")
-        except Exception:
-            item["seasonal_availability"] = None
+        sa = i.get("seasonal_availability")
+        if isinstance(sa, str):
+            try:
+                sa = json.loads(sa or "null")
+            except Exception:
+                sa = None
+        item["seasonal_availability"] = sa
         result.append(item)
     return jsonify({"ingredients": result})
 
 
 @app.route("/api/v1/locations", methods=["GET"])
 def list_locations():
-    with get_db_ctx() as db:
-        rows = db.execute(
-            "SELECT province_name, food_region, climate_type, lat_center, lon_center "
-            "FROM vn_administrative_unit ORDER BY province_name"
-        ).fetchall()
-    cols = ["province_name", "food_region", "climate_type", "lat", "lon"]
-    return jsonify({"provinces": [dict(zip(cols, r)) for r in rows]})
+    rows = data_store.get_all_provinces()
+    provinces = [
+        {
+            "province_name": r.get("province_name", ""),
+            "food_region":   r.get("food_region", ""),
+            "climate_type":  r.get("climate_type", ""),
+            "lat":           r.get("lat_center"),
+            "lon":           r.get("lon_center"),
+        }
+        for r in sorted(rows, key=lambda x: x.get("province_name", ""))
+    ]
+    return jsonify({"provinces": provinces})
 
 
 @app.route("/api/v1/weather/simulate", methods=["POST"])
@@ -616,14 +558,13 @@ def pipeline_debug():
     # FIX ID-005: parse_float an toàn
     lat = _parse_float(body.get("lat"), 16.047, -90, 90)
     lon = _parse_float(body.get("lon"), 108.206, -180, 180)
-    with get_db_ctx() as db:
-        wv   = get_or_compute_weather(lat, lon, body.get("weather"), db=db)
-        loc  = resolve_location(lat, lon, db)
-        pv   = compute_personal_vector(body.get("personal", {}))
-        demand  = compute_demand(wv, pv, loc["climate_type"])
-        profile = build_constraint_profile(pv, db)
-        season  = get_current_season()
-        dish_pool = filter_dishes(db, body.get("cuisine_scope", "vietnam"), None, profile, season)
+    wv   = get_or_compute_weather(lat, lon, body.get("weather"))
+    loc  = resolve_location(lat, lon)
+    pv   = compute_personal_vector(body.get("personal", {}))
+    demand  = compute_demand(wv, pv, loc["climate_type"])
+    profile = build_constraint_profile(pv)
+    season  = get_current_season()
+    dish_pool = filter_dishes(None, body.get("cuisine_scope", "vietnam"), None, profile, season)
     return jsonify({
         "weather_vector":    wv,
         "location_vector":   loc,
@@ -658,19 +599,13 @@ def register_device():
     lat = _parse_float(body.get("lat"), None, -90, 90)
     lon = _parse_float(body.get("lon"), None, -180, 180)
 
-    with get_db_ctx() as db:
-        db.execute("""
-            INSERT INTO device_tokens (device_id, fcm_token, lat, lon, province, updated_at)
-            VALUES (?, ?, ?, ?, ?, datetime('now'))
-            ON CONFLICT(device_id) DO UPDATE SET
-                fcm_token  = excluded.fcm_token,
-                lat        = COALESCE(excluded.lat, lat),
-                lon        = COALESCE(excluded.lon, lon),
-                province   = COALESCE(excluded.province, province),
-                updated_at = datetime('now')
-        """, (device_id, fcm_token, lat, lon, body.get("province")))
-        db.commit()
-
+    data_store.upsert_device_token(
+        device_id=device_id,
+        fcm_token=fcm_token,
+        lat=lat,
+        lon=lon,
+        province=body.get("province"),
+    )
     return jsonify({"status": "ok"}), 200
 
 
@@ -688,16 +623,18 @@ def update_device_location():
     lat = _parse_float(body.get("lat"), None, -90, 90)
     lon = _parse_float(body.get("lon"), None, -180, 180)
 
-    with get_db_ctx() as db:
-        cur = db.execute("""
-            UPDATE device_tokens
-            SET lat=?, lon=?, province=?, updated_at=datetime('now')
-            WHERE device_id=?
-        """, (lat, lon, body.get("province"), device_id))
-        db.commit()
-        if cur.rowcount == 0:
-            return jsonify({"error": "device không tồn tại"}), 404
+    # Kiểm tra device tồn tại trước khi update
+    existing = [t for t in data_store.get_all_device_tokens() if t.get("device_id") == device_id]
+    if not existing:
+        return jsonify({"error": "device không tồn tại"}), 404
 
+    data_store.upsert_device_token(
+        device_id=device_id,
+        fcm_token=existing[0].get("fcm_token", ""),
+        lat=lat,
+        lon=lon,
+        province=body.get("province"),
+    )
     return jsonify({"status": "ok"}), 200
 
 
@@ -711,13 +648,10 @@ def test_push():
     fcm_token = body.get("fcm_token", "").strip()
 
     if not fcm_token and body.get("device_id"):
-        with get_db_ctx() as db:
-            row = db.execute(
-                "SELECT fcm_token FROM device_tokens WHERE device_id=?",
-                (body["device_id"],)
-            ).fetchone()
-            if row:
-                fcm_token = row["fcm_token"]
+        tokens = data_store.get_all_device_tokens()
+        match  = next((t for t in tokens if t.get("device_id") == body["device_id"]), None)
+        if match:
+            fcm_token = match.get("fcm_token", "")
 
     if not fcm_token:
         return jsonify({"error": "fcm_token hoặc device_id hợp lệ là bắt buộc"}), 400
@@ -748,46 +682,44 @@ def _recommend_for_device(device: dict, meal_type: str):
         lat = float(device.get("lat") or 16.047)
         lon = float(device.get("lon") or 108.206)
 
-        with get_db_ctx() as db:
-            wv  = get_or_compute_weather(lat, lon, None, db=db)
-            loc = resolve_location(lat, lon, db)
-            pv  = compute_personal_vector({})
+        wv  = get_or_compute_weather(lat, lon, None)
+        loc = resolve_location(lat, lon)
+        pv  = compute_personal_vector({})
 
-            demand  = compute_demand(wv, pv, loc["climate_type"])
-            profile = build_constraint_profile(pv, db)
-            profile["sodium_control_need"]   = demand["sodium_control_need"]
-            profile["glycemic_control_need"] = demand["glycemic_control_need"]
-            profile["cost_preference"]       = 2
+        demand  = compute_demand(wv, pv, loc["climate_type"])
+        profile = build_constraint_profile(pv)
+        profile["sodium_control_need"]   = demand["sodium_control_need"]
+        profile["glycemic_control_need"] = demand["glycemic_control_need"]
+        profile["cost_preference"]       = 2
 
-            season    = get_current_season()
-            dish_pool = filter_dishes(db, "vietnam", None, profile, season, "all")
-            if not dish_pool:
-                dish_pool = filter_dishes(db, "global", None, profile, season, "all")
-            if not dish_pool:
-                return None
+        season    = get_current_season()
+        dish_pool = filter_dishes(None, "vietnam", None, profile, season, "all")
+        if not dish_pool:
+            dish_pool = filter_dishes(None, "global", None, profile, season, "all")
+        if not dish_pool:
+            return None
 
-            taste       = resolve_taste_weight(pv, loc)
-            trad_compat = loc["traditional_compatibility"]
+        taste       = resolve_taste_weight(pv, loc)
+        trad_compat = loc["traditional_compatibility"]
 
-            scores = {
-                d["id"]: score_dish(
-                    d, demand,
-                    compute_soft_mult(d, profile, season),
-                    taste, trad_compat,
-                    get_dish_availability(d["id"], loc["food_region"], db),
-                    0.0,
-                    profile=profile,
-                )
-                for d in dish_pool
-            }
-
-            ranked, _, _, _, _ = rank_and_explain(
-                scores, dish_pool, {d["id"]: 0.0 for d in dish_pool},
-                demand, profile,
-                loc=loc, season=season,
-                basket_ingredient_ids=set(),
-                db=db,
+        scores = {
+            d["id"]: score_dish(
+                d, demand,
+                compute_soft_mult(d, profile, season),
+                taste, trad_compat,
+                get_dish_availability(d["id"], loc["food_region"]),
+                0.0,
+                profile=profile,
             )
+            for d in dish_pool
+        }
+
+        ranked, _, _, _, _ = rank_and_explain(
+            scores, dish_pool, {d["id"]: 0.0 for d in dish_pool},
+            demand, profile,
+            loc=loc, season=season,
+            basket_ingredient_ids=set(),
+        )
 
         return ranked[0] if ranked else None
 
@@ -799,15 +731,16 @@ def _recommend_for_device(device: dict, meal_type: str):
 
 # ── Entry point ────────────────────────────────────────────────────────────────
 if __name__ == "__main__":
+    stats = data_store.get_stats()
     print(f"\n{'=' * 60}")
     print("  Daily Mate — Demo Recommendation Server")
-    print(f"  DB: {DB_PATH}")
+    print(f"  DataStore: {stats['dishes']} dishes, {stats['ingredients']} ingredients")
     print(f"  Running at: http://localhost:5001")
     print(f"{'=' * 60}\n")
 
     # Khởi động push notification scheduler nếu được bật
     if os.environ.get("ENABLE_PUSH_SCHEDULER", "false").lower() == "true":
-        init_scheduler(get_db_ctx, _recommend_for_device)
+        init_scheduler(_recommend_for_device)
         print("[Push] Scheduler started — 8 notification slots/day active")
 
     app.run(debug=True, port=5001, host="0.0.0.0")

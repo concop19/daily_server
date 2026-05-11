@@ -1,10 +1,13 @@
 """
 pipeline.py — Logic gợi ý món: location, personal, demand, constraint, filter, score, rank.
+Refactored: SQLite → data_store (JSON-based in-memory layer).
+db parameter được giữ lại trên signature để tương thích ngược nhưng không còn dùng.
 """
 
 import json
 import math
 
+import data_store
 from weather import compute_weather_vector, get_current_season
 
 try:
@@ -89,13 +92,8 @@ def _haversine(lat1, lon1, lat2, lon2) -> float:
     return R * 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a))
 
 
-def resolve_location(lat: float, lon: float, db) -> dict:
-    rows = db.execute("""
-        SELECT province_name, food_region, lat_center, lon_center,
-               climate_type, regional_flavor, cuisine_culture
-        FROM vn_administrative_unit
-        WHERE lat_center IS NOT NULL AND lon_center IS NOT NULL
-    """).fetchall()
+def resolve_location(lat: float, lon: float, db=None) -> dict:
+    rows = data_store.get_all_provinces()
 
     closest, min_dist = None, float("inf")
     for r in rows:
@@ -119,18 +117,24 @@ def resolve_location(lat: float, lon: float, db) -> dict:
     }
 
 
-def get_dish_availability(recipe_id: int, food_region: str, db) -> float:
-    rows = db.execute("""
-        SELECT i.distribution_reach, di.quantity_g
-        FROM dish_ingredient di
-        JOIN ingredients i ON di.ingredient_id = i.id
-        WHERE di.recipe_id = ?
-          AND di.quantity_g > 0
-          AND i.distribution_reach IS NOT NULL
-          AND i.category NOT IN (
-              'Dầu & Mỡ', 'Sữa & Trứng', 'Ngũ cốc & Tinh bột', 'Gia vị'
-          )
-    """, (recipe_id,)).fetchall()
+def get_dish_availability(recipe_id: int, food_region: str, db=None) -> float:
+    PANTRY = frozenset(['Dầu & Mỡ', 'Sữa & Trứng', 'Ngũ cốc & Tinh bột', 'Gia vị'])
+    di_rows = data_store.get_dish_ingredient_rows(recipe_id)
+    # filter: qty > 0 and not pantry and has distribution_reach
+    rows = []
+    for row in di_rows:
+        if not (row.get("quantity_g") or 0) > 0:
+            continue
+        ing = data_store.get_ingredient_by_id(int(row.get("ingredient_id") or 0))
+        if not ing:
+            continue
+        cat = ing.get("ingredient_type") or ing.get("category", "")
+        if cat in PANTRY:
+            continue
+        dr = ing.get("distribution_reach")
+        if not dr:
+            continue
+        rows.append({"quantity_g": row["quantity_g"], "distribution_reach": dr})
 
     if not rows:
         return 1.0
@@ -140,12 +144,8 @@ def get_dish_availability(recipe_id: int, food_region: str, db) -> float:
 
     weighted = 0.0
     for r in rows:
-        sr = db.execute(
-            "SELECT availability_score FROM ingredient_availability_matrix "
-            "WHERE distribution_reach=? AND food_region=?",
-            (r["distribution_reach"], food_region)
-        ).fetchone()
-        score = sr["availability_score"] if sr else 0.8
+        avail_row = data_store.get_availability(r["distribution_reach"], food_region)
+        score = avail_row["availability_score"] if avail_row else 0.8
         weighted += score * r["quantity_g"]
     return round(weighted / total, 4)
 
@@ -236,7 +236,7 @@ def compute_demand(wv: dict, pv: dict, climate_type: str) -> dict:
 
 
 # ── STEP 05 — Constraint profile ─────────────────────────────────────────────
-def resolve_allergy_ingredient_ids(allergies: list, db) -> set[int]:
+def resolve_allergy_ingredient_ids(allergies: list, db=None) -> set[int]:
     if not allergies:
         return set()
     explicit_ids = {int(x) for x in allergies
@@ -247,19 +247,17 @@ def resolve_allergy_ingredient_ids(allergies: list, db) -> set[int]:
     for group in category_groups:
         blocked_categories.update(ALLERGY_CATEGORY_MAP.get(group.lower().strip(), set()))
 
-    db_ids = set()
+    db_ids: set[int] = set()
     if blocked_categories:
-        placeholders = ",".join("?" * len(blocked_categories))
-        rows = db.execute(
-            f"SELECT id FROM ingredients WHERE category IN ({placeholders})",
-            list(blocked_categories)
-        ).fetchall()
-        db_ids = {r[0] for r in rows}
+        for ing in data_store.get_all_ingredients():
+            cat = ing.get("ingredient_type") or ing.get("category", "")
+            if cat in blocked_categories:
+                db_ids.add(int(ing["id"]))
 
     return explicit_ids | db_ids
 
 
-def build_constraint_profile(pv: dict, db) -> dict:
+def build_constraint_profile(pv: dict, db=None) -> dict:
     df  = pv["disease_flags"]
     raw_allergies = list(pv.get("allergies", []))
     allergy_categories = [x for x in raw_allergies if isinstance(x, str) and not x.isdigit()]
@@ -283,105 +281,78 @@ def build_constraint_profile(pv: dict, db) -> dict:
 
 
 # ── STEP 06 — Filter ─────────────────────────────────────────────────────────
-def _get_dish_ingredient_ids(recipe_ids: list, db) -> dict[int, set[int]]:
+def _get_dish_ingredient_ids(recipe_ids: list, db=None) -> dict[int, set[int]]:
+    """Batch lookup: {dish_id: {ingredient_id, ...}} từ data_store."""
     if not recipe_ids:
         return {}
-    placeholders = ",".join("?" * len(recipe_ids))
-    rows = db.execute(
-        f"SELECT recipe_id, ingredient_id FROM dish_ingredient "
-        f"WHERE recipe_id IN ({placeholders})",
-        recipe_ids
-    ).fetchall()
-    result: dict[int, set[int]] = {}
-    for recipe_id, ing_id in rows:
-        result.setdefault(recipe_id, set()).add(ing_id)
-    return result
+    result = data_store.get_dish_ingredient_ids(recipe_ids)
+    # convert lists to sets
+    return {k: set(v) for k, v in result.items()}
 
 
-def filter_dishes(db, cuisine_scope: str, selected_nation: str | None,
-                  profile: dict, current_season: str,
+def filter_dishes(db=None, cuisine_scope: str = "vietnam",
+                  selected_nation: str | None = None,
+                  profile: dict = None, current_season: str = "",
                   dish_type_filter: str = "all",
                   basket_ingredient_ids: set | None = None) -> list[dict]:
+    if profile is None:
+        profile = {}
     max_time    = profile.get("max_prep_time", 60)
     hard_ceiling = None if max_time >= 999 else max_time + 10
 
-    if cuisine_scope == "vietnam":
-        nation_sql, nation_params = "AND LOWER(d.nation) = 'vietnam'", {}
-    elif cuisine_scope == "specific_nation" and selected_nation:
-        nation_sql, nation_params = "AND d.nation = :nation", {"nation": selected_nation}
-    else:
-        nation_sql, nation_params = "", {}
+    PANTRY = frozenset(['Dầu & Mỡ', 'Sữa & Trứng', 'Ngũ cốc & Tinh bột', 'Gia vị'])
+    SOUP_METHODS = {'nau_canh', 'nau_soup'}
 
-    if dish_type_filter == "soup":
-        type_sql = "AND (cm.method_name = 'nau_canh' OR cm.method_name = 'nau_soup')"
-    elif dish_type_filter == "main_dish":
-        type_sql = "AND (cm.method_name IS NULL OR cm.method_name NOT IN ('nau_canh','nau_soup'))"
-    else:
-        type_sql = ""
+    # Build cooking_method_id → method_name lookup
+    method_name_map: dict[int, str] = {}
+    for cm in data_store.get_all_cooking_methods():
+        mid = cm.get("method_id")
+        if mid is not None:
+            method_name_map[int(mid)] = cm.get("method_name", "")
 
-    # ── Basket pre-filter: chỉ lấy món có ít nhất 1 ingredient trong basket ──
-    # Dùng EXISTS subquery để filter tại DB, tránh load toàn bộ 5000 món về RAM
+    # ── Load all dishes from data_store ────────────────────────────────────
+    all_dishes = data_store.get_all_dishes()
+
+    # ── Pre-filter basket: chỉ giữ món có ít nhất 1 non-pantry ingredient trong basket ──
     if basket_ingredient_ids:
-        basket_list = list(basket_ingredient_ids)
-        basket_ph   = ",".join("?" * len(basket_list))
-        basket_sql  = f"""
-            AND EXISTS (
-                SELECT 1 FROM dish_ingredient di
-                JOIN ingredients i ON di.ingredient_id = i.id
-                WHERE di.recipe_id = d.id
-                  AND di.ingredient_id IN ({basket_ph})
-                  AND di.quantity_g > 0
-                  AND i.category NOT IN (
-                      'Dầu & Mỡ', 'Sữa & Trứng', 'Ngũ cốc & Tinh bột', 'Gia vị'
-                  )
-            )"""
+        basket_set = set(basket_ingredient_ids)
+        basket_filtered = []
+        for dish in all_dishes:
+            did = int(dish["id"])
+            di_rows = data_store.get_dish_ingredient_rows(did)
+            has_match = False
+            for row in di_rows:
+                if not (row.get("quantity_g") or 0) > 0:
+                    continue
+                if int(row.get("ingredient_id", 0)) not in basket_set:
+                    continue
+                ing = data_store.get_ingredient_by_id(int(row["ingredient_id"]))
+                if ing and (ing.get("ingredient_type") or ing.get("category", "")) not in PANTRY:
+                    has_match = True
+                    break
+            if has_match:
+                basket_filtered.append(dish)
+        dishes = basket_filtered
     else:
-        basket_sql  = ""
-        basket_list = []
+        dishes = all_dishes
 
-    sql = f"""
-        SELECT d.id, d.title, d.nation, d.cook_time_minutes, d.cooking_method_id,
-               d.image_url, d.url, d.is_vegan, d.is_vegetarian, d.allergen_summary,
-               d.taste_profile, d.season_suitability, d.total_weight_g,
-               d.adj_hydration_score,   d.dish_hydration_score,
-               d.adj_thermogenic_score, d.dish_thermogenic_score,
-               d.adj_warming_score,     d.dish_warming_score,
-               d.adj_cooling_score,     d.dish_cooling_score,
-               d.adj_satiety_score,     d.dish_satiety_score,
-               d.adj_energy_total,      d.dish_energy_total,
-               d.adj_sodium_total,      d.dish_sodium_total,
-               d.adj_glycemic_load,     d.dish_glycemic_load,
-               d.sodium_safety_score,
-               d.gl_safety_score,
-               d.gout_risk_score,
-               d.cost_level
-        FROM dishes d
-        LEFT JOIN cooking_methods cm ON d.cooking_method_id = cm.method_id
-        WHERE 1=1 {nation_sql} {type_sql} {basket_sql} LIMIT 5000
-    """
+    # ── Nation / cuisine scope filter ──────────────────────────────────────
+    if cuisine_scope == "vietnam":
+        dishes = [d for d in dishes if (d.get("nation") or "").lower() == "vietnam"]
+    elif cuisine_scope == "specific_nation" and selected_nation:
+        dishes = [d for d in dishes if d.get("nation") == selected_nation]
+    # else: global — keep all
 
-    # nation_params là dict (named placeholder) → convert sang list để concat basket_list
-    nation_param_list = list(nation_params.values()) if isinstance(nation_params, dict) else list(nation_params)
-    rows = db.execute(sql, nation_param_list + basket_list).fetchall()
-    cols = [
-        "id", "title", "nation", "cook_time_minutes", "cooking_method_id", "image_url", "url",
-        "is_vegan", "is_vegetarian", "allergen_summary", "taste_profile",
-        "season_suitability", "total_weight_g",
-        "adj_hydration_score",   "dish_hydration_score",
-        "adj_thermogenic_score", "dish_thermogenic_score",
-        "adj_warming_score",     "dish_warming_score",
-        "adj_cooling_score",     "dish_cooling_score",
-        "adj_satiety_score",     "dish_satiety_score",
-        "adj_energy_total",      "dish_energy_total",
-        "adj_sodium_total",      "dish_sodium_total",
-        "adj_glycemic_load",     "dish_glycemic_load",
-        "sodium_safety_score",
-        "gl_safety_score",
-        "gout_risk_score",
-        "cost_level",
-    ]
-    dishes = [dict(zip(cols, r)) for r in rows]
-    dish_ingredient_map = _get_dish_ingredient_ids([d["id"] for d in dishes], db)
+    # ── Dish type filter (soup / main_dish) ────────────────────────────────
+    if dish_type_filter == "soup":
+        dishes = [d for d in dishes
+                  if method_name_map.get(d.get("cooking_method_id")) in SOUP_METHODS]
+    elif dish_type_filter == "main_dish":
+        dishes = [d for d in dishes
+                  if method_name_map.get(d.get("cooking_method_id")) not in SOUP_METHODS]
+
+    # ── Batch load ingredient ids for allergy check ─────────────────────────
+    dish_ingredient_map = _get_dish_ingredient_ids([d["id"] for d in dishes])
 
     allergy_ing_ids = profile.get("allergy_ingredient_ids", set())
     allergy_groups  = set(profile.get("allergy_blacklist", []))
@@ -513,22 +484,19 @@ def compute_soft_mult(dish: dict, profile: dict, current_season: str) -> float:
 
 BASKET_COVERAGE_THRESHOLD = 0.68
 
-def compute_dish_boost(recipe_id: int, selected_set: set, boost_strategy: str, db) -> float:
+def compute_dish_boost(recipe_id: int, selected_set: set, boost_strategy: str, db=None) -> float:
     if not selected_set or boost_strategy == "none":
         return 0.0
 
-    rows = db.execute("""
-        SELECT di.ingredient_id
-        FROM dish_ingredient di
-        JOIN ingredients i ON di.ingredient_id = i.id
-        WHERE di.recipe_id = ?
-          AND di.quantity_g > 0
-          AND i.category NOT IN (
-              'Dầu & Mỡ', 'Sữa & Trứng', 'Ngũ cốc & Tinh bột', 'Gia vị'
-          )
-    """, (recipe_id,)).fetchall()
-
-    non_pantry_ids = {r[0] for r in rows if r[0]}
+    PANTRY = frozenset(['Dầu & Mỡ', 'Sữa & Trứng', 'Ngũ cốc & Tinh bột', 'Gia vị'])
+    di_rows = data_store.get_dish_ingredient_rows(recipe_id)
+    non_pantry_ids: set[int] = set()
+    for row in di_rows:
+        if not (row.get("quantity_g") or 0) > 0:
+            continue
+        ing = data_store.get_ingredient_by_id(int(row.get("ingredient_id", 0)))
+        if ing and (ing.get("ingredient_type") or ing.get("category", "")) not in PANTRY:
+            non_pantry_ids.add(int(row["ingredient_id"]))
     if not non_pantry_ids:
         return 0.0
 
@@ -731,12 +699,12 @@ def rank_and_explain(scores: dict, dish_pool: list, boosts: dict, demand: dict,
         dish  = dish_map.get(did, {})
         boost = boosts.get(did, 0.0)
 
-        if db is not None and _HAS_ADVICE_ENGINE:
+        if _HAS_ADVICE_ENGINE:
             try:
                 explanation_obj = build_explanation(
                     dish=dish, demand=demand, profile=profile, boost=boost,
                     loc=_loc, season=_season, basket_ingredient_ids=_basket,
-                    db=db, temperature=temperature,
+                    temperature=temperature,
                 )
             except Exception:
                 explanation_obj = _fallback_explanation(dish)

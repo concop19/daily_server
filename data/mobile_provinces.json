@@ -1,0 +1,1112 @@
+{
+  "version": "1.0",
+  "exported_at": "2026-05-11T06:02:46.501290+00:00",
+  "count": 65,
+  "data": [
+    {
+      "id": 1,
+      "name": "Hà Nội",
+      "food_region": "urban_major",
+      "climate_type": "subtropical",
+      "cuisine_culture": "northern",
+      "taste": {
+        "sweet": 0.2,
+        "sour": 0.2,
+        "salty": 0.3,
+        "bitter": 0.1,
+        "umami": 0.6,
+        "spicy": 0.1,
+        "astringent": 0.1
+      },
+      "regional_flavor_label": "Fusion, đa dạng"
+    },
+    {
+      "id": 2,
+      "name": "Hồ Chí Minh",
+      "food_region": "urban_major",
+      "climate_type": "tropical",
+      "cuisine_culture": "southern",
+      "taste": {
+        "sweet": 0.6,
+        "sour": 0.3,
+        "salty": 0.3,
+        "bitter": 0.0,
+        "umami": 0.5,
+        "spicy": 0.2,
+        "astringent": 0.0
+      },
+      "regional_flavor_label": "Fusion, đa dạng"
+    },
+    {
+      "id": 3,
+      "name": "Đà Nẵng",
+      "food_region": "urban_major",
+      "climate_type": "tropical_monsoon",
+      "cuisine_culture": "central",
+      "taste": {
+        "sweet": 0.1,
+        "sour": 0.2,
+        "salty": 0.6,
+        "bitter": 0.2,
+        "umami": 0.6,
+        "spicy": 0.8,
+        "astringent": 0.2
+      },
+      "regional_flavor_label": "Fusion, đa dạng"
+    },
+    {
+      "id": 4,
+      "name": "Cần Thơ",
+      "food_region": "urban_major",
+      "climate_type": "tropical",
+      "cuisine_culture": "southern",
+      "taste": {
+        "sweet": 0.6,
+        "sour": 0.3,
+        "salty": 0.3,
+        "bitter": 0.0,
+        "umami": 0.5,
+        "spicy": 0.2,
+        "astringent": 0.0
+      },
+      "regional_flavor_label": "Fusion, đa dạng"
+    },
+    {
+      "id": 5,
+      "name": "Đà Lạt",
+      "food_region": "urban_major",
+      "climate_type": "highland",
+      "cuisine_culture": "highland",
+      "taste": {
+        "sweet": 0.1,
+        "sour": 0.1,
+        "salty": 0.4,
+        "bitter": 0.4,
+        "umami": 0.3,
+        "spicy": 0.4,
+        "astringent": 0.3
+      },
+      "regional_flavor_label": "Fusion, đa dạng"
+    },
+    {
+      "id": 10,
+      "name": "Hải Phòng",
+      "food_region": "red_river_delta",
+      "climate_type": "subtropical",
+      "cuisine_culture": "northern",
+      "taste": {
+        "sweet": 0.2,
+        "sour": 0.2,
+        "salty": 0.3,
+        "bitter": 0.1,
+        "umami": 0.6,
+        "spicy": 0.1,
+        "astringent": 0.1
+      },
+      "regional_flavor_label": "Vừa phải, thanh đạm"
+    },
+    {
+      "id": 11,
+      "name": "Hải Dương",
+      "food_region": "red_river_delta",
+      "climate_type": "subtropical",
+      "cuisine_culture": "northern",
+      "taste": {
+        "sweet": 0.2,
+        "sour": 0.2,
+        "salty": 0.3,
+        "bitter": 0.1,
+        "umami": 0.6,
+        "spicy": 0.1,
+        "astringent": 0.1
+      },
+      "regional_flavor_label": "Vừa phải, thanh đạm"
+    },
+    {
+      "id": 12,
+      "name": "Hưng Yên",
+      "food_region": "red_river_delta",
+      "climate_type": "subtropical",
+      "cuisine_culture": "northern",
+      "taste": {
+        "sweet": 0.2,
+        "sour": 0.2,
+        "salty": 0.3,
+        "bitter": 0.1,
+        "umami": 0.6,
+        "spicy": 0.1,
+        "astringent": 0.1
+      },
+      "regional_flavor_label": "Vừa phải, thanh đạm"
+    },
+    {
+      "id": 13,
+      "name": "Thái Bình",
+      "food_region": "red_river_delta",
+      "climate_type": "subtropical",
+      "cuisine_culture": "northern",
+      "taste": {
+        "sweet": 0.2,
+        "sour": 0.2,
+        "salty": 0.3,
+        "bitter": 0.1,
+        "umami": 0.6,
+        "spicy": 0.1,
+        "astringent": 0.1
+      },
+      "regional_flavor_label": "Vừa phải, thanh đạm"
+    },
+    {
+      "id": 14,
+      "name": "Nam Định",
+      "food_region": "red_river_delta",
+      "climate_type": "subtropical",
+      "cuisine_culture": "northern",
+      "taste": {
+        "sweet": 0.2,
+        "sour": 0.2,
+        "salty": 0.3,
+        "bitter": 0.1,
+        "umami": 0.6,
+        "spicy": 0.1,
+        "astringent": 0.1
+      },
+      "regional_flavor_label": "Vừa phải, thanh đạm"
+    },
+    {
+      "id": 15,
+      "name": "Ninh Bình",
+      "food_region": "red_river_delta",
+      "climate_type": "subtropical",
+      "cuisine_culture": "northern",
+      "taste": {
+        "sweet": 0.2,
+        "sour": 0.2,
+        "salty": 0.3,
+        "bitter": 0.1,
+        "umami": 0.6,
+        "spicy": 0.1,
+        "astringent": 0.1
+      },
+      "regional_flavor_label": "Vừa phải, thanh đạm"
+    },
+    {
+      "id": 16,
+      "name": "Hà Nam",
+      "food_region": "red_river_delta",
+      "climate_type": "subtropical",
+      "cuisine_culture": "northern",
+      "taste": {
+        "sweet": 0.2,
+        "sour": 0.2,
+        "salty": 0.3,
+        "bitter": 0.1,
+        "umami": 0.6,
+        "spicy": 0.1,
+        "astringent": 0.1
+      },
+      "regional_flavor_label": "Vừa phải, thanh đạm"
+    },
+    {
+      "id": 17,
+      "name": "Bắc Ninh",
+      "food_region": "red_river_delta",
+      "climate_type": "subtropical",
+      "cuisine_culture": "northern",
+      "taste": {
+        "sweet": 0.2,
+        "sour": 0.2,
+        "salty": 0.3,
+        "bitter": 0.1,
+        "umami": 0.6,
+        "spicy": 0.1,
+        "astringent": 0.1
+      },
+      "regional_flavor_label": "Vừa phải, thanh đạm"
+    },
+    {
+      "id": 18,
+      "name": "Bắc Giang",
+      "food_region": "red_river_delta",
+      "climate_type": "subtropical",
+      "cuisine_culture": "northern",
+      "taste": {
+        "sweet": 0.2,
+        "sour": 0.2,
+        "salty": 0.3,
+        "bitter": 0.1,
+        "umami": 0.6,
+        "spicy": 0.1,
+        "astringent": 0.1
+      },
+      "regional_flavor_label": "Vừa phải, thanh đạm"
+    },
+    {
+      "id": 19,
+      "name": "Vĩnh Phúc",
+      "food_region": "red_river_delta",
+      "climate_type": "subtropical",
+      "cuisine_culture": "northern",
+      "taste": {
+        "sweet": 0.2,
+        "sour": 0.2,
+        "salty": 0.3,
+        "bitter": 0.1,
+        "umami": 0.6,
+        "spicy": 0.1,
+        "astringent": 0.1
+      },
+      "regional_flavor_label": "Vừa phải, thanh đạm"
+    },
+    {
+      "id": 20,
+      "name": "Hà Giang",
+      "food_region": "northern_highland",
+      "climate_type": "highland",
+      "cuisine_culture": "highland",
+      "taste": {
+        "sweet": 0.1,
+        "sour": 0.1,
+        "salty": 0.4,
+        "bitter": 0.4,
+        "umami": 0.3,
+        "spicy": 0.4,
+        "astringent": 0.3
+      },
+      "regional_flavor_label": "Đậm, chua, mắm"
+    },
+    {
+      "id": 21,
+      "name": "Cao Bằng",
+      "food_region": "northern_highland",
+      "climate_type": "highland",
+      "cuisine_culture": "highland",
+      "taste": {
+        "sweet": 0.1,
+        "sour": 0.1,
+        "salty": 0.4,
+        "bitter": 0.4,
+        "umami": 0.3,
+        "spicy": 0.4,
+        "astringent": 0.3
+      },
+      "regional_flavor_label": "Đậm, chua, mắm"
+    },
+    {
+      "id": 22,
+      "name": "Bắc Kạn",
+      "food_region": "northern_highland",
+      "climate_type": "highland",
+      "cuisine_culture": "highland",
+      "taste": {
+        "sweet": 0.1,
+        "sour": 0.1,
+        "salty": 0.4,
+        "bitter": 0.4,
+        "umami": 0.3,
+        "spicy": 0.4,
+        "astringent": 0.3
+      },
+      "regional_flavor_label": "Đậm, chua, mắm"
+    },
+    {
+      "id": 23,
+      "name": "Lạng Sơn",
+      "food_region": "northern_highland",
+      "climate_type": "highland",
+      "cuisine_culture": "highland",
+      "taste": {
+        "sweet": 0.1,
+        "sour": 0.1,
+        "salty": 0.4,
+        "bitter": 0.4,
+        "umami": 0.3,
+        "spicy": 0.4,
+        "astringent": 0.3
+      },
+      "regional_flavor_label": "Đậm, chua, mắm"
+    },
+    {
+      "id": 24,
+      "name": "Tuyên Quang",
+      "food_region": "northern_highland",
+      "climate_type": "highland",
+      "cuisine_culture": "highland",
+      "taste": {
+        "sweet": 0.1,
+        "sour": 0.1,
+        "salty": 0.4,
+        "bitter": 0.4,
+        "umami": 0.3,
+        "spicy": 0.4,
+        "astringent": 0.3
+      },
+      "regional_flavor_label": "Đậm, chua, mắm"
+    },
+    {
+      "id": 25,
+      "name": "Lào Cai",
+      "food_region": "northern_highland",
+      "climate_type": "highland",
+      "cuisine_culture": "highland",
+      "taste": {
+        "sweet": 0.1,
+        "sour": 0.1,
+        "salty": 0.4,
+        "bitter": 0.4,
+        "umami": 0.3,
+        "spicy": 0.4,
+        "astringent": 0.3
+      },
+      "regional_flavor_label": "Đậm, chua, mắm"
+    },
+    {
+      "id": 26,
+      "name": "Yên Bái",
+      "food_region": "northern_highland",
+      "climate_type": "highland",
+      "cuisine_culture": "highland",
+      "taste": {
+        "sweet": 0.1,
+        "sour": 0.1,
+        "salty": 0.4,
+        "bitter": 0.4,
+        "umami": 0.3,
+        "spicy": 0.4,
+        "astringent": 0.3
+      },
+      "regional_flavor_label": "Đậm, chua, mắm"
+    },
+    {
+      "id": 27,
+      "name": "Thái Nguyên",
+      "food_region": "northern_highland",
+      "climate_type": "highland",
+      "cuisine_culture": "highland",
+      "taste": {
+        "sweet": 0.1,
+        "sour": 0.1,
+        "salty": 0.4,
+        "bitter": 0.4,
+        "umami": 0.3,
+        "spicy": 0.4,
+        "astringent": 0.3
+      },
+      "regional_flavor_label": "Đậm, chua, mắm"
+    },
+    {
+      "id": 28,
+      "name": "Phú Thọ",
+      "food_region": "northern_highland",
+      "climate_type": "highland",
+      "cuisine_culture": "highland",
+      "taste": {
+        "sweet": 0.1,
+        "sour": 0.1,
+        "salty": 0.4,
+        "bitter": 0.4,
+        "umami": 0.3,
+        "spicy": 0.4,
+        "astringent": 0.3
+      },
+      "regional_flavor_label": "Đậm, chua, mắm"
+    },
+    {
+      "id": 29,
+      "name": "Sơn La",
+      "food_region": "northern_highland",
+      "climate_type": "highland",
+      "cuisine_culture": "highland",
+      "taste": {
+        "sweet": 0.1,
+        "sour": 0.1,
+        "salty": 0.4,
+        "bitter": 0.4,
+        "umami": 0.3,
+        "spicy": 0.4,
+        "astringent": 0.3
+      },
+      "regional_flavor_label": "Đậm, chua, mắm"
+    },
+    {
+      "id": 30,
+      "name": "Điện Biên",
+      "food_region": "northern_highland",
+      "climate_type": "highland",
+      "cuisine_culture": "highland",
+      "taste": {
+        "sweet": 0.1,
+        "sour": 0.1,
+        "salty": 0.4,
+        "bitter": 0.4,
+        "umami": 0.3,
+        "spicy": 0.4,
+        "astringent": 0.3
+      },
+      "regional_flavor_label": "Đậm, chua, mắm"
+    },
+    {
+      "id": 31,
+      "name": "Lai Châu",
+      "food_region": "northern_highland",
+      "climate_type": "highland",
+      "cuisine_culture": "highland",
+      "taste": {
+        "sweet": 0.1,
+        "sour": 0.1,
+        "salty": 0.4,
+        "bitter": 0.4,
+        "umami": 0.3,
+        "spicy": 0.4,
+        "astringent": 0.3
+      },
+      "regional_flavor_label": "Đậm, chua, mắm"
+    },
+    {
+      "id": 32,
+      "name": "Hòa Bình",
+      "food_region": "northern_highland",
+      "climate_type": "highland",
+      "cuisine_culture": "highland",
+      "taste": {
+        "sweet": 0.1,
+        "sour": 0.1,
+        "salty": 0.4,
+        "bitter": 0.4,
+        "umami": 0.3,
+        "spicy": 0.4,
+        "astringent": 0.3
+      },
+      "regional_flavor_label": "Đậm, chua, mắm"
+    },
+    {
+      "id": 33,
+      "name": "Quảng Ninh",
+      "food_region": "northern_highland",
+      "climate_type": "highland",
+      "cuisine_culture": "highland",
+      "taste": {
+        "sweet": 0.1,
+        "sour": 0.1,
+        "salty": 0.4,
+        "bitter": 0.4,
+        "umami": 0.3,
+        "spicy": 0.4,
+        "astringent": 0.3
+      },
+      "regional_flavor_label": "Đậm, chua, mắm"
+    },
+    {
+      "id": 40,
+      "name": "Thanh Hóa",
+      "food_region": "central_coast",
+      "climate_type": "tropical_monsoon",
+      "cuisine_culture": "northcentral",
+      "taste": {
+        "sweet": 0.1,
+        "sour": 0.1,
+        "salty": 0.7,
+        "bitter": 0.1,
+        "umami": 0.5,
+        "spicy": 0.6,
+        "astringent": 0.1
+      },
+      "regional_flavor_label": "Cay, mặn đậm"
+    },
+    {
+      "id": 41,
+      "name": "Nghệ An",
+      "food_region": "central_coast",
+      "climate_type": "tropical_monsoon",
+      "cuisine_culture": "northcentral",
+      "taste": {
+        "sweet": 0.1,
+        "sour": 0.1,
+        "salty": 0.7,
+        "bitter": 0.1,
+        "umami": 0.5,
+        "spicy": 0.6,
+        "astringent": 0.1
+      },
+      "regional_flavor_label": "Cay, mặn đậm"
+    },
+    {
+      "id": 42,
+      "name": "Hà Tĩnh",
+      "food_region": "central_coast",
+      "climate_type": "tropical_monsoon",
+      "cuisine_culture": "northcentral",
+      "taste": {
+        "sweet": 0.1,
+        "sour": 0.1,
+        "salty": 0.7,
+        "bitter": 0.1,
+        "umami": 0.5,
+        "spicy": 0.6,
+        "astringent": 0.1
+      },
+      "regional_flavor_label": "Cay, mặn đậm"
+    },
+    {
+      "id": 43,
+      "name": "Quảng Bình",
+      "food_region": "central_coast",
+      "climate_type": "tropical_monsoon",
+      "cuisine_culture": "northcentral",
+      "taste": {
+        "sweet": 0.1,
+        "sour": 0.1,
+        "salty": 0.7,
+        "bitter": 0.1,
+        "umami": 0.5,
+        "spicy": 0.6,
+        "astringent": 0.1
+      },
+      "regional_flavor_label": "Cay, mặn đậm"
+    },
+    {
+      "id": 44,
+      "name": "Quảng Trị",
+      "food_region": "central_coast",
+      "climate_type": "tropical_monsoon",
+      "cuisine_culture": "northcentral",
+      "taste": {
+        "sweet": 0.1,
+        "sour": 0.1,
+        "salty": 0.7,
+        "bitter": 0.1,
+        "umami": 0.5,
+        "spicy": 0.6,
+        "astringent": 0.1
+      },
+      "regional_flavor_label": "Cay, mặn đậm"
+    },
+    {
+      "id": 45,
+      "name": "Thừa Thiên Huế",
+      "food_region": "central_coast",
+      "climate_type": "tropical_monsoon",
+      "cuisine_culture": "central",
+      "taste": {
+        "sweet": 0.1,
+        "sour": 0.2,
+        "salty": 0.6,
+        "bitter": 0.2,
+        "umami": 0.6,
+        "spicy": 0.8,
+        "astringent": 0.2
+      },
+      "regional_flavor_label": "Cay, mặn đậm"
+    },
+    {
+      "id": 46,
+      "name": "Quảng Nam",
+      "food_region": "central_coast",
+      "climate_type": "tropical_monsoon",
+      "cuisine_culture": "central",
+      "taste": {
+        "sweet": 0.1,
+        "sour": 0.2,
+        "salty": 0.6,
+        "bitter": 0.2,
+        "umami": 0.6,
+        "spicy": 0.8,
+        "astringent": 0.2
+      },
+      "regional_flavor_label": "Cay, mặn đậm"
+    },
+    {
+      "id": 47,
+      "name": "Quảng Ngãi",
+      "food_region": "central_coast",
+      "climate_type": "tropical_monsoon",
+      "cuisine_culture": "central",
+      "taste": {
+        "sweet": 0.1,
+        "sour": 0.2,
+        "salty": 0.6,
+        "bitter": 0.2,
+        "umami": 0.6,
+        "spicy": 0.8,
+        "astringent": 0.2
+      },
+      "regional_flavor_label": "Cay, mặn đậm"
+    },
+    {
+      "id": 48,
+      "name": "Bình Định",
+      "food_region": "central_coast",
+      "climate_type": "tropical_monsoon",
+      "cuisine_culture": "southcentral",
+      "taste": {
+        "sweet": 0.3,
+        "sour": 0.2,
+        "salty": 0.4,
+        "bitter": 0.1,
+        "umami": 0.7,
+        "spicy": 0.4,
+        "astringent": 0.1
+      },
+      "regional_flavor_label": "Cay, mặn đậm"
+    },
+    {
+      "id": 49,
+      "name": "Phú Yên",
+      "food_region": "central_coast",
+      "climate_type": "tropical_monsoon",
+      "cuisine_culture": "southcentral",
+      "taste": {
+        "sweet": 0.3,
+        "sour": 0.2,
+        "salty": 0.4,
+        "bitter": 0.1,
+        "umami": 0.7,
+        "spicy": 0.4,
+        "astringent": 0.1
+      },
+      "regional_flavor_label": "Cay, mặn đậm"
+    },
+    {
+      "id": 50,
+      "name": "Khánh Hòa",
+      "food_region": "central_coast",
+      "climate_type": "tropical_monsoon",
+      "cuisine_culture": "southcentral",
+      "taste": {
+        "sweet": 0.3,
+        "sour": 0.2,
+        "salty": 0.4,
+        "bitter": 0.1,
+        "umami": 0.7,
+        "spicy": 0.4,
+        "astringent": 0.1
+      },
+      "regional_flavor_label": "Cay, mặn đậm"
+    },
+    {
+      "id": 51,
+      "name": "Ninh Thuận",
+      "food_region": "central_coast",
+      "climate_type": "tropical_monsoon",
+      "cuisine_culture": "southcentral",
+      "taste": {
+        "sweet": 0.3,
+        "sour": 0.2,
+        "salty": 0.4,
+        "bitter": 0.1,
+        "umami": 0.7,
+        "spicy": 0.4,
+        "astringent": 0.1
+      },
+      "regional_flavor_label": "Cay, mặn đậm"
+    },
+    {
+      "id": 52,
+      "name": "Bình Thuận",
+      "food_region": "central_coast",
+      "climate_type": "tropical_monsoon",
+      "cuisine_culture": "southcentral",
+      "taste": {
+        "sweet": 0.3,
+        "sour": 0.2,
+        "salty": 0.4,
+        "bitter": 0.1,
+        "umami": 0.7,
+        "spicy": 0.4,
+        "astringent": 0.1
+      },
+      "regional_flavor_label": "Cay, mặn đậm"
+    },
+    {
+      "id": 53,
+      "name": "Phú Quốc",
+      "food_region": "central_coast",
+      "climate_type": "tropical",
+      "cuisine_culture": "southcentral",
+      "taste": {
+        "sweet": 0.3,
+        "sour": 0.2,
+        "salty": 0.4,
+        "bitter": 0.1,
+        "umami": 0.7,
+        "spicy": 0.4,
+        "astringent": 0.1
+      },
+      "regional_flavor_label": "Cay, mặn đậm"
+    },
+    {
+      "id": 60,
+      "name": "Kon Tum",
+      "food_region": "central_highland",
+      "climate_type": "highland",
+      "cuisine_culture": "highland",
+      "taste": {
+        "sweet": 0.1,
+        "sour": 0.1,
+        "salty": 0.4,
+        "bitter": 0.4,
+        "umami": 0.3,
+        "spicy": 0.4,
+        "astringent": 0.3
+      },
+      "regional_flavor_label": "Nhẹ, ít gia vị"
+    },
+    {
+      "id": 61,
+      "name": "Gia Lai",
+      "food_region": "central_highland",
+      "climate_type": "highland",
+      "cuisine_culture": "highland",
+      "taste": {
+        "sweet": 0.1,
+        "sour": 0.1,
+        "salty": 0.4,
+        "bitter": 0.4,
+        "umami": 0.3,
+        "spicy": 0.4,
+        "astringent": 0.3
+      },
+      "regional_flavor_label": "Nhẹ, ít gia vị"
+    },
+    {
+      "id": 62,
+      "name": "Đắk Lắk",
+      "food_region": "central_highland",
+      "climate_type": "highland",
+      "cuisine_culture": "highland",
+      "taste": {
+        "sweet": 0.1,
+        "sour": 0.1,
+        "salty": 0.4,
+        "bitter": 0.4,
+        "umami": 0.3,
+        "spicy": 0.4,
+        "astringent": 0.3
+      },
+      "regional_flavor_label": "Nhẹ, ít gia vị"
+    },
+    {
+      "id": 63,
+      "name": "Đắk Nông",
+      "food_region": "central_highland",
+      "climate_type": "highland",
+      "cuisine_culture": "highland",
+      "taste": {
+        "sweet": 0.1,
+        "sour": 0.1,
+        "salty": 0.4,
+        "bitter": 0.4,
+        "umami": 0.3,
+        "spicy": 0.4,
+        "astringent": 0.3
+      },
+      "regional_flavor_label": "Nhẹ, ít gia vị"
+    },
+    {
+      "id": 64,
+      "name": "Lâm Đồng",
+      "food_region": "central_highland",
+      "climate_type": "highland",
+      "cuisine_culture": "highland",
+      "taste": {
+        "sweet": 0.1,
+        "sour": 0.1,
+        "salty": 0.4,
+        "bitter": 0.4,
+        "umami": 0.3,
+        "spicy": 0.4,
+        "astringent": 0.3
+      },
+      "regional_flavor_label": "Nhẹ, ít gia vị"
+    },
+    {
+      "id": 70,
+      "name": "Bình Phước",
+      "food_region": "southeast",
+      "climate_type": "tropical",
+      "cuisine_culture": "southern",
+      "taste": {
+        "sweet": 0.6,
+        "sour": 0.3,
+        "salty": 0.3,
+        "bitter": 0.0,
+        "umami": 0.5,
+        "spicy": 0.2,
+        "astringent": 0.0
+      },
+      "regional_flavor_label": "Ngọt vừa, đa dạng"
+    },
+    {
+      "id": 71,
+      "name": "Tây Ninh",
+      "food_region": "southeast",
+      "climate_type": "tropical",
+      "cuisine_culture": "southern",
+      "taste": {
+        "sweet": 0.6,
+        "sour": 0.3,
+        "salty": 0.3,
+        "bitter": 0.0,
+        "umami": 0.5,
+        "spicy": 0.2,
+        "astringent": 0.0
+      },
+      "regional_flavor_label": "Ngọt vừa, đa dạng"
+    },
+    {
+      "id": 72,
+      "name": "Bình Dương",
+      "food_region": "southeast",
+      "climate_type": "tropical",
+      "cuisine_culture": "southern",
+      "taste": {
+        "sweet": 0.6,
+        "sour": 0.3,
+        "salty": 0.3,
+        "bitter": 0.0,
+        "umami": 0.5,
+        "spicy": 0.2,
+        "astringent": 0.0
+      },
+      "regional_flavor_label": "Ngọt vừa, đa dạng"
+    },
+    {
+      "id": 73,
+      "name": "Đồng Nai",
+      "food_region": "southeast",
+      "climate_type": "tropical",
+      "cuisine_culture": "southern",
+      "taste": {
+        "sweet": 0.6,
+        "sour": 0.3,
+        "salty": 0.3,
+        "bitter": 0.0,
+        "umami": 0.5,
+        "spicy": 0.2,
+        "astringent": 0.0
+      },
+      "regional_flavor_label": "Ngọt vừa, đa dạng"
+    },
+    {
+      "id": 74,
+      "name": "Bà Rịa-Vũng Tàu",
+      "food_region": "southeast",
+      "climate_type": "tropical",
+      "cuisine_culture": "southern",
+      "taste": {
+        "sweet": 0.6,
+        "sour": 0.3,
+        "salty": 0.3,
+        "bitter": 0.0,
+        "umami": 0.5,
+        "spicy": 0.2,
+        "astringent": 0.0
+      },
+      "regional_flavor_label": "Ngọt vừa, đa dạng"
+    },
+    {
+      "id": 80,
+      "name": "Long An",
+      "food_region": "mekong_delta",
+      "climate_type": "tropical",
+      "cuisine_culture": "southern",
+      "taste": {
+        "sweet": 0.6,
+        "sour": 0.3,
+        "salty": 0.3,
+        "bitter": 0.0,
+        "umami": 0.5,
+        "spicy": 0.2,
+        "astringent": 0.0
+      },
+      "regional_flavor_label": "Ngọt, cốt dừa, béo"
+    },
+    {
+      "id": 81,
+      "name": "Tiền Giang",
+      "food_region": "mekong_delta",
+      "climate_type": "tropical",
+      "cuisine_culture": "southern",
+      "taste": {
+        "sweet": 0.6,
+        "sour": 0.3,
+        "salty": 0.3,
+        "bitter": 0.0,
+        "umami": 0.5,
+        "spicy": 0.2,
+        "astringent": 0.0
+      },
+      "regional_flavor_label": "Ngọt, cốt dừa, béo"
+    },
+    {
+      "id": 82,
+      "name": "Bến Tre",
+      "food_region": "mekong_delta",
+      "climate_type": "tropical",
+      "cuisine_culture": "southern",
+      "taste": {
+        "sweet": 0.6,
+        "sour": 0.3,
+        "salty": 0.3,
+        "bitter": 0.0,
+        "umami": 0.5,
+        "spicy": 0.2,
+        "astringent": 0.0
+      },
+      "regional_flavor_label": "Ngọt, cốt dừa, béo"
+    },
+    {
+      "id": 83,
+      "name": "Trà Vinh",
+      "food_region": "mekong_delta",
+      "climate_type": "tropical",
+      "cuisine_culture": "southern",
+      "taste": {
+        "sweet": 0.6,
+        "sour": 0.3,
+        "salty": 0.3,
+        "bitter": 0.0,
+        "umami": 0.5,
+        "spicy": 0.2,
+        "astringent": 0.0
+      },
+      "regional_flavor_label": "Ngọt, cốt dừa, béo"
+    },
+    {
+      "id": 84,
+      "name": "Vĩnh Long",
+      "food_region": "mekong_delta",
+      "climate_type": "tropical",
+      "cuisine_culture": "southern",
+      "taste": {
+        "sweet": 0.6,
+        "sour": 0.3,
+        "salty": 0.3,
+        "bitter": 0.0,
+        "umami": 0.5,
+        "spicy": 0.2,
+        "astringent": 0.0
+      },
+      "regional_flavor_label": "Ngọt, cốt dừa, béo"
+    },
+    {
+      "id": 85,
+      "name": "Đồng Tháp",
+      "food_region": "mekong_delta",
+      "climate_type": "tropical",
+      "cuisine_culture": "southern",
+      "taste": {
+        "sweet": 0.6,
+        "sour": 0.3,
+        "salty": 0.3,
+        "bitter": 0.0,
+        "umami": 0.5,
+        "spicy": 0.2,
+        "astringent": 0.0
+      },
+      "regional_flavor_label": "Ngọt, cốt dừa, béo"
+    },
+    {
+      "id": 86,
+      "name": "An Giang",
+      "food_region": "mekong_delta",
+      "climate_type": "tropical",
+      "cuisine_culture": "southern",
+      "taste": {
+        "sweet": 0.6,
+        "sour": 0.3,
+        "salty": 0.3,
+        "bitter": 0.0,
+        "umami": 0.5,
+        "spicy": 0.2,
+        "astringent": 0.0
+      },
+      "regional_flavor_label": "Ngọt, cốt dừa, béo"
+    },
+    {
+      "id": 87,
+      "name": "Kiên Giang",
+      "food_region": "mekong_delta",
+      "climate_type": "tropical",
+      "cuisine_culture": "southern",
+      "taste": {
+        "sweet": 0.6,
+        "sour": 0.3,
+        "salty": 0.3,
+        "bitter": 0.0,
+        "umami": 0.5,
+        "spicy": 0.2,
+        "astringent": 0.0
+      },
+      "regional_flavor_label": "Ngọt, cốt dừa, béo"
+    },
+    {
+      "id": 88,
+      "name": "Hậu Giang",
+      "food_region": "mekong_delta",
+      "climate_type": "tropical",
+      "cuisine_culture": "southern",
+      "taste": {
+        "sweet": 0.6,
+        "sour": 0.3,
+        "salty": 0.3,
+        "bitter": 0.0,
+        "umami": 0.5,
+        "spicy": 0.2,
+        "astringent": 0.0
+      },
+      "regional_flavor_label": "Ngọt, cốt dừa, béo"
+    },
+    {
+      "id": 89,
+      "name": "Sóc Trăng",
+      "food_region": "mekong_delta",
+      "climate_type": "tropical",
+      "cuisine_culture": "southern",
+      "taste": {
+        "sweet": 0.6,
+        "sour": 0.3,
+        "salty": 0.3,
+        "bitter": 0.0,
+        "umami": 0.5,
+        "spicy": 0.2,
+        "astringent": 0.0
+      },
+      "regional_flavor_label": "Ngọt, cốt dừa, béo"
+    },
+    {
+      "id": 90,
+      "name": "Bạc Liêu",
+      "food_region": "mekong_delta",
+      "climate_type": "tropical",
+      "cuisine_culture": "southern",
+      "taste": {
+        "sweet": 0.6,
+        "sour": 0.3,
+        "salty": 0.3,
+        "bitter": 0.0,
+        "umami": 0.5,
+        "spicy": 0.2,
+        "astringent": 0.0
+      },
+      "regional_flavor_label": "Ngọt, cốt dừa, béo"
+    },
+    {
+      "id": 91,
+      "name": "Cà Mau",
+      "food_region": "mekong_delta",
+      "climate_type": "tropical",
+      "cuisine_culture": "southern",
+      "taste": {
+        "sweet": 0.6,
+        "sour": 0.3,
+        "salty": 0.3,
+        "bitter": 0.0,
+        "umami": 0.5,
+        "spicy": 0.2,
+        "astringent": 0.0
+      },
+      "regional_flavor_label": "Ngọt, cốt dừa, béo"
+    }
+  ]
+}

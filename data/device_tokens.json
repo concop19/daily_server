@@ -1,0 +1,18 @@
+{
+  "version": "1.0",
+  "exported_at": "2026-05-11T07:02:04.265476+00:00",
+  "table": "device_tokens",
+  "count": 1,
+  "data": [
+    {
+      "device_id": "be38d9be-2c7a-4344-89db-c6cf0c01d9de",
+      "fcm_token": "ExponentPushToken[2H6m2hG432kv3RyeXIV0DI]",
+      "platform": "android",
+      "lat": 15.66,
+      "lon": 108.27,
+      "province": null,
+      "created_at": "2026-05-11T07:02:04.265476+00:00",
+      "updated_at": "2026-05-11T07:02:04.265476+00:00"
+    }
+  ]
+}
