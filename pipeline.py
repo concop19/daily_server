@@ -34,19 +34,34 @@ TASTE_DEFAULTS = {
     "umami": 0.6, "salty": 0.4, "bitter": 0.2, "astringent": 0.1,
 }
 ##
+# Map từ allergy key (frontend gửi lên) → set các Vietnamese category names trong DB.
+# QUAN TRỌNG: ingredients.json dùng field `category` (Vietnamese) và `ingredient_type` (English).
+# resolve_allergy_ingredient_ids phải ưu tiên field `category` (Vietnamese) để khớp đúng.
 ALLERGY_CATEGORY_MAP: dict[str, set[str]] = {
-    "Hải sản":   {"Hải sản"},
-    "Thịt":      {"Thịt"},
-    "Gia vị":     {"Gia vị"},
-    "Trái cây":       {"Trái cây"},
-    "Đã chế biến":       {"Đã chế biến"},
-    "Đậu & Hạt":    {"Đậu & Hạt"},
-    "Ngũ cốc & Tinh bột":       {"Ngũ cốc & Tinh bột"},
-    "Đồ uống":      {"Đồ uống"},
-    "Dầu & Mỡ":      {"Dầu & Mỡ"},
-    "Sữa & Trứng": {"Sữa & Trứng"},
-   
-    
+    # ── Vietnamese keys (giá trị thực trong DB `category` field) ──
+    "Hải sản":            {"Hải sản"},
+    "Thịt":               {"Thịt"},
+    "Rau củ":             {"Rau củ"},          # FIX: trước đây bị thiếu hoàn toàn
+    "Gia vị":             {"Gia vị"},
+    "Trái cây":           {"Trái cây"},
+    "Đã chế biến":        {"Đã chế biến"},
+    "Đậu & Hạt":          {"Đậu & Hạt"},
+    "Ngũ cốc & Tinh bột": {"Ngũ cốc & Tinh bột"},
+    "Đồ uống":            {"Đồ uống"},
+    "Dầu & Mỡ":           {"Dầu & Mỡ"},
+    "Sữa & Trứng":        {"Sữa & Trứng"},
+    # ── English alias keys (phòng trường hợp mobile SQLite dùng English key) ──
+    "seafood":   {"Hải sản"},
+    "meat":      {"Thịt"},
+    "vegetable": {"Rau củ"},
+    "spice":     {"Gia vị"},
+    "fruit":     {"Trái cây"},
+    "processed": {"Đã chế biến"},
+    "legume":    {"Đậu & Hạt"},
+    "grain":     {"Ngũ cốc & Tinh bột"},
+    "beverage":  {"Đồ uống"},
+    "fat":       {"Dầu & Mỡ"},
+    "dairy":     {"Sữa & Trứng"},
 }
 
 # Purine risk theo (category, source_type) — dùng cho gout_risk_score
@@ -251,7 +266,10 @@ def resolve_allergy_ingredient_ids(allergies: list, db=None) -> set[int]:
     db_ids: set[int] = set()
     if blocked_categories:
         for ing in data_store.get_all_ingredients():
-            cat = ing.get("ingredient_type") or ing.get("category", "")
+            # FIX BUG: ưu tiên field `category` (Vietnamese) vì ALLERGY_CATEGORY_MAP
+            # map Vietnamese→Vietnamese. `ingredient_type` là English ("seafood", "vegetable")
+            # nên không bao giờ match với blocked_categories chứa tên Việt.
+            cat = ing.get("category") or ing.get("ingredient_type", "")
             if cat in blocked_categories:
                 db_ids.add(int(ing["id"]))
 
@@ -368,7 +386,9 @@ def filter_dishes(db=None, cuisine_scope: str = "vietnam",
                 continue
 
         # ── Allergy ingredient ID ──────────────────────────────────────────
-        if allergy_ing_ids and (dish_ingredient_map.get(d["id"], set()) & allergy_ing_ids):
+        # FIX BUG: d["id"] từ JSON là str, dish_ingredient_map keys là int
+        # → phải ép kiểu int() để lookup không miss
+        if allergy_ing_ids and (dish_ingredient_map.get(int(d["id"]), set()) & allergy_ing_ids):
             continue
 
         # ── Allergy group (allergen_summary) ──────────────────────────────
