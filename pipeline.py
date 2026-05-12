@@ -33,19 +33,20 @@ TASTE_DEFAULTS = {
     "spicy": 0.5, "sweet": 0.5, "sour": 0.4,
     "umami": 0.6, "salty": 0.4, "bitter": 0.2, "astringent": 0.1,
 }
-
+##
 ALLERGY_CATEGORY_MAP: dict[str, set[str]] = {
-    "seafood":   {"Hải sản"},
-    "meat":      {"Thịt"},
-    "dairy":     {"Sữa & Trứng"},
-    "egg":       {"Sữa & Trứng"},
-    "nut":       {"Đậu & Hạt"},
-    "gluten":    {"Ngũ cốc & Tinh bột", "Đã chế biến"},
-    "soy":       {"Đậu & Hạt", "Đã chế biến"},
-    "pork":      {"Thịt"},
-    "fish":      {"Hải sản"},
-    "shellfish": {"Hải sản"},
-    "wheat":     {"Ngũ cốc & Tinh bột"},
+    "Hải sản":   {"Hải sản"},
+    "Thịt":      {"Thịt"},
+    "Gia vị":     {"Gia vị"},
+    "Trái cây":       {"Trái cây"},
+    "Đã chế biến":       {"Đã chế biến"},
+    "Đậu & Hạt":    {"Đậu & Hạt"},
+    "Ngũ cốc & Tinh bột":       {"Ngũ cốc & Tinh bột"},
+    "Đồ uống":      {"Đồ uống"},
+    "Dầu & Mỡ":      {"Dầu & Mỡ"},
+    "Sữa & Trứng": {"Sữa & Trứng"},
+   
+    
 }
 
 # Purine risk theo (category, source_type) — dùng cho gout_risk_score
@@ -245,7 +246,7 @@ def resolve_allergy_ingredient_ids(allergies: list, db=None) -> set[int]:
 
     blocked_categories: set[str] = set()
     for group in category_groups:
-        blocked_categories.update(ALLERGY_CATEGORY_MAP.get(group.lower().strip(), set()))
+        blocked_categories.update(ALLERGY_CATEGORY_MAP.get(group, set()))
 
     db_ids: set[int] = set()
     if blocked_categories:
