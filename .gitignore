@@ -1,6 +1,7 @@
 # Python
 __pycache__/
 .hf_modules/
+data/chroma_nutrition/
 *.py[cod]
 *.pyo
 *.pyd
