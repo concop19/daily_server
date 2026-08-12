@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Daily Mate - Nutrition RAG Test</title>
+  <style>
+    body { max-width: 980px; margin: 32px auto; padding: 0 16px; font: 15px/1.5 system-ui, sans-serif; color: #17202a; }
+    input, textarea, button { box-sizing: border-box; width: 100%; margin: 6px 0 14px; padding: 10px; font: inherit; }
+    textarea { min-height: 90px; resize: vertical; }
+    button { cursor: pointer; background: #1769aa; color: white; border: 0; border-radius: 6px; }
+    button:disabled { opacity: .6; cursor: wait; }
+    .grid { display: grid; grid-template-columns: 180px 1fr; gap: 12px; align-items: start; }
+    .card { border: 1px solid #d9e2ec; border-radius: 8px; padding: 14px; margin: 14px 0; background: #f8fafc; }
+    pre { white-space: pre-wrap; overflow-wrap: anywhere; }
+    .error { color: #b42318; }
+    .muted { color: #52606d; }
+  </style>
+</head>
+<body>
+  <h1>Nutrition RAG Test</h1>
+  <p class="muted">Kiểm tra Retriever + Chroma + chỉ số thật từ dishes.json. Chưa gọi LLM.</p>
+
+  <label>API URL</label>
+  <input id="apiUrl" value="http://127.0.0.1:5000/api/v1/nutrition-rag/query">
+  <div class="grid">
+    <label for="dishId">dish_id</label>
+    <input id="dishId" type="number" value="10131383">
+    <label for="query">Câu hỏi</label>
+    <textarea id="query">Người bị tiểu đường cần quan tâm chỉ số nào?</textarea>
+  </div>
+  <button id="run">Gọi Nutrition RAG</button>
+  <p id="status" class="muted"></p>
+  <section id="output"></section>
+
+  <script>
+    const $ = (id) => document.getElementById(id);
+    $("run").addEventListener("click", async () => {
+      $("run").disabled = true;
+      $("status").textContent = "Đang gọi API... Lần đầu có thể mất thời gian tải Jina.";
+      $("output").innerHTML = "";
+      try {
+        const response = await fetch($("apiUrl").value.trim(), {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ dish_id: Number($("dishId").value), query: $("query").value })
+        });
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.error || `HTTP ${response.status}`);
+        const plan = data.retrieval_plan;
+        const values = data.dish.values;
+        $("status").textContent = `Đã nhận ${data.evidence.length} evidence chunks.`;
+        $("output").innerHTML = `
+          <div class="card"><h2>${data.dish.title || "Món ăn"}</h2>
+            <p><b>Dish:</b> ${data.dish.dish_id} | <b>Serving:</b> ${data.dish.serving_size}</p>
+            <p><b>Condition:</b> ${plan.condition || "general"} | <b>Group:</b> ${plan.group || "all"}</p>
+            <p><b>Fields:</b> ${plan.nutrition_fields.join(", ")}</p>
+            <pre>${JSON.stringify(values, null, 2)}</pre>
+          </div>
+          ${data.evidence.map(e => `<div class="card"><b>#${e.rank} ${e.metadata.topic || ""}</b> <span class="muted">distance=${Number(e.distance).toFixed(4)}</span><pre>${e.content}</pre></div>`).join("")}`;
+      } catch (error) {
+        $("status").innerHTML = `<span class="error">${error.message}</span>`;
+      } finally {
+        $("run").disabled = false;
+      }
+    });
+  </script>
+</body>
+</html>

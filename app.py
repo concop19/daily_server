@@ -41,6 +41,7 @@ from pipeline import (
     resolve_taste_weight,
     score_dish,
 )
+from rag.nutrition_context import NutritionContextBuilder
 
 # ── App & DataStore setup ──────────────────────────────────────────────────────
 # Load tất cả JSON data vào memory khi server start
@@ -98,6 +99,16 @@ def add_security_headers(response):
 
 init_monitoring(app)
 
+_rag_context_builder = None
+
+
+def _get_rag_context_builder():
+    """Load the Jina model lazily so normal API startup stays lightweight."""
+    global _rag_context_builder
+    if _rag_context_builder is None:
+        _rag_context_builder = NutritionContextBuilder()
+    return _rag_context_builder
+
 
 # ── Helpers ────────────────────────────────────────────────────────────────────
 
@@ -143,6 +154,43 @@ def health():
         return jsonify({"status": "ok", "dishes": stats["dishes"], "ingredients": stats["ingredients"]})
     except Exception:
         return jsonify({"status": "error", "detail": "Internal error"}), 500
+
+
+@app.route("/api/v1/nutrition-rag/query", methods=["POST"])
+def nutrition_rag_query():
+    """Development endpoint: return grounded retrieval context, not LLM text."""
+    payload = request.get_json(silent=True) or {}
+    query = str(payload.get("query") or "").strip()
+    dish_id = payload.get("dish_id")
+
+    if not query:
+        return jsonify({"error": "query là bắt buộc"}), 400
+    if len(query) > 500:
+        return jsonify({"error": "query tối đa 500 ký tự"}), 400
+    try:
+        dish_id = int(dish_id)
+    except (TypeError, ValueError):
+        return jsonify({"error": "dish_id phải là số nguyên"}), 400
+
+    try:
+        context = _get_rag_context_builder().build(dish_id, query, n_results=5)
+        raw_evidence = context["evidence"]
+        evidence = []
+        for index, chunk_id in enumerate(raw_evidence.get("ids", [[]])[0]):
+            evidence.append({
+                "rank": index + 1,
+                "chunk_id": chunk_id,
+                "content": raw_evidence.get("documents", [[]])[0][index],
+                "metadata": raw_evidence.get("metadatas", [[]])[0][index],
+                "distance": raw_evidence.get("distances", [[]])[0][index],
+            })
+        context["evidence"] = evidence
+        return jsonify(context), 200
+    except LookupError as exc:
+        return jsonify({"error": str(exc)}), 404
+    except Exception:
+        app.logger.exception("Nutrition RAG query failed")
+        return jsonify({"error": "Không thể truy vấn Nutrition RAG"}), 500
 
 
 @app.route("/api/weather")
