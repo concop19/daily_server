@@ -27,12 +27,12 @@ CONDITION_RULES: dict[str, tuple[str, tuple[str, ...]]] = {
 }
 
 METRIC_RULES: dict[str, tuple[tuple[str, ...], tuple[str, ...]]] = {
-    "sodium": (("sodium", "natri", "muối", "nước mắm", "đồ mặn"), ("dish_sodium_total", "adj_sodium_total", "sodium_safety_score")),
-    "glycemic_load": (("gl", "glycemic", "đường huyết", "carb", "carbohydrate", "đường"), ("glycemic_load", "adj_glycemic_load", "adj_glycemic_load_per_100g")),
+    "sodium": (("sodium", "natri", "muối", "nước mắm", "đồ mặn"), ("sodium_per_serving", "adj_sodium_total", "sodium_safety_score")),
+    "glycemic_load": (("gl", "glycemic", "đường huyết", "carb", "carbohydrate", "đường"), ("dish_glycemic_load", "adj_glycemic_load", "adj_glycemic_load_per_100g", "gl_safety_score")),
     "gout_risk": (("gout", "gút", "purine", "axit uric", "acid uric"), ("gout_risk_score",)),
     "calories": (("calo", "calories", "năng lượng", "kcal"), ("dish_energy_total", "adj_energy_total")),
-    "protein": (("protein", "đạm"), ("protein_g",)),
-    "fiber": (("chất xơ", "fiber"), ("fiber_g",)),
+    "protein": (("protein", "đạm"), ()),
+    "fiber": (("chất xơ", "fiber"), ()),
     "satiety": (("no lâu", "cảm giác no", "satiety"), ("dish_satiety_score", "adj_satiety_score")),
     "hydration": (("cấp nước", "hydration", "bù nước"), ("dish_hydration_score", "adj_hydration_score")),
 }
@@ -69,7 +69,7 @@ def build_retrieval_plan(query: str) -> RetrievalPlan:
 
     # With no metric keyword, the answer layer should show only basic values.
     if not fields:
-        fields = ["adj_energy_total", "protein_g", "carbs_g", "adj_sodium_total"]
+        fields = ["energy_per_serving", "adj_energy_total", "adj_sodium_total", "adj_glycemic_load"]
 
     return RetrievalPlan(
         condition=condition,
@@ -113,4 +113,3 @@ if __name__ == "__main__":
         result["results"]["metadatas"][0], result["results"]["distances"][0]
     ):
         print(f"- {metadata.get('topic')} | distance={distance:.4f}")
-
