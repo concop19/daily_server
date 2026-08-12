@@ -20,7 +20,7 @@ class RetrievalPlan:
 
 
 CONDITION_RULES: dict[str, tuple[str, tuple[str, ...]]] = {
-    "diabetes": ("tieu_duong", ("tiểu đường", "đái tháo đường", "đường huyết", "diabetes")),
+    "diabetes": ("tieu_duong", ("tiểu đường", "đái tháo đường", "diabetes")),
     "hypertension": ("tang_huyet_ap", ("tăng huyết áp", "cao huyết áp", "huyết áp", "hypertension")),
     "gout": ("gout", ("gout", "gút", "purine", "axit uric", "acid uric")),
     "ibs": ("ibs", ("ibs", "ruột kích thích", "đầy hơi", "fodmap")),
@@ -37,7 +37,7 @@ METRIC_RULES: dict[str, tuple[tuple[str, ...], tuple[str, ...]]] = {
     "sodium": (("sodium", "natri", "muối", "nước mắm", "đồ mặn"), ("sodium_per_serving", "adj_sodium_total", "sodium_safety_score")),
     "glycemic_load": (("gl", "glycemic", "đường huyết", "carb", "carbohydrate"), ("dish_glycemic_load", "adj_glycemic_load", "adj_glycemic_load_per_100g", "gl_safety_score")),
     "gout_risk": (("gout", "gút", "purine", "axit uric", "acid uric"), ("gout_risk_score",)),
-    "calories": (("calo", "calories", "năng lượng", "kcal"), ("dish_energy_total", "adj_energy_total")),
+    "calories": (("calo", "calories", "năng lượng", "kcal"), ("energy_per_serving", "dish_energy_total", "adj_energy_total")),
     "protein": (("protein", "đạm"), ()),
     "fiber": (("chất xơ", "fiber"), ()),
     "satiety": (("no lâu", "cảm giác no", "satiety"), ("dish_satiety_score", "adj_satiety_score")),
@@ -54,7 +54,13 @@ def _is_negated(text: str, keyword: str) -> bool:
     start = text.find(keyword)
     while start >= 0:
         prefix = text[max(0, start - 32) : start]
-        if re.search(r"(?:không|chưa)\s+(?:(?:bị|mắc|có|phải|bệnh)\s+){0,3}$", prefix):
+        if re.search(
+            r"(?:không|chưa)\s+"
+            r"(?:\S+\s+){0,1}"
+            r"(?:bị|mắc|có|phải|bệnh)\s+"
+            r"(?:\S+\s+){0,2}$",
+            prefix,
+        ):
             return True
         start = text.find(keyword, start + 1)
     return False
