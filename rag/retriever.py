@@ -26,9 +26,16 @@ CONDITION_RULES: dict[str, tuple[str, tuple[str, ...]]] = {
     "ibs": ("ibs", ("ibs", "ruột kích thích", "đầy hơi", "fodmap")),
 }
 
+CONDITION_DEFAULT_FIELDS: dict[str, tuple[str, ...]] = {
+    "diabetes": ("dish_glycemic_load", "adj_glycemic_load", "adj_glycemic_load_per_100g", "gl_safety_score"),
+    "hypertension": ("sodium_per_serving", "adj_sodium_total", "sodium_safety_score"),
+    "gout": ("gout_risk_score",),
+    "ibs": (),
+}
+
 METRIC_RULES: dict[str, tuple[tuple[str, ...], tuple[str, ...]]] = {
     "sodium": (("sodium", "natri", "muối", "nước mắm", "đồ mặn"), ("sodium_per_serving", "adj_sodium_total", "sodium_safety_score")),
-    "glycemic_load": (("gl", "glycemic", "đường huyết", "carb", "carbohydrate", "đường"), ("dish_glycemic_load", "adj_glycemic_load", "adj_glycemic_load_per_100g", "gl_safety_score")),
+    "glycemic_load": (("gl", "glycemic", "đường huyết", "carb", "carbohydrate"), ("dish_glycemic_load", "adj_glycemic_load", "adj_glycemic_load_per_100g", "gl_safety_score")),
     "gout_risk": (("gout", "gút", "purine", "axit uric", "acid uric"), ("gout_risk_score",)),
     "calories": (("calo", "calories", "năng lượng", "kcal"), ("dish_energy_total", "adj_energy_total")),
     "protein": (("protein", "đạm"), ()),
@@ -42,6 +49,17 @@ def _normalize(text: str) -> str:
     return re.sub(r"\s+", " ", text.casefold()).strip()
 
 
+def _is_negated(text: str, keyword: str) -> bool:
+    """Detect common Vietnamese negation immediately before a keyword."""
+    start = text.find(keyword)
+    while start >= 0:
+        prefix = text[max(0, start - 32) : start]
+        if re.search(r"(?:không|chưa)\s+(?:(?:bị|mắc|có|phải|bệnh)\s+){0,3}$", prefix):
+            return True
+        start = text.find(keyword, start + 1)
+    return False
+
+
 def build_retrieval_plan(query: str) -> RetrievalPlan:
     """Map fixed keywords to a safe metadata filter and dish fields."""
 
@@ -51,7 +69,11 @@ def build_retrieval_plan(query: str) -> RetrievalPlan:
     matched: list[str] = []
 
     for condition_name, (condition_group, keywords) in CONDITION_RULES.items():
-        found = [keyword for keyword in keywords if keyword in normalized]
+        found = [
+            keyword
+            for keyword in keywords
+            if keyword in normalized and not _is_negated(normalized, keyword)
+        ]
         if found:
             condition = condition_name
             group = condition_group
@@ -61,13 +83,19 @@ def build_retrieval_plan(query: str) -> RetrievalPlan:
     fields: list[str] = []
     topics: list[str] = []
     for metric_name, (keywords, metric_fields) in METRIC_RULES.items():
-        found = [keyword for keyword in keywords if keyword in normalized]
+        found = [
+            keyword
+            for keyword in keywords
+            if keyword in normalized and not _is_negated(normalized, keyword)
+        ]
         if found:
             matched.extend(found)
             fields.extend(metric_fields)
             topics.append(metric_name)
 
     # With no metric keyword, the answer layer should show only basic values.
+    if not fields and condition:
+        fields = list(CONDITION_DEFAULT_FIELDS.get(condition, ()))
     if not fields:
         fields = ["energy_per_serving", "adj_energy_total", "adj_sodium_total", "adj_glycemic_load"]
 
@@ -93,10 +121,22 @@ class NutritionRetriever:
         if not query.strip():
             raise ValueError("Query không được rỗng.")
         plan = build_retrieval_plan(query)
-        where = {"group": plan.group} if plan.group else None
-        results = self.store.query(query, self.embedder, n_results=n_results, where=where)
+        # Không có bệnh lý dương tính thì chỉ lấy tài liệu dinh dưỡng chung.
+        # Với câu phủ định như “không bị tiểu đường nhưng đau răng”, dùng
+        # truy vấn trung tính để từ bị phủ định không kéo nhầm tài liệu bệnh lý.
+        where = {"group": plan.group or "dinh_duong"}
+        retrieval_query = query
+        if plan.condition is None and not plan.topics:
+            retrieval_query = "Giải thích các chỉ số dinh dưỡng cơ bản của món ăn"
+        results = self.store.query(
+            retrieval_query,
+            self.embedder,
+            n_results=n_results,
+            where=where,
+        )
         return {
             "query": query,
+            "retrieval_query": retrieval_query,
             "plan": plan,
             "results": results,
         }

@@ -31,6 +31,6 @@ class NutritionContextBuilder:
                 "nutrition_fields": list(plan.nutrition_fields),
                 "matched_keywords": list(plan.matched_keywords),
             },
+            "retrieval_query": retrieval.get("retrieval_query", query),
             "evidence": retrieval["results"],
         }
-
