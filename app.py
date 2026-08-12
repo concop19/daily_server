@@ -42,6 +42,12 @@ from pipeline import (
     score_dish,
 )
 from rag.nutrition_context import NutritionContextBuilder
+from rag.health_qa import (
+    QUESTION_SPECS,
+    build_answer,
+    get_question_specs,
+    source_summaries,
+)
 
 # ── App & DataStore setup ──────────────────────────────────────────────────────
 # Load tất cả JSON data vào memory khi server start
@@ -191,6 +197,56 @@ def nutrition_rag_query():
     except Exception:
         app.logger.exception("Nutrition RAG query failed")
         return jsonify({"error": "Không thể truy vấn Nutrition RAG"}), 500
+
+
+@app.route("/api/v1/dishes/<dish_id>/health-question", methods=["POST"])
+@require_auth
+@rate_limit(max_calls=20, window_seconds=60)
+def dish_health_question(dish_id):
+    """Answer one fixed dish-health question using dish data plus Nutrition RAG."""
+    try:
+        dish_id = int(dish_id)
+    except (TypeError, ValueError):
+        return jsonify({"error": "dish_id phải là số nguyên"}), 400
+
+    payload = request.get_json(silent=True) or {}
+    question_id = str(payload.get("question_id") or "").strip()
+    show_sources = bool(payload.get("show_sources", False))
+    spec = QUESTION_SPECS.get(question_id)
+    if not spec:
+        return jsonify({"error": "question_id không hợp lệ"}), 400
+
+    dish = data_store.get_dish_by_id(dish_id)
+    if not dish:
+        return jsonify({"error": "not found"}), 404
+
+    try:
+        context = _get_rag_context_builder().build(dish_id, spec["query"], n_results=5)
+        ingredients = data_store.get_ingredients_for_dish(dish_id)
+        evidence = context.get("evidence", [])
+        metrics = {
+            field: dish.get(field)
+            for field in spec["fields"]
+            if dish.get(field) is not None
+        }
+        response = {
+            "dish_id": dish_id,
+            "title": dish.get("title"),
+            "question_id": question_id,
+            "question": spec["label"],
+            "answer": build_answer(question_id, dish, ingredients),
+            "metrics": metrics,
+            "serving_size": context["dish"]["serving_size"],
+            "disclaimer": "Thông tin mang tính tham khảo, không thay thế tư vấn y tế.",
+        }
+        if show_sources:
+            response["sources"] = source_summaries(evidence)
+        return jsonify(response), 200
+    except LookupError as exc:
+        return jsonify({"error": str(exc)}), 404
+    except Exception:
+        app.logger.exception("Dish health question failed")
+        return jsonify({"error": "Không thể trả lời câu hỏi dinh dưỡng"}), 500
 
 
 @app.route("/api/weather")
@@ -534,6 +590,8 @@ def dish_detail(dish_id):
         for r in sorted(ingr_rows,
                         key=lambda x: (-bool(x.get("is_main")), -(x.get("quantity_g") or 0)))
     ]
+    dish["health_questions"] = get_question_specs(dish)
+    dish["serving_size"] = "toàn bộ công thức món ăn"
     return jsonify(dish)
 
 
