@@ -48,6 +48,7 @@ from rag.health_qa import (
     get_question_specs,
     source_summaries,
 )
+from rag.answer_generator import generate_nutrition_answer
 
 # ── App & DataStore setup ──────────────────────────────────────────────────────
 # Load tất cả JSON data vào memory khi server start
@@ -212,6 +213,7 @@ def dish_health_question(dish_id):
     payload = request.get_json(silent=True) or {}
     question_id = str(payload.get("question_id") or "").strip()
     show_sources = bool(payload.get("show_sources", False))
+    profile = payload.get("profile") or {}
     spec = QUESTION_SPECS.get(question_id)
     if not spec:
         return jsonify({"error": "question_id không hợp lệ"}), 400
@@ -223,18 +225,52 @@ def dish_health_question(dish_id):
     try:
         context = _get_rag_context_builder().build(dish_id, spec["query"], n_results=5)
         ingredients = data_store.get_ingredients_for_dish(dish_id)
-        evidence = context.get("evidence", [])
+        raw_evidence = context.get("evidence", [])
+        evidence = []
+        if isinstance(raw_evidence, dict):
+            ids = raw_evidence.get("ids", [[]])[0]
+            docs = raw_evidence.get("documents", [[]])[0]
+            metadatas = raw_evidence.get("metadatas", [[]])[0]
+            distances = raw_evidence.get("distances", [[]])[0]
+            evidence = [
+                {
+                    "chunk_id": ids[index],
+                    "content": docs[index],
+                    "metadata": metadatas[index],
+                    "distance": distances[index],
+                }
+                for index in range(len(ids))
+            ]
+        else:
+            evidence = raw_evidence
         metrics = {
             field: dish.get(field)
             for field in spec["fields"]
             if dish.get(field) is not None
         }
+        try:
+            answer = generate_nutrition_answer(
+                question=spec["label"],
+                context={
+                    **context,
+                    "dish": {**context["dish"], "ingredients": ingredients},
+                    "evidence": evidence,
+                },
+                profile=profile,
+            )
+            answer_mode = "ai_rag"
+        except Exception as exc:
+            app.logger.warning("AI answer unavailable, using grounded fallback: %s", exc)
+            answer = build_answer(question_id, dish, ingredients)
+            answer_mode = "grounded_fallback"
+
         response = {
             "dish_id": dish_id,
             "title": dish.get("title"),
             "question_id": question_id,
             "question": spec["label"],
-            "answer": build_answer(question_id, dish, ingredients),
+            "answer": answer,
+            "answer_mode": answer_mode,
             "metrics": metrics,
             "serving_size": context["dish"]["serving_size"],
             "disclaimer": "Thông tin mang tính tham khảo, không thay thế tư vấn y tế.",
@@ -247,6 +283,26 @@ def dish_health_question(dish_id):
     except Exception:
         app.logger.exception("Dish health question failed")
         return jsonify({"error": "Không thể trả lời câu hỏi dinh dưỡng"}), 500
+
+
+@app.route("/api/v1/dishes/<dish_id>/health-questions", methods=["POST"])
+@require_auth
+def dish_health_questions(dish_id):
+    """Return personalized question buttons for the active mobile profile."""
+    try:
+        dish_id = int(dish_id)
+    except (TypeError, ValueError):
+        return jsonify({"error": "dish_id phải là số nguyên"}), 400
+    dish = data_store.get_dish_by_id(dish_id)
+    if not dish:
+        return jsonify({"error": "not found"}), 404
+    payload = request.get_json(silent=True) or {}
+    profile = payload.get("profile") or {}
+    recommendation_context = payload.get("recommendation_context") or {}
+    return jsonify({
+        "dish_id": dish_id,
+        "questions": get_question_specs(dish, profile, recommendation_context),
+    }), 200
 
 
 @app.route("/api/weather")
