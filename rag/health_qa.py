@@ -80,6 +80,18 @@ QUESTION_SPECS: dict[str, dict[str, Any]] = {
         "query": "Kiểm tra món ăn có phù hợp với chế độ ăn chay hoặc hạn chế thực phẩm nào không",
         "fields": (),
     },
+    "ingredient_impact": {
+        "label": "Nguyên liệu nào ảnh hưởng nhiều đến chỉ số món?",
+        "icon": "ingredient_impact",
+        "query": "Giải thích nguyên liệu và định lượng nào đóng góp nhiều vào chỉ số dinh dưỡng của món ăn",
+        "fields": (),
+    },
+    "cooking_method": {
+        "label": "Cách chế biến ảnh hưởng đến món thế nào?",
+        "icon": "cooking_method",
+        "query": "Giải thích cách chế biến ảnh hưởng đến chỉ số dinh dưỡng của món ăn",
+        "fields": (),
+    },
 }
 
 
@@ -116,6 +128,13 @@ def get_question_specs(
     if active_reasons & {"weather_cooling", "weather_warming", "weather_hydration", "weather_energy"}:
         selected.append("weather_fit")
 
+    # Sau nhóm ưu tiên theo profile, bổ sung các câu hỏi có dữ liệu thật của món.
+    # Đây là nhóm "Xem thêm", không biến thành câu hỏi bệnh lý cá nhân mặc định.
+    selected.extend((
+        "calories", "satiety", "hypertension", "diabetes", "gout", "ibs", "weather_fit",
+        "ingredient_impact", "cooking_method",
+    ))
+
     result = []
     for question_id in dict.fromkeys(selected):
         spec = QUESTION_SPECS[question_id]
@@ -130,7 +149,7 @@ def get_question_specs(
         if question_id == "satiety" and dish.get("dish_satiety_score") is None and dish.get("adj_satiety_score") is None:
             continue
         result.append({"id": question_id, "label": spec["label"], "icon": spec["icon"]})
-    return result[:8]
+    return result[:11]
 
 
 def _fmt(value: Any, digits: int = 2) -> str | None:
@@ -207,6 +226,14 @@ def build_answer(question_id: str, dish: dict[str, Any], ingredients: list[dict[
     if question_id == "diet_type":
         names = [str(item.get("name")) for item in ingredients if item.get("name")]
         return f"Món có các nguyên liệu chính hiện được ghi nhận gồm: {', '.join(names[:8]) or 'chưa tải được dữ liệu'}. Việc phù hợp với chế độ ăn cần dựa trên toàn bộ nguyên liệu, gia vị và cách chế biến, không chỉ tên món."
+
+    if question_id == "ingredient_impact":
+        names = [str(item.get("name")) for item in ingredients if item.get("name")]
+        return f"Các nguyên liệu được dùng để tính chỉ số món gồm: {', '.join(names[:8]) or 'chưa tải được dữ liệu'}. Mức ảnh hưởng phụ thuộc cả loại nguyên liệu và định lượng gram, vì vậy không nên suy luận chỉ từ một thành phần riêng lẻ."
+
+    if question_id == "cooking_method":
+        method = dish.get("cooking_method_id")
+        return f"Món được tính với cooking_method_id là {method if method is not None else 'chưa có dữ liệu'}. Cách chế biến có thể làm thay đổi lượng nước, mức cô đặc và khả năng giữ lại một số thành phần; đây là ước tính của hệ thống, không phải kết luận tuyệt đối."
 
     raise KeyError(f"question_id không hợp lệ: {question_id}")
 

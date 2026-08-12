@@ -299,9 +299,13 @@ def dish_health_questions(dish_id):
     payload = request.get_json(silent=True) or {}
     profile = payload.get("profile") or {}
     recommendation_context = payload.get("recommendation_context") or {}
+    questions = get_question_specs(dish, profile, recommendation_context)
     return jsonify({
         "dish_id": dish_id,
-        "questions": get_question_specs(dish, profile, recommendation_context),
+        "primary_questions": questions[:4],
+        "more_questions": questions[4:11],
+        "questions": questions[:11],
+        "total": len(questions[:11]),
     }), 200
 
 
