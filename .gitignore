@@ -1,5 +1,6 @@
 # Python
 __pycache__/
+.hf_modules/
 *.py[cod]
 *.pyo
 *.pyd
