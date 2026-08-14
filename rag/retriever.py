@@ -3,11 +3,17 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+import os
 import re
 from typing import Any
 
+from dotenv import load_dotenv
+
 from .embedder import JinaEmbedder
 from .vector_store import NutritionVectorStore
+
+
+load_dotenv()
 
 
 @dataclass(frozen=True)
@@ -120,8 +126,21 @@ class NutritionRetriever:
         store: NutritionVectorStore | None = None,
         embedder: JinaEmbedder | None = None,
     ) -> None:
-        self.store = store or NutritionVectorStore()
-        self.embedder = embedder or JinaEmbedder()
+        backend = os.environ.get("RAG_VECTOR_BACKEND", "local").strip().lower()
+        if store is not None or embedder is not None or backend == "local":
+            self.store = store or NutritionVectorStore()
+            self.embedder = embedder or JinaEmbedder()
+            return
+
+        if backend == "supabase":
+            from .api_embedder import JinaAPIEmbedder
+            from .supabase_vector_store import SupabaseVectorStore
+
+            self.store = store or SupabaseVectorStore()
+            self.embedder = embedder or JinaAPIEmbedder()
+            return
+
+        raise ValueError("RAG_VECTOR_BACKEND phải là 'local' hoặc 'supabase'")
 
     def retrieve(self, query: str, n_results: int = 5) -> dict[str, Any]:
         if not query.strip():

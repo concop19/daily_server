@@ -1,0 +1,110 @@
+[
+  {
+    "source_id": "source_001",
+    "title": "Bảng thành phần thực phẩm Việt Nam (Vietnamese Food Composition Table)",
+    "organization": "Viện Dinh dưỡng Quốc gia (NIN) - Bộ Y tế Việt Nam",
+    "url": "http://viendinhduong.vn",
+    "published_at": "2007-01-01",
+    "updated_at": "2017-12-01",
+    "language": "vi",
+    "reliability": "high",
+    "needs_verification": true,
+    "notes": "Nguồn chuẩn quốc gia về giá trị dinh dưỡng thô của thực phẩm tại Việt Nam. Cần kiểm tra thủ công bản in 2017 để đối chiếu chính xác các hệ số chiết xuất."
+  },
+  {
+    "source_id": "source_002",
+    "title": "Hướng dẫn chẩn đoán và điều trị bệnh đái tháo đường týp 2 (Quyết định 5481/QĐ-BYT)",
+    "organization": "Bộ Y tế Việt Nam",
+    "url": "https://kcb.vn/van-ban/quyet-dinh-so-5481-qd-byt-ve-viec-ban-hanh-tai-lieu-chuyen-mon-huong-dan-chan-doan-va-dieu-tri-benh-dai-thao-duong-typ-2.html",
+    "published_at": "2020-12-30",
+    "updated_at": "2020-12-30",
+    "language": "vi",
+    "reliability": "high",
+    "needs_verification": false,
+    "notes": "Hướng dẫn y khoa chính thức của Bộ Y tế Việt Nam về quản lý đái tháo đường týp 2."
+  },
+  {
+    "source_id": "source_003",
+    "title": "Hướng dẫn chẩn đoán và điều trị tăng huyết áp (Quyết định 5968/QĐ-BYT)",
+    "organization": "Bộ Y tế Việt Nam",
+    "url": "https://kcb.vn/van-ban/quyet-dinh-so-5968-qd-byt-ve-viec-ban-hanh-tai-lieu-chuyen-mon-huong-dan-chan-doan-va-dieu-tri-tang-huyet-ap.html",
+    "published_at": "2021-12-20",
+    "updated_at": "2021-12-20",
+    "language": "vi",
+    "reliability": "high",
+    "needs_verification": false,
+    "notes": "Quy định chính thức của Bộ Y tế Việt Nam về khuyến nghị natri trong điều trị tăng huyết áp."
+  },
+  {
+    "source_id": "source_004",
+    "title": "Guideline: Sodium intake for adults and children",
+    "organization": "World Health Organization (WHO)",
+    "url": "https://www.who.int/publications/i/item/9789241504836",
+    "published_at": "2012-12-01",
+    "updated_at": "2023-05-01",
+    "language": "en",
+    "reliability": "high",
+    "needs_verification": false,
+    "notes": "Khuyến nghị của WHO về mức tiêu thụ natri tối đa cho người trưởng thành (<2000mg natri/ngày)."
+  },
+  {
+    "source_id": "source_005",
+    "title": "Standards of Care in Diabetes—2024",
+    "organization": "American Diabetes Association (ADA)",
+    "url": "https://diabetesjournals.org/care/issue/47/Supplement_1",
+    "published_at": "2024-01-01",
+    "updated_at": "2024-01-01",
+    "language": "en",
+    "reliability": "high",
+    "needs_verification": true,
+    "notes": "Tiêu chuẩn quốc tế của ADA. Cần xác minh thủ công các điều khoản bổ sung mới nhất năm 2024."
+  },
+  {
+    "source_id": "source_006",
+    "title": "2020 American College of Rheumatology Guideline for the Management of Gout",
+    "organization": "American College of Rheumatology (ACR)",
+    "url": "https://rheumatology.org/gout-guideline",
+    "published_at": "2020-05-11",
+    "updated_at": "2020-05-11",
+    "language": "en",
+    "reliability": "high",
+    "needs_verification": false,
+    "notes": "Hướng dẫn khuyến cáo hạn chế purine từ thực phẩm và đồ uống cho bệnh nhân Gout."
+  },
+  {
+    "source_id": "source_007",
+    "title": "ACG Clinical Guideline: Management of Irritable Bowel Syndrome",
+    "organization": "American College of Gastroenterology (ACG)",
+    "url": "https://journals.lww.com/ajg/fulltext/2021/01000/acg_clinical_guideline__management_of_irritable.11.aspx",
+    "published_at": "2021-01-01",
+    "updated_at": "2021-01-01",
+    "language": "en",
+    "reliability": "high",
+    "needs_verification": false,
+    "notes": "Hướng dẫn lâm sàng quản lý hội chứng ruột kích thích (IBS) và vai trò của chế độ ăn."
+  },
+  {
+    "source_id": "source_008",
+    "title": "Glycemic Index and Glycemic Load for 100+ Foods",
+    "organization": "Harvard Health Publishing - Harvard Medical School",
+    "url": "https://www.health.harvard.edu/diseases-and-conditions/glycemic-index-and-glycemic-load-for-100-foods",
+    "published_at": "2021-03-01",
+    "updated_at": "2021-03-01",
+    "language": "en",
+    "reliability": "high",
+    "needs_verification": true,
+    "notes": "Đã chỉnh sửa tiêu đề để khớp chính xác với URL Harvard Health Publishing. Cần xác minh thủ công đối chiếu với International Tables của Đại học Sydney."
+  },
+  {
+    "source_id": "source_unknown_001",
+    "title": "Nguồn chưa xác định",
+    "organization": null,
+    "url": null,
+    "published_at": null,
+    "updated_at": null,
+    "language": "vi",
+    "reliability": "unknown",
+    "needs_verification": true,
+    "notes": "Dành cho các giả định thuật toán nội bộ hoặc quy ước chưa có tài liệu đối chiếu trực tiếp từ cơ quan y tế. Cần người kiểm tra xác minh thủ công."
+  }
+]

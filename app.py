@@ -12,8 +12,12 @@ from datetime import datetime, timezone
 from zoneinfo import ZoneInfo
 
 import requests
+from dotenv import load_dotenv
 from flask import Flask, jsonify, request, g
 from flask_cors import CORS
+
+load_dotenv()
+
 from auth_middleware import require_auth, require_admin
 from monitoring import init_monitoring
 from rate_limiter import rate_limit
