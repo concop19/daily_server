@@ -6,6 +6,3 @@ gunicorn>=21.2
 PyJWT[cryptography]>=2.8      # jwt.decode + PyJWKClient
 cryptography>=41.0            # ES256 algorithm support
 APScheduler>=3.10.4           # Push notification cron scheduler
-sentence-transformers>=3.1.0 # Local multilingual embeddings for Nutrition RAG
-einops>=0.8.0                # Required by Jina XLM-RoBERTa embedding model
-chromadb>=1.5.9              # Local persistent vector store for Nutrition RAG
