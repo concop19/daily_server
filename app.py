@@ -62,7 +62,7 @@ from pipeline import (
     resolve_taste_weight,
     score_dish,
 )
-from rag.nutrition_context import NutritionContextBuilder
+# from rag.nutrition_context import NutritionContextBuilder (Lazy loaded in _get_rag_context_builder)
 from rag.health_qa import (
     QUESTION_SPECS,
     build_answer,
@@ -131,6 +131,7 @@ def _get_rag_context_builder():
     """Load the Jina model lazily so normal API startup stays lightweight."""
     global _rag_context_builder
     if _rag_context_builder is None:
+        from rag.nutrition_context import NutritionContextBuilder
         _rag_context_builder = NutritionContextBuilder()
     return _rag_context_builder
 

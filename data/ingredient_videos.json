@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "exported_at": "2026-08-24T03:17:28.545023+00:00",
+  "exported_at": "2026-08-24T08:27:18.262128+00:00",
   "table": "ingredient_videos",
   "count": 2,
   "data": [
@@ -9,14 +9,14 @@
       "slug": "ca-chua",
       "video_url": "https://www.youtube.com/watch?v=tomato_v2_updated",
       "category": "Rau củ quả",
-      "updated_at": "2026-08-24T03:17:27.494757+00:00"
+      "updated_at": "2026-08-24T08:27:17.038346+00:00"
     },
     {
       "ingredient_name": "Rau muống",
       "slug": "rau-muong",
       "video_url": "https://youtu.be/water_spinach_v1",
       "category": "Rau củ",
-      "updated_at": "2026-08-24T03:17:28.545023+00:00"
+      "updated_at": "2026-08-24T08:27:18.260966+00:00"
     }
   ]
 }

@@ -9,8 +9,7 @@ from typing import Any
 
 from dotenv import load_dotenv
 
-from .embedder import JinaEmbedder
-from .vector_store import NutritionVectorStore
+# JinaEmbedder and NutritionVectorStore are lazily loaded in NutritionRetriever.__init__
 
 
 load_dotenv()
@@ -123,21 +122,27 @@ def build_retrieval_plan(query: str) -> RetrievalPlan:
 class NutritionRetriever:
     def __init__(
         self,
-        store: NutritionVectorStore | None = None,
-        embedder: JinaEmbedder | None = None,
+        store: Any | None = None,
+        embedder: Any | None = None,
     ) -> None:
-        backend = os.environ.get("RAG_VECTOR_BACKEND", "local").strip().lower()
-        if store is not None or embedder is not None or backend == "local":
-            self.store = store or NutritionVectorStore()
-            self.embedder = embedder or JinaEmbedder()
-            return
+        backend = os.environ.get("RAG_VECTOR_BACKEND", "").strip().lower()
+        if not backend:
+            backend = "supabase" if (os.environ.get("SUPABASE_URL") and os.environ.get("SUPABASE_SERVICE_ROLE_KEY")) else "local"
 
-        if backend == "supabase":
+        if backend == "supabase" and store is None and embedder is None:
             from .api_embedder import JinaAPIEmbedder
             from .supabase_vector_store import SupabaseVectorStore
 
-            self.store = store or SupabaseVectorStore()
-            self.embedder = embedder or JinaAPIEmbedder()
+            self.store = SupabaseVectorStore()
+            self.embedder = JinaAPIEmbedder()
+            return
+
+        if backend == "local" or store is not None or embedder is not None:
+            from .embedder import JinaEmbedder
+            from .vector_store import NutritionVectorStore
+
+            self.store = store or NutritionVectorStore()
+            self.embedder = embedder or JinaEmbedder()
             return
 
         raise ValueError("RAG_VECTOR_BACKEND phải là 'local' hoặc 'supabase'")
