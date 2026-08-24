@@ -4,6 +4,7 @@ Import logic từ weather.py và pipeline.py.
 """
 
 import hashlib
+import hmac
 import json
 import math
 import os
@@ -17,6 +18,22 @@ from flask import Flask, jsonify, request, g
 from flask_cors import CORS
 
 load_dotenv()
+
+import ingredient_video_store
+from ingredient_video_utils import is_valid_youtube_url, slugify_vietnamese
+
+from localization import (
+    disclaimer,
+    language_from_request,
+    localize_dish,
+    localize_ingredient,
+    localize_ingredient_row,
+    localize_questions,
+    localize_ranked_dishes,
+    localize_province,
+    normalize_language,
+    question_label,
+)
 
 from auth_middleware import require_auth, require_admin
 from monitoring import init_monitoring
@@ -72,14 +89,11 @@ VN_TZ = ZoneInfo("Asia/Ho_Chi_Minh")   # FIX ID-017
 app = Flask(__name__)
 
 # ── CORS ───────────────────────────────────────────────────────────────────────
-# FIX ID-011: Bỏ supports_credentials=True khi origins="*" — theo CORS spec
-# credentials + wildcard origin bị browser reject và gây CSRF risk.
-# Production: thay "*" bằng domain thật (ví dụ "https://daily-mate.vercel.app").
 CORS(
     app,
     resources={r"/api/*": {"origins": "*"}, r"/admin/*": {"origins": "*"}},
     supports_credentials=False,
-    allow_headers=["Authorization", "Content-Type", "Accept"],
+    allow_headers=["Authorization", "Content-Type", "Accept", "Accept-Language", "X-Ingredient-Video-Key"],
     methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     expose_headers=["Content-Type"],
 )
@@ -92,7 +106,7 @@ def handle_preflight():
         from flask import make_response
         res = make_response("", 204)
         res.headers["Access-Control-Allow-Origin"]  = request.headers.get("Origin", "*")
-        res.headers["Access-Control-Allow-Headers"] = "Authorization, Content-Type, Accept"
+        res.headers["Access-Control-Allow-Headers"] = "Authorization, Content-Type, Accept, Accept-Language, X-Ingredient-Video-Key"
         res.headers["Access-Control-Allow-Methods"] = "GET, POST, PUT, DELETE, OPTIONS"
         res.headers["Access-Control-Max-Age"]       = "3600"
         return res
@@ -215,6 +229,11 @@ def dish_health_question(dish_id):
         return jsonify({"error": "dish_id phải là số nguyên"}), 400
 
     payload = request.get_json(silent=True) or {}
+    language = normalize_language(
+        payload.get("language")
+        or payload.get("lang")
+        or language_from_request(request)
+    )
     question_id = str(payload.get("question_id") or "").strip()
     show_sources = bool(payload.get("show_sources", False))
     profile = payload.get("profile") or {}
@@ -227,8 +246,17 @@ def dish_health_question(dish_id):
         return jsonify({"error": "not found"}), 404
 
     try:
-        context = _get_rag_context_builder().build(dish_id, spec["query"], n_results=5)
-        ingredients = data_store.get_ingredients_for_dish(dish_id)
+        context = _get_rag_context_builder().build_for_question(
+            dish_id=dish_id,
+            question_id=question_id,
+            language=language,
+            query=spec["query"],
+            n_results=5,
+        )
+        ingredients = [
+            localize_ingredient_row(row, language)
+            for row in data_store.get_ingredients_for_dish(dish_id)
+        ]
         raw_evidence = context.get("evidence", [])
         evidence = []
         if isinstance(raw_evidence, dict):
@@ -254,30 +282,32 @@ def dish_health_question(dish_id):
         }
         try:
             answer = generate_nutrition_answer(
-                question=spec["label"],
+                question=question_label(question_id, spec["label"], language),
                 context={
                     **context,
-                    "dish": {**context["dish"], "ingredients": ingredients},
+                    "dish": {**localize_dish(context["dish"], language), "ingredients": ingredients},
                     "evidence": evidence,
                 },
                 profile=profile,
+                language=language,
             )
             answer_mode = "ai_rag"
         except Exception as exc:
             app.logger.warning("AI answer unavailable, using grounded fallback: %s", exc)
-            answer = build_answer(question_id, dish, ingredients)
+            answer = build_answer(question_id, dish, ingredients, language=language)
             answer_mode = "grounded_fallback"
 
         response = {
             "dish_id": dish_id,
-            "title": dish.get("title"),
+            "title": localize_dish(dish, language).get("title"),
             "question_id": question_id,
-            "question": spec["label"],
+            "question": question_label(question_id, spec["label"], language),
             "answer": answer,
             "answer_mode": answer_mode,
+            "language": language,
             "metrics": metrics,
             "serving_size": context["dish"]["serving_size"],
-            "disclaimer": "Thông tin mang tính tham khảo, không thay thế tư vấn y tế.",
+            "disclaimer": disclaimer(language),
         }
         if show_sources:
             response["sources"] = source_summaries(evidence)
@@ -300,16 +330,18 @@ def dish_health_questions(dish_id):
     dish = data_store.get_dish_by_id(dish_id)
     if not dish:
         return jsonify({"error": "not found"}), 404
+    language = language_from_request(request)
     payload = request.get_json(silent=True) or {}
     profile = payload.get("profile") or {}
     recommendation_context = payload.get("recommendation_context") or {}
-    questions = get_question_specs(dish, profile, recommendation_context)
+    questions = localize_questions(get_question_specs(dish, profile, recommendation_context), language)
     return jsonify({
         "dish_id": dish_id,
         "primary_questions": questions[:4],
         "more_questions": questions[4:11],
         "questions": questions[:11],
         "total": len(questions[:11]),
+        "language": language,
     }), 200
 
 
@@ -362,6 +394,7 @@ def admin_stats():
 def recommend():
     t0   = datetime.now(timezone.utc)
     # FIX ID-008: guard None khi body rỗng / không phải JSON
+    language = language_from_request(request)
     body = request.get_json(force=True) or {}
 
     cuisine_scope           = body.get("cuisine_scope", "vietnam")
@@ -455,7 +488,9 @@ def recommend():
         loc=loc, season=season,
         basket_ingredient_ids=selected_ids,
         temperature=_temperature,
+        language=language,
     )
+    ranked = localize_ranked_dishes(ranked, language)
 
     elapsed = (datetime.now(timezone.utc) - t0).total_seconds()
     return jsonify({
@@ -471,6 +506,7 @@ def recommend():
         "basket_warning":   basket_warning,   # None bình thường, object khi pool < 10
         "dish_pool_size":   len(dish_pool),
         "ranked_dishes":    ranked,
+        "language":         language,
         # ── Pagination fields ──────────────────────────────────────────────
         "page":             page,
         "page_size":        page_size,
@@ -540,6 +576,7 @@ def feedback():
 def get_challenge():
     """GET /api/v1/challenge?lat=16.047&lon=108.206 — Món thử thách trong ngày."""
     # FIX ID-005: parse_float với range check
+    language = language_from_request(request)
     lat = _parse_float(request.args.get("lat"), 16.047, -90, 90)
     lon = _parse_float(request.args.get("lon"), 108.206, -180, 180)
 
@@ -584,29 +621,40 @@ def get_challenge():
          ("cooling",   demand["cooling_food_need"])],
         key=lambda x: x[1],
     )[0]
-    why_map = {
-        "hydration": f"Hôm nay nắng nóng, {chosen['title']} giúp bổ sung nước hiệu quả.",
-        "warming":   f"Thời tiết lạnh hôm nay, {chosen['title']} ấm bụng, rất phù hợp.",
-        "cooling":   f"Nhiệt độ cao, {chosen['title']} có tính mát giúp hạ nhiệt tốt.",
-    }
+    display_chosen = localize_dish(chosen, language)
+    if language == "en":
+        why_map = {
+            "hydration": f"It is hot today, and {display_chosen['title']} helps replenish fluids.",
+            "warming":   f"The weather is cold today, and {display_chosen['title']} is warm and comforting.",
+            "cooling":   f"Temperatures are high, and {display_chosen['title']} has a cooling effect.",
+        }
+        default_why = f"{display_chosen['title']} fits today's weather."
+    else:
+        why_map = {
+            "hydration": f"Hôm nay nắng nóng, {display_chosen['title']} giúp bổ sung nước hiệu quả.",
+            "warming":   f"Thời tiết lạnh hôm nay, {display_chosen['title']} ấm bụng, rất phù hợp.",
+            "cooling":   f"Nhiệt độ cao, {display_chosen['title']} có tính mát giúp hạ nhiệt tốt.",
+        }
+        default_why = f"{display_chosen['title']} phù hợp với thời tiết hôm nay."
     cook_t = chosen.get("cook_time_minutes") or 30
     diff   = "easy" if cook_t <= 20 else ("medium" if cook_t <= 45 else "hard")
 
     return jsonify({
         "challenge_dish": {
             "dish_id":       chosen["id"],
-            "title":         chosen["title"],
+            "title":         display_chosen["title"],
             "image_url":     chosen.get("image_url", ""),
             "url":           chosen.get("url", ""),
             "nation":        chosen.get("nation", ""),
             "cook_time_min": cook_t,
             "difficulty":    diff,
-            "why_today":     why_map.get(top_dim, f"{chosen['title']} phù hợp với thời tiết hôm nay."),
+            "why_today":     why_map.get(top_dim, default_why),
             "tips":          [],
             "final_score":   round(scores.get(chosen["id"], 0.5), 4),
         },
         "challenge_date": today,
         "streak":         0,
+        "language":       language,
     })
 
 
@@ -621,18 +669,20 @@ def list_dishes():
     if nation:
         all_dishes = [d for d in all_dishes if d.get("nation") == nation]
 
+    language = language_from_request(request)
     page_dishes = all_dishes[offset: offset + limit]
     cols = ["id", "title", "nation", "cook_time_minutes", "is_vegan", "is_vegetarian"]
-    return jsonify({"dishes": [{k: d.get(k) for k in cols} for d in page_dishes]})
+    return jsonify({"dishes": [{k: localize_dish(d, language).get(k) for k in cols} for d in page_dishes], "language": language})
 
 
 @app.route("/api/v1/dishes/<dish_id>", methods=["GET"])
 def dish_detail(dish_id):
-    dish = data_store.get_dish_by_id(int(dish_id))
-    if not dish:
+    language = language_from_request(request)
+    source_dish = data_store.get_dish_by_id(int(dish_id))
+    if not source_dish:
         return jsonify({"error": "not found"}), 404
 
-    dish = dict(dish)  # copy để tránh mutate cache
+    dish = localize_dish(source_dish, language)
     for f in ("allergen_summary", "season_suitability", "climate_suitability", "taste_profile"):
         v = dish.get(f)
         if isinstance(v, str):
@@ -641,7 +691,10 @@ def dish_detail(dish_id):
             except Exception:
                 pass
 
-    ingr_rows = data_store.get_ingredients_for_dish(int(dish_id))
+    ingr_rows = [
+        localize_ingredient_row(row, language)
+        for row in data_store.get_ingredients_for_dish(int(dish_id))
+    ]
     dish["ingredients"] = [
         {
             "id":         r.get("ingredient_id"),
@@ -654,8 +707,11 @@ def dish_detail(dish_id):
         for r in sorted(ingr_rows,
                         key=lambda x: (-bool(x.get("is_main")), -(x.get("quantity_g") or 0)))
     ]
-    dish["health_questions"] = get_question_specs(dish)
+    dish["health_questions"] = localize_questions(get_question_specs(source_dish), language)
     dish["serving_size"] = "toàn bộ công thức món ăn"
+    if language == "en":
+        dish["serving_size"] = "the full recipe"
+    dish["language"] = language
     return jsonify(dish)
 
 
@@ -665,18 +721,24 @@ def list_ingredients():
     limit    = _parse_int(request.args.get("limit"), 50, 1, 200)
     category = request.args.get("category")
 
+    language = language_from_request(request)
     all_ingredients = data_store.get_all_ingredients()
     if category:
-        all_ingredients = [i for i in all_ingredients if i.get("category") == category]
+        all_ingredients = [
+            i for i in all_ingredients
+            if i.get("category") == category
+            or localize_ingredient(i, language).get("category") == category
+        ]
     all_ingredients = all_ingredients[:limit]
 
     result = []
     for i in all_ingredients:
+        localized = localize_ingredient(i, language)
         item = {
             "id":                 i.get("id"),
-            "name":               i.get("name", ""),
+            "name":               localized.get("name", ""),
             "name_en":            i.get("name_en", ""),
-            "category":           i.get("category", ""),
+            "category":           localized.get("category", ""),
             "is_animal_based":    i.get("is_animal_based"),
             "distribution_reach": i.get("distribution_reach", ""),
         }
@@ -688,23 +750,16 @@ def list_ingredients():
                 sa = None
         item["seasonal_availability"] = sa
         result.append(item)
-    return jsonify({"ingredients": result})
+    return jsonify({"ingredients": result, "language": language})
 
 
 @app.route("/api/v1/locations", methods=["GET"])
 def list_locations():
+    language = language_from_request(request)
     rows = data_store.get_all_provinces()
-    provinces = [
-        {
-            "province_name": r.get("province_name", ""),
-            "food_region":   r.get("food_region", ""),
-            "climate_type":  r.get("climate_type", ""),
-            "lat":           r.get("lat_center"),
-            "lon":           r.get("lon_center"),
-        }
-        for r in sorted(rows, key=lambda x: x.get("province_name", ""))
-    ]
-    return jsonify({"provinces": provinces})
+    provinces = [localize_province(r, language) for r in sorted(rows, key=lambda x: x.get("province_name", ""))]
+    return jsonify({"provinces": provinces, "language": language})
+
 
 
 @app.route("/api/v1/weather/simulate", methods=["POST"])
@@ -721,7 +776,7 @@ def weather_simulate():
 
 
 @app.route("/api/v1/pipeline/debug", methods=["POST"])
-@require_auth   # FIX ID-009: bảo vệ endpoint lộ scoring internals
+@require_auth
 def pipeline_debug():
     # FIX ID-008: guard None body
     body = request.get_json(force=True) or {}
@@ -840,6 +895,92 @@ def test_push():
         return jsonify({"sent": False, "detail": "Gửi thất bại, kiểm tra log server"}), 500
 
 
+# ── Ingredient Videos (Admin CRUD via Secret Key & Public for Mobile) ─────────
+
+@app.route("/api/v1/ingredient-videos", methods=["POST"])
+def add_or_update_ingredient_video():
+    """
+    POST /api/v1/ingredient-videos
+    Header:
+        X-Ingredient-Video-Key: <INGREDIENT_VIDEO_ADMIN_KEY>
+        Content-Type: application/json
+    Body:
+        {
+            "ingredient_name": "Cà chua",
+            "video_url": "https://www.youtube.com/watch?v=abc123xyz",
+            "category": "Rau củ"  # Optional
+        }
+    """
+    admin_key = os.environ.get("INGREDIENT_VIDEO_ADMIN_KEY", "").strip()
+    client_key = request.headers.get("X-Ingredient-Video-Key", "").strip()
+
+    if not admin_key or not client_key or not hmac.compare_digest(client_key, admin_key):
+        return jsonify({"success": False, "error": "invalid ingredient video key"}), 401
+
+    body = request.get_json(silent=True) or {}
+    ingredient_name = str(body.get("ingredient_name") or "").strip()
+    video_url = str(body.get("video_url") or "").strip()
+    category = body.get("category")
+    if isinstance(category, str):
+        category = category.strip() or None
+    else:
+        category = None
+
+    if not ingredient_name:
+        return jsonify({"success": False, "error": "ingredient_name is required"}), 400
+
+    if not video_url:
+        return jsonify({"success": False, "error": "video_url is required"}), 400
+
+    if not is_valid_youtube_url(video_url):
+        return jsonify({"success": False, "error": "video_url must be a valid YouTube URL"}), 400
+
+    slug = slugify_vietnamese(ingredient_name)
+    if not slug:
+        return jsonify({"success": False, "error": "unable to generate valid slug from ingredient_name"}), 400
+
+    # Auto-infer category from existing ingredients if omitted
+    if not category:
+        for ing in data_store.get_all_ingredients():
+            if slugify_vietnamese(ing.get("name", "")) == slug:
+                category = ing.get("category") or ing.get("ingredient_type")
+                break
+
+    saved_item = ingredient_video_store.upsert_ingredient_video(
+        ingredient_name=ingredient_name,
+        video_url=video_url,
+        category=category,
+        slug=slug,
+    )
+
+    return jsonify({
+        "success": True,
+        "item": {
+            "ingredient_name": saved_item.get("ingredient_name", ingredient_name),
+            "slug":            saved_item.get("slug", slug),
+            "video_url":       saved_item.get("video_url", video_url),
+            "category":        saved_item.get("category"),
+        },
+    }), 200
+
+
+@app.route("/api/v1/ingredient-videos", methods=["GET"])
+def get_ingredient_videos():
+    """
+    GET /api/v1/ingredient-videos
+    Public endpoint for mobile app.
+    Optional query params: category, search/q
+    """
+    category = request.args.get("category")
+    search = request.args.get("search") or request.args.get("q")
+
+    items = ingredient_video_store.get_ingredient_videos(category=category, search=search)
+    return jsonify({
+        "items": items,
+        "total": len(items),
+    }), 200
+
+
 # ── Recommend function dùng bởi scheduler ────────────────────────────────────
 
 def _recommend_for_device(device: dict, meal_type: str):
@@ -889,15 +1030,14 @@ def _recommend_for_device(device: dict, meal_type: str):
             demand, profile,
             loc=loc, season=season,
             basket_ingredient_ids=set(),
+            language="vi",
         )
-
         return ranked[0] if ranked else None
 
     except Exception as e:
         import logging
         logging.getLogger(__name__).error(f"[Push] _recommend_for_device failed: {e}")
         return None
-
 
 # ── Entry point ────────────────────────────────────────────────────────────────
 if __name__ == "__main__":

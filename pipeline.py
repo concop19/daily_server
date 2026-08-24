@@ -695,7 +695,7 @@ def rank_and_explain(scores: dict, dish_pool: list, boosts: dict, demand: dict,
                      page: int = 1, page_size: int = 10,
                      loc: dict | None = None, season: str | None = None,
                      basket_ingredient_ids: set | None = None,
-                     db=None, temperature=None) -> tuple[list, list, int, int, bool]:
+                     db=None, temperature=None, language: str = "vi") -> tuple[list, list, int, int, bool]:
     sorted_ids = sorted(scores, key=lambda x: scores[x], reverse=True)
     dish_map   = {d["id"]: d for d in dish_pool}
     _loc    = loc    or {"traditional_compatibility": 0.8}
@@ -726,6 +726,7 @@ def rank_and_explain(scores: dict, dish_pool: list, boosts: dict, demand: dict,
                     dish=dish, demand=demand, profile=profile, boost=boost,
                     loc=_loc, season=_season, basket_ingredient_ids=_basket,
                     temperature=temperature,
+                    language=language,
                 )
             except Exception:
                 explanation_obj = _fallback_explanation(dish)

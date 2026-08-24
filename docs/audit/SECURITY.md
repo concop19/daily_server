@@ -1,7 +1,7 @@
 # SECURITY.md — Daily Mate Server · Security Audit Checklist
 
 > Mục tiêu: rà soát toàn bộ lỗ hổng bảo mật theo OWASP Top 10 (2025)
-> và các pattern đặc thù của Flask + Supabase + SQLite.
+> và các pattern đặc thù của Flask + Supabase + JSON DataStore.
 > Mỗi mục có câu hỏi kiểm tra cụ thể và file liên quan.
 
 ---
@@ -143,9 +143,10 @@
 - [ ] Kiểm tra .gitignore có exclude .env không
 - [ ] Kiểm tra git history: `git log --all --full-history -- .env`
 
-### F3. DB Path Hardcode
-- [ ] `r"D:\dream_project\...\recipe.db"` hardcode trong app.py
-      → khi deploy lên server Linux → path Windows này sẽ fail silently
+### F3. Data Directory Configuration
+- [ ] JSON catalog được đọc từ thư mục `data/` tương đối với project
+      → khi deploy cần kiểm tra đủ file dataset và quyền đọc
+- [ ] Không sử dụng `DB_PATH` hoặc phụ thuộc vào `recipe.db` trong runtime hiện tại
 
 ---
 

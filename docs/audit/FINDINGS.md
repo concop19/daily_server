@@ -4,6 +4,11 @@
 > AI agent ghi vào đây SAU MỖI finding. User triage và track fix ở đây.
 > Format: mỗi finding = 1 block. Severity theo REVIEW.md.
 
+> **Lưu ý sau migration:** Log bên dưới được tạo khi hệ thống còn dùng SQLite.
+> Catalog hiện đã chuyển sang JSON DataStore; các finding về SQLite connection,
+> DB path hoặc SQLite schema chỉ còn giá trị lịch sử và cần được re-audit theo
+> `data_store.py` nếu phát sinh thay đổi mới.
+
 ---
 
 ## Trạng thái tổng quan

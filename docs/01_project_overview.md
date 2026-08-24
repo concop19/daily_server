@@ -60,7 +60,7 @@ nguyên liệu sẵn có trong tủ lạnh, và vùng miền địa lý của ng
 - Sinh giải thích tiếng Việt tự nhiên cho mỗi gợi ý theo 7 chiều:
   headline, weather_reason, dish_match, nutrition_note,
   ingredient_note, seasonal_note, tags
-- Template từ bảng advice_templates trong SQLite DB
+- Template từ `data/advice_templates.json`, được `data_store.py` nạp vào memory
 - **FitChecker**: chỉ sinh lý do khi dish score thực sự vượt ngưỡng,
   không bịa lý do khi dữ liệu không đủ điều kiện
 
@@ -77,7 +77,7 @@ nguyên liệu sẵn có trong tủ lạnh, và vùng miền địa lý của ng
 | Thành phần | Công nghệ |
 |---|---|
 | Web Framework | Flask 3.x + Flask-CORS |
-| Database local | SQLite (recipe.db) |
+| Data layer local | JSON DataStore — nạp toàn bộ dữ liệu vào memory khi khởi động |
 | Database cloud | Supabase (PostgreSQL) — feedback, request log |
 | Auth | Supabase JWT (ES256/HS256) — PyJWT + JWKS auto-cache |
 | Weather API | OpenWeatherMap (current weather + air pollution) |
@@ -86,18 +86,22 @@ nguyên liệu sẵn có trong tủ lạnh, và vùng miền địa lý của ng
 | Rate Limiting | In-process decorator: 10 req/60s trên /api/v1/recommend |
 
 
-## 5. Phạm vi dữ liệu (SQLite — recipe.db)
+## 5. Phạm vi dữ liệu (JSON DataStore — thư mục `data/`)
+
+Các dataset tĩnh được lưu dưới dạng JSON và nạp một lần vào memory khi server
+khởi động. Các lookup chính dùng list/dict trong Python thay vì mở kết nối DB
+cho từng request, giúp giảm đáng kể latency của recommendation pipeline.
 
 | Bảng | Nội dung |
 |---|---|
-| dishes | Món ăn + chỉ số: hydration, warming, cooling, glycemic load, sodium, gout risk, cost level |
-| ingredients | Nguyên liệu: danh mục, vùng phân phối, mùa vụ, source_type |
-| dish_ingredient | Quan hệ món – nguyên liệu với khối lượng (g) và is_main flag |
-| cooking_methods | Phương pháp nấu (nấu canh, soup...) |
-| vn_administrative_unit | 63 tỉnh/thành: vùng ẩm thực, khí hậu, tọa độ trung tâm |
-| ingredient_availability_matrix | Ma trận availability theo (distribution_reach, food_region) |
-| advice_templates | Mẫu giải thích theo context_type + trigger_dim + intensity |
-| weather_cache | Cache thời tiết theo ô lưới 0.1 độ (~11 km) với adaptive TTL |
+| `dishes.json` | Món ăn + chỉ số: hydration, warming, cooling, glycemic load, sodium, gout risk, cost level |
+| `ingredients.json` | Nguyên liệu: danh mục, vùng phân phối, mùa vụ, source_type |
+| `dish_ingredients.json` | Quan hệ món – nguyên liệu với khối lượng (g) và is_main flag |
+| `cooking_methods.json` | Phương pháp nấu (nấu canh, soup...) |
+| `provinces.json` | 63 tỉnh/thành: vùng ẩm thực, khí hậu, tọa độ trung tâm |
+| `availability_matrix.json` | Ma trận availability theo (distribution_reach, food_region) |
+| `advice_templates.json` | Mẫu giải thích theo context_type + trigger_dim + intensity |
+| `device_tokens.json` | Token push và vị trí thiết bị; ghi lại sau mỗi lần upsert |
 
 ---
 
@@ -124,7 +128,8 @@ nguyên liệu sẵn có trong tủ lạnh, và vùng miền địa lý của ng
 
 - AI polish explanation cần Groq API key riêng
   (module ai_polish.py đã thiết kế và review kỹ, chưa enable trong demo)
-- Weather cache mất khi restart server (in-memory + SQLite, chưa persist cloud)
+- Data catalog được load lại từ JSON khi restart; device tokens được persist trong `data/device_tokens.json`
+- Weather cache dùng L1 in-memory và L2 Supabase, nên L1 mất khi restart nhưng L2 vẫn có thể phục hồi
 - Rate limiter in-process, chưa scale ngang được (cần Redis cho production)
 - Admin stats chỉ xem qua Supabase service_role key
 - Chưa có cơ chế học từ feedback người dùng để cải thiện gợi ý theo thời gian

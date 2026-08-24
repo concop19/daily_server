@@ -1,8 +1,8 @@
 {
   "version": "1.0",
-  "exported_at": "2026-05-11T07:02:04.265476+00:00",
+  "exported_at": "2026-08-24T04:12:47.839702+00:00",
   "table": "device_tokens",
-  "count": 1,
+  "count": 2,
   "data": [
     {
       "device_id": "be38d9be-2c7a-4344-89db-c6cf0c01d9de",
@@ -12,7 +12,17 @@
       "lon": 108.27,
       "province": null,
       "created_at": "2026-05-11T07:02:04.265476+00:00",
-      "updated_at": "2026-05-11T07:02:04.265476+00:00"
+      "updated_at": "2026-08-24T04:12:47.839702+00:00"
+    },
+    {
+      "device_id": "dev_r3xsc8wbv2mmnze162k",
+      "fcm_token": "ExponentPushToken[2H6m2hG432kv3RyeXIV0DI]",
+      "platform": "android",
+      "lat": 15.98,
+      "lon": 108.27,
+      "province": null,
+      "created_at": "2026-08-12T07:48:35.693286+00:00",
+      "updated_at": "2026-08-12T08:11:24.285183+00:00"
     }
   ]
 }

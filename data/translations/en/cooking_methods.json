@@ -1,0 +1,214 @@
+{
+  "version": "1.0",
+  "language": "en",
+  "source": "cooking_methods.json",
+  "generated_at": "2026-08-22T07:47:56.194711+00:00",
+  "count": 18,
+  "failed_count": 0,
+  "data": [
+    {
+      "method_id": 1,
+      "name_en": "boiling",
+      "description_en": "Cook in boiling water",
+      "notes_en": "Sodium dissolves in the cooking water; good hydration",
+      "distinction_key_en": "Submerged in boiling water, direct heat and steam",
+      "_meta": {
+        "provider": "deepl+existing",
+        "source_hash": "8bba83ba908a5d24cd953f8e3c442add01ca553517df6a1a599bbb5d79490339"
+      }
+    },
+    {
+      "method_id": 2,
+      "name_en": "steaming",
+      "description_en": "Steaming",
+      "notes_en": "Preserving the Best Nutrients",
+      "distinction_key_en": "Exposed to hot steam, do not touch water",
+      "_meta": {
+        "provider": "deepl+existing",
+        "source_hash": "a7e890095e780b054a4863b6002e8b6a2e407ee11a2936af0f7f0a7e6c4baae7"
+      }
+    },
+    {
+      "method_id": 3,
+      "name_en": "deep frying",
+      "description_en": "Soak in hot oil",
+      "notes_en": "Energy increases significantly due to oil absorption",
+      "distinction_key_en": "Completely submerged in high-temperature fat",
+      "_meta": {
+        "provider": "deepl+existing",
+        "source_hash": "0548dfd710d325069d45dea91a0203fb2851d7bff8aa975aaf99b9fa140911c2"
+      }
+    },
+    {
+      "method_id": 4,
+      "name_en": "pan frying",
+      "description_en": "Fry in a small amount of oil in a skillet",
+      "notes_en": "Less oil than deep-frying",
+      "distinction_key_en": "The pan’s surface is coated with a thin layer of oil",
+      "_meta": {
+        "provider": "deepl+existing",
+        "source_hash": "2d02e3bbf35999095f0868d5f7f19ffac441c20ea061b8faa35a20e1f09f4203"
+      }
+    },
+    {
+      "method_id": 5,
+      "name_en": "stir frying",
+      "description_en": "Quick stir-fry over high heat",
+      "notes_en": "Quick, minimal nutrient loss; slight increase in sodium",
+      "distinction_key_en": "Stir-fry quickly over high heat with little fat",
+      "_meta": {
+        "provider": "deepl+existing",
+        "source_hash": "d394c5900a06f9b0e735dbb97d8306b708693020bce9434d034b034766b09a05"
+      }
+    },
+    {
+      "method_id": 6,
+      "name_en": "grilling",
+      "description_en": "Grill over charcoal or in an oven",
+      "notes_en": "Water loss due to heat; high thermogenic effect",
+      "distinction_key_en": "Direct dry heat from a heat source (charcoal/clay)",
+      "_meta": {
+        "provider": "deepl+existing",
+        "source_hash": "cf83f3f515ae99ddd866ff5de26c48253d012ff004a0c3e3286f8e9ed04c58f0"
+      }
+    },
+    {
+      "method_id": 7,
+      "name_en": "braising",
+      "description_en": "Simmer with fish sauce over low heat",
+      "notes_en": "Sodium levels rise sharply due to seasoning absorption",
+      "distinction_key_en": "Slow cooking with a concentrated fish sauce or salt solution",
+      "_meta": {
+        "provider": "deepl+existing",
+        "source_hash": "b00a1a05c04eca5f7d51e409f7269222614c9a0f3614e3bff59b563353137b4d"
+      }
+    },
+    {
+      "method_id": 8,
+      "name_en": "stewing",
+      "description_en": "Simmer over low heat for a long time",
+      "notes_en": "High heat; sodium content increases from the broth",
+      "distinction_key_en": "Cook very slowly with plenty of liquid to extract the sweetness from the bones/vegetables",
+      "_meta": {
+        "provider": "deepl+existing",
+        "source_hash": "75fe4ae1f9a1ec3be16704609b03cc865164a4840963cd8e18ca12dc609ee20f"
+      }
+    },
+    {
+      "method_id": 9,
+      "name_en": "dry roasting",
+      "description_en": "Dry-roasting without oil",
+      "notes_en": "Significant water loss; highest thermogenic effect",
+      "distinction_key_en": "Direct dry heat in a pan, without oil or water",
+      "_meta": {
+        "provider": "deepl+existing",
+        "source_hash": "797e5ac9d996f7ae61449ff457d05c3d6f58e22908f5c10cd1cd7d1dac792fd9"
+      }
+    },
+    {
+      "method_id": 10,
+      "name_en": "raw mixing",
+      "description_en": "Mix raw or blanch briefly",
+      "notes_en": "Almost raw; preserves enzymes well",
+      "distinction_key_en": "Mechanical mixing of fresh or partially cooked ingredients",
+      "_meta": {
+        "provider": "deepl+existing",
+        "source_hash": "17550a6f96f7f7400b0751dded2618945b2f594747634eb6d3573537a46584fa"
+      }
+    },
+    {
+      "method_id": 11,
+      "name_en": "raw",
+      "description_en": "No heat required",
+      "notes_en": "Reference baseline",
+      "distinction_key_en": "Preserve the natural state; do not apply heat",
+      "_meta": {
+        "provider": "deepl+existing",
+        "source_hash": "0491b9ee9f2bf186e4003b92ee883adea347a384ae156d6e050d1365052c46a2"
+      }
+    },
+    {
+      "method_id": 12,
+      "name_en": "double boiling",
+      "description_en": "Indirect steaming in a pot of water",
+      "notes_en": "Gentler than direct steaming",
+      "distinction_key_en": "Indirect heat through a barrier (bowl/pot)",
+      "_meta": {
+        "provider": "deepl+existing",
+        "source_hash": "ca07c0c3d4a70f837822ac9fc3e9a2ec05c7563189dbbed112a08bf363f9e47c"
+      }
+    },
+    {
+      "method_id": 13,
+      "name_en": "simmering_acidic",
+      "description_en": "Simmering in a mildly acidic environment (pickled vegetables, tamarind, fermented rice)",
+      "notes_en": "Acid helps tenderize protein; sodium content increases due to the stewing spices",
+      "distinction_key_en": "Slow cooking in an acidic solution (pickled/sour)",
+      "_meta": {
+        "provider": "deepl+existing",
+        "source_hash": "9f2be5b99aa683c3427a35ebc4ac0037a65e199a61ac626f5141f9d8d5174dd4"
+      }
+    },
+    {
+      "method_id": 14,
+      "name_en": "simmering_reduction",
+      "description_en": "Reduce the sauce over low heat",
+      "notes_en": "Glycemic index and sodium levels spike due to concentrated sauce clinging to the food",
+      "distinction_key_en": "Cook until the sauce has reduced and thickened, coating the surface of the food",
+      "_meta": {
+        "provider": "deepl+existing",
+        "source_hash": "a79d1d0c8738b162dfe160e5eb852e32d2ad5b0b453aee71d15e6f5bda5e3e7e"
+      }
+    },
+    {
+      "method_id": 15,
+      "name_en": "soup_making",
+      "description_en": "Lightly stir-fry the ingredients, then prepare the broth",
+      "notes_en": "Higher in calories than boiling because it involves stir-frying with oil, onions, and garlic",
+      "distinction_key_en": "Combination: Sauté (quick stir-fry) + Boiling (simmering)",
+      "_meta": {
+        "provider": "deepl+existing",
+        "source_hash": "b2cd4ef8c0bab7622f72f197cd33ee434ad64933474a0fd085cc213cdf20e97a"
+      }
+    },
+    {
+      "method_id": 16,
+      "name_en": "fermenting",
+      "description_en": "Natural fermentation (pickled vegetables, pickled eggplant)",
+      "notes_en": "Extremely high sodium; reduced glycemic index due to bacteria consuming sugar",
+      "distinction_key_en": "Chemical conversion using bacteria, without heat",
+      "_meta": {
+        "provider": "deepl+existing",
+        "source_hash": "205a1e05324e0b5dfb5d6328f5690e8d687e7cb2d388bc87eea0b4da106afe17"
+      }
+    },
+    {
+      "method_id": 17,
+      "name_en": "roasting_fat_based",
+      "description_en": "Roast in the oven or in a pan with added fat",
+      "notes_en": "Calorie content increases due to fat; moisture content decreases more significantly than with conventional roasting",
+      "distinction_key_en": "Dry heat in an enclosed space with a layer of fat covering the food",
+      "_meta": {
+        "provider": "deepl+existing",
+        "source_hash": "0bc0b2470b00447014d1a08bbeeae27974505f1ef15b4edff9d85e681eb1f6ad"
+      }
+    },
+    {
+      "method_id": 18,
+      "name_en": "coconut_water_reduction",
+      "description_en": "Cooking down with coconut water",
+      "notes_en": "High energy and glycemic index due to the sugar in concentrated coconut water",
+      "distinction_key_en": "Cook the food in coconut water until it develops color",
+      "_meta": {
+        "provider": "deepl+existing",
+        "source_hash": "3b99c8c61fbc0a78cc83d2e399ac20808ce017183496e118fa5a6b7d0d9e8846"
+      }
+    }
+  ],
+  "failures": [],
+  "provider_counts": {
+    "deepl": 18,
+    "existing": 18
+  },
+  "checkpoint": false
+}

@@ -42,13 +42,14 @@ in-process, không có message queue hay microservice.
            │                          │
            ▼                          ▼
 ┌──────────────────┐      ┌────────────────────────┐
-│  SQLite (local)  │      │  Supabase (cloud PG)   │
-│  recipe.db       │      │  - session_feedback    │
-│  - dishes        │      │  - request_log         │
-│  - ingredients   │      │  - auth (JWT/JWKS)     │
-│  - locations     │      └────────────────────────┘
-│  - weather_cache │
-│  - advice_tmpls  │
+│ JSON DataStore   │      │  Supabase (cloud PG)   │
+│ data/*.json      │      │  - session_feedback    │
+│ loaded in memory │      │  - request_log         │
+│ - dishes         │      │  - weather_cache       │
+│ - ingredients    │      │  - auth (JWT/JWKS)     │
+│ - locations      │      └────────────────────────┘
+│ - advice_tmpls   │
+│ - device_tokens  │
 └──────────────────┘
            │
            ▼
@@ -64,12 +65,13 @@ in-process, không có message queue hay microservice.
 
 
 ### 2.1 app.py — Entry Point & HTTP Layer
-**Trách nhiệm:** Khởi tạo Flask app, định nghĩa routes, kết nối DB, xử lý CORS/preflight.
+**Trách nhiệm:** Khởi tạo Flask app, load JSON DataStore, định nghĩa routes và xử lý CORS/preflight.
 
-- Tạo kết nối SQLite mỗi request qua get_db() (không dùng connection pool)
+- Gọi `data_store.load_all()` một lần khi process khởi động để nạp `data/*.json` vào memory
+- Dùng dict index cho lookup món/nguyên liệu và map quan hệ món–nguyên liệu
+- Ghi riêng `data/device_tokens.json` khi token thiết bị được tạo hoặc cập nhật
 - Xử lý tất cả OPTIONS preflight trả 204 trước khi middleware chạy
-- Fallback DB: nếu DB_PATH không tồn tại, copy từ bundled recipe.db
-- Giao tiếp với Supabase qua requests thẳng (không ORM)
+- Giao tiếp với Supabase qua requests thẳng cho log, feedback và weather cache (không ORM)
 
 **Routes quan trọng:**
 - POST /api/v1/recommend → gọi toàn bộ pipeline
@@ -103,7 +105,7 @@ in-process, không có message queue hay microservice.
 **Trách nhiệm:** Fetch, cache và tính toán weather vector.
 
 **Luồng ưu tiên cache:**
-  Override dict → In-memory cache (_WEATHER_CACHE) → SQLite DB → OpenWeather API → Hardcode fallback
+  Override dict → L1 in-memory cache → L2 Supabase → OpenWeather API → Hardcode fallback
 
 **Hàm chính:**
 - compute_weather_vector() — Chuẩn hoá 7 biến khí tượng → 6 chỉ số [0,1]
@@ -130,7 +132,7 @@ in-process, không có message queue hay microservice.
 **Trách nhiệm:** Xác thực JWT Supabase cho mọi protected route.
 
 - Dùng PyJWKClient để fetch và cache public key tự động từ Supabase JWKS endpoint
-- Hỗ trợ cả ES256 và HS256 (tương thích nhiều phiên bản Supabase)
+- Chỉ cho phép thuật toán JWT đã được cấu hình an toàn trong middleware
 - g.uid, g.email, g.role được set vào Flask request context
 - require_admin() decorator kiểm tra g.role == "admin"
 - OPTIONS request bypass auth để CORS preflight luôn pass
@@ -266,7 +268,7 @@ app.py
 | SUPABASE_URL | Có | URL Supabase project |
 | SUPABASE_SERVICE_ROLE_KEY | Có | Service role key để ghi log + admin stats |
 | OPENWEATHER_API_KEY | Không | API key OpenWeatherMap (fallback nếu thiếu) |
-| DB_PATH | Không | Đường dẫn tuyệt đối tới recipe.db (mặc định: bundled) |
+| `data/` | Có | Thư mục JSON datasets được nạp bởi `data_store.py` |
 
 ---
 
@@ -274,4 +276,4 @@ app.py
 
 - **Development:** `python app.py` — Flask dev server cổng 5001
 - **Production:** `gunicorn app:app` via Procfile
-- **DB init:** Tự động copy bundled recipe.db nếu DB_PATH chưa tồn tại
+- **Data init:** Tự động load toàn bộ JSON từ `data/` khi import `app.py`

@@ -104,20 +104,16 @@ if not dish_pool:                                  # fallback 3: bỏ cuisine_sc
 
 ## E. DATABASE LOGIC (app.py + pipeline.py)
 
-### E1. Connection không được close khi exception
-```python
-db = get_db()
-# ... nếu exception xảy ra giữa chừng
-db.close()  # dòng này bị skip
-```
-- [ ] Không dùng context manager (`with get_db() as db`)
-- [ ] SQLite connection leak khi exception → tăng dần, có thể exhaust file handles
-- [ ] Ảnh hưởng tất cả routes: recommend, challenge, dish_detail, etc.
+### E1. JSON DataStore consistency
+- [ ] `data_store.load_all()` phải chạy trước khi route xử lý request
+- [ ] Các dataset read-only nên được index bằng dict để giữ tốc độ lookup
+- [ ] Các thao tác ghi `device_tokens.json` phải dùng `_tokens_lock`
+- [ ] Lỗi đọc/parse JSON phải được báo rõ khi server khởi động, không âm thầm dùng dataset rỗng
 
-### E2. SQLite WAL Mode
-- [ ] Có file `recipe.db-shm` và `recipe.db-wal` → WAL mode đang bật
-- [ ] WAL tốt cho concurrent reads nhưng cần periodic checkpoint
-- [ ] Nếu server crash → WAL có thể chưa được flush
+### E2. JSON persistence và concurrency
+- [ ] Ghi file phải dùng UTF-8 và payload JSON hợp lệ
+- [ ] Không để nhiều Gunicorn worker cùng ghi `device_tokens.json`; production nên dùng một worker hoặc storage dùng chung
+- [ ] Khi file ghi lỗi, không được làm mất toàn bộ token đang có trong memory
 
 ### E3. dish_detail JSON Parsing
 ```python

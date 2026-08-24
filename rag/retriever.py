@@ -142,6 +142,85 @@ class NutritionRetriever:
 
         raise ValueError("RAG_VECTOR_BACKEND phải là 'local' hoặc 'supabase'")
 
+    def retrieve_for_question(
+        self,
+        question_id: str,
+        language: str = "vi",
+        n_results: int = 5,
+        query: str | None = None,
+    ) -> dict[str, Any]:
+        """
+        Retrieve chunks using precomputed 1024-dim embedding from RAM (0ms).
+        Zero Jina API/model calls at runtime when precomputed embedding is available.
+        """
+        import logging
+        import data_store
+        from .health_qa import QUESTION_SPECS
+
+        logger = logging.getLogger(__name__)
+        lang = (language or "vi").strip().lower()
+        cached = data_store.get_fixed_question_embedding(question_id, lang)
+
+        if cached is not None:
+            vector, meta = cached
+            retrieval_query = meta.get("retrieval_query") or query or ""
+            plan = build_retrieval_plan(retrieval_query)
+            where = {"group": plan.group or "dinh_duong"}
+            results = self.store.query_by_embedding(
+                vector,
+                n_results=n_results,
+                where=where,
+            )
+            return {
+                "query": query or meta.get("question_text", retrieval_query),
+                "retrieval_query": retrieval_query,
+                "plan": plan,
+                "results": results,
+                "retrieval_meta": {
+                    "embedding_source": "precomputed",
+                    "embedding_model": meta.get("embedding_model", "jina-embeddings-v3"),
+                    "dimensions": len(vector),
+                },
+            }
+
+        # Handle missing precomputed embedding
+        allow_fallback = os.environ.get("ALLOW_RUNTIME_JINA_FALLBACK", "false").strip().lower() == "true"
+        spec = QUESTION_SPECS.get(question_id, {})
+        actual_query = query or spec.get("query") or "Giải thích các chỉ số dinh dưỡng cơ bản của món ăn"
+
+        if allow_fallback:
+            logger.warning(
+                f"[NutritionRetriever] Precomputed embedding missing for '{question_id}:{lang}'. "
+                f"Falling back to runtime Jina embedding call."
+            )
+            res = self.retrieve(actual_query, n_results=n_results)
+            res["retrieval_meta"] = {
+                "embedding_source": "runtime_jina_fallback",
+                "embedding_model": getattr(self.embedder, "model_name", "unknown"),
+            }
+            return res
+        else:
+            logger.error(
+                f"[NutritionRetriever] missing_precomputed_embedding for '{question_id}:{lang}'. "
+                f"Runtime Jina fallback is DISABLED (ALLOW_RUNTIME_JINA_FALLBACK=false)."
+            )
+            plan = build_retrieval_plan(actual_query)
+            return {
+                "query": actual_query,
+                "retrieval_query": actual_query,
+                "plan": plan,
+                "results": {
+                    "ids": [[]],
+                    "documents": [[]],
+                    "metadatas": [[]],
+                    "distances": [[]],
+                },
+                "retrieval_meta": {
+                    "embedding_source": "missing_fallback",
+                    "error": "missing_precomputed_embedding",
+                },
+            }
+
     def retrieve(self, query: str, n_results: int = 5) -> dict[str, Any]:
         if not query.strip():
             raise ValueError("Query không được rỗng.")
@@ -164,6 +243,10 @@ class NutritionRetriever:
             "retrieval_query": retrieval_query,
             "plan": plan,
             "results": results,
+            "retrieval_meta": {
+                "embedding_source": "runtime_embedder",
+                "embedding_model": getattr(self.embedder, "model_name", "unknown"),
+            },
         }
 
 

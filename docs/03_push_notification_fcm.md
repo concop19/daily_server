@@ -14,11 +14,11 @@ Mobile app khởi động
     ↓
 Lấy FCM token (expo-notifications)
     ↓
-POST /api/v1/device/register → lưu token vào SQLite (bảng device_tokens)
+POST /api/v1/device/register → lưu token vào `data/device_tokens.json`
     ↓
 APScheduler chạy cron 8 lần/ngày
     ↓
-Với mỗi device_token trong DB:
+Với mỗi device_token trong DataStore:
     → Gọi pipeline recommend (dùng location + weather cache của device đó)
     → Lấy món #1
     → Gửi FCM push notification đến token
@@ -60,27 +60,34 @@ APScheduler>=3.10.4
 
 ---
 
-### 3.2 Tạo bảng `device_tokens` trong SQLite
+### 3.2 Lưu `device_tokens` trong JSON DataStore
 
-Thêm vào hàm `init_db()` trong `app.py`:
+Không cần tạo bảng SQLite. `data_store.py` nạp `data/device_tokens.json` vào
+memory khi server khởi động và persist lại file sau mỗi lần đăng ký hoặc cập
+nhật thiết bị. File có cấu trúc:
 
-```python
-# Trong hàm init_db() — thêm sau các CREATE TABLE hiện có
-db.execute("""
-    CREATE TABLE IF NOT EXISTS device_tokens (
-        id          INTEGER PRIMARY KEY AUTOINCREMENT,
-        device_id   TEXT NOT NULL,
-        fcm_token   TEXT NOT NULL,
-        platform    TEXT DEFAULT 'android',
-        lat         REAL,
-        lon         REAL,
-        province    TEXT,
-        created_at  TEXT DEFAULT (datetime('now')),
-        updated_at  TEXT DEFAULT (datetime('now')),
-        UNIQUE(device_id)
-    )
-""")
+```json
+{
+  "version": "1.0",
+  "table": "device_tokens",
+  "count": 1,
+  "data": [
+    {
+      "device_id": "abc123",
+      "fcm_token": "ExponentPushToken[...]",
+      "platform": "android",
+      "lat": 10.762,
+      "lon": 106.660,
+      "province": "Ho Chi Minh",
+      "created_at": "2026-08-12T10:00:00+00:00",
+      "updated_at": "2026-08-12T10:00:00+00:00"
+    }
+  ]
+}
 ```
+
+Sử dụng `data_store.upsert_device_token(...)` để cập nhật dữ liệu; hàm này có
+lock trong process và ghi JSON với UTF-8.
 
 ---
 
@@ -230,12 +237,12 @@ NOTIFICATION_SCHEDULE = [
     {"hour": 17, "minute": 30, "meal": "dinner", "label": "Bữa tối"},
 ]
 
-def send_meal_notifications(get_db, run_recommend_for_device):
+def send_meal_notifications(data_store, run_recommend_for_device):
     """
     Job chạy theo cron — gửi notification đến tất cả devices.
     
     Args:
-        get_db: context manager trả về SQLite connection
+        data_store: JSON DataStore đã load trong memory
         run_recommend_for_device: hàm (device_row) -> dish dict | None
     """
     now = datetime.now(VN_TZ)
@@ -249,10 +256,8 @@ def send_meal_notifications(get_db, run_recommend_for_device):
 
     logger.info(f"[Scheduler] Firing notification slot {slot['hour']}:{slot['minute']:02d}")
 
-    with get_db() as db:
-        devices = db.execute(
-            "SELECT device_id, fcm_token, lat, lon, province FROM device_tokens"
-        ).fetchall()
+    import data_store
+    devices = data_store.get_all_device_tokens()
 
     for device in devices:
         try:
@@ -293,20 +298,21 @@ def _build_body(dish: dict) -> str:
         return hint
     return " · ".join(parts) if parts else "Hôm nay thử món này đi~ 😋"
 
-def init_scheduler(app, get_db, run_recommend_for_device):
+def init_scheduler(run_recommend_for_device):
     """
-    Khởi động APScheduler. Gọi hàm này trong app.py sau khi Flask app init xong.
+    Khởi động APScheduler. Gọi hàm này trong app.py sau khi DataStore init xong.
     
     Args:
         app: Flask app instance
-        get_db: hàm context manager SQLite
+        run_recommend_for_device: hàm lấy dish cho 1 device từ DataStore
         run_recommend_for_device: hàm lấy dish cho 1 device
     """
+    import data_store
     scheduler = BackgroundScheduler(timezone=str(VN_TZ))
 
     # Tạo 1 job duy nhất chạy mỗi 30 phút — tự check xem có phải giờ gửi không
     scheduler.add_job(
-        func=lambda: send_meal_notifications(get_db, run_recommend_for_device),
+        func=lambda: send_meal_notifications(data_store, run_recommend_for_device),
         trigger=CronTrigger(minute="0,30", timezone=str(VN_TZ)),
         id="meal_notification_job",
         replace_existing=True,
@@ -346,31 +352,22 @@ def register_device():
         "province": "Ho Chi Minh"
     }
     """
-    data = request.get_json()
+    import data_store
+    data = request.get_json() or {}
     device_id = data.get("device_id")
     fcm_token  = data.get("fcm_token")
 
     if not device_id or not fcm_token:
         return jsonify({"error": "device_id and fcm_token required"}), 400
 
-    with get_db() as db:
-        db.execute("""
-            INSERT INTO device_tokens (device_id, fcm_token, lat, lon, province, updated_at)
-            VALUES (?, ?, ?, ?, ?, datetime('now'))
-            ON CONFLICT(device_id) DO UPDATE SET
-                fcm_token  = excluded.fcm_token,
-                lat        = excluded.lat,
-                lon        = excluded.lon,
-                province   = excluded.province,
-                updated_at = datetime('now')
-        """, (
-            device_id,
-            fcm_token,
-            data.get("lat"),
-            data.get("lon"),
-            data.get("province"),
-        ))
-        db.commit()
+    data_store.upsert_device_token(
+        device_id=device_id,
+        fcm_token=fcm_token,
+        platform=data.get("platform", "android"),
+        lat=data.get("lat"),
+        lon=data.get("lon"),
+        province=data.get("province"),
+    )
 
     return jsonify({"status": "ok"}), 200
 
@@ -378,14 +375,23 @@ def register_device():
 # ── Endpoint: Update location (gọi khi user cho phép GPS) ────────────────────
 @app.route("/api/v1/device/location", methods=["PUT"])
 def update_device_location():
-    data = request.get_json()
-    with get_db() as db:
-        db.execute("""
-            UPDATE device_tokens
-            SET lat=?, lon=?, province=?, updated_at=datetime('now')
-            WHERE device_id=?
-        """, (data.get("lat"), data.get("lon"), data.get("province"), data.get("device_id")))
-        db.commit()
+    import data_store
+    data = request.get_json() or {}
+    existing = next(
+        (t for t in data_store.get_all_device_tokens()
+         if t.get("device_id") == data.get("device_id")),
+        None,
+    )
+    if not existing:
+        return jsonify({"error": "device not found"}), 404
+    data_store.upsert_device_token(
+        device_id=data["device_id"],
+        fcm_token=existing.get("fcm_token", ""),
+        platform=existing.get("platform", "android"),
+        lat=data.get("lat"),
+        lon=data.get("lon"),
+        province=data.get("province"),
+    )
     return jsonify({"status": "ok"}), 200
 
 
@@ -427,17 +433,16 @@ def run_recommend_for_device(device, meal_type):
 
         # Gọi pipeline trực tiếp (không qua HTTP)
         from pipeline import rank_and_explain, filter_dishes, build_constraint_profile
-        with get_db() as db:
-            dishes = filter_dishes(db, build_constraint_profile(params))
-            ranked = rank_and_explain(dishes, params, weather, top_k=1)
-            return ranked[0] if ranked else None
+        dishes = filter_dishes(None, build_constraint_profile(params))
+        ranked = rank_and_explain(dishes, params, weather, top_k=1)
+        return ranked[0] if ranked else None
     except Exception as e:
         logger.error(f"recommend_for_device failed: {e}")
         return None
 
-# Gọi init_scheduler sau khi app và DB đã sẵn sàng
+# Gọi init_scheduler sau khi DataStore đã load xong
 if os.environ.get("ENABLE_PUSH_SCHEDULER", "false").lower() == "true":
-    init_scheduler(app, get_db, run_recommend_for_device)
+    init_scheduler(run_recommend_for_device)
 ```
 
 ---
@@ -549,7 +554,7 @@ Bước 3: Tạo fcm_service.py (chọn FCM hoặc Expo Push)
 
 Bước 4: Tạo notification_scheduler.py
 
-Bước 5: Thêm bảng device_tokens vào init_db() trong app.py
+Bước 5: Tạo/kiểm tra `data/device_tokens.json` và dùng `data_store.upsert_device_token()`
 
 Bước 6: Thêm 3 endpoints vào app.py
         POST /api/v1/device/register
@@ -571,7 +576,7 @@ Bước 10: Test với /api/v1/device/test-push trước khi deploy
 
 | Vấn đề | Giải pháp |
 |--------|-----------|
-| APScheduler không chạy trên Gunicorn multi-worker | Thêm `--workers 1` hoặc dùng `--preload` |
+| APScheduler không chạy trên Gunicorn multi-worker | Thêm `--workers 1` hoặc dùng `--preload`; JSON token file cũng cần tránh nhiều worker ghi đồng thời |
 | Firebase service account không nên commit lên Git | Thêm `firebase-service-account.json` vào `.gitignore` |
 | Device token hết hạn | Kiểm tra response FCM, xóa token lỗi khỏi DB |
 | Server timezone sai | Set `TZ=Asia/Ho_Chi_Minh` trong env hoặc Procfile |

@@ -1,0 +1,234 @@
+{
+  "version": "1.0",
+  "language": "en",
+  "source": "dishes.json",
+  "generated_at": "2026-08-22T02:36:42.979738+00:00",
+  "count": 20,
+  "failed_count": 0,
+  "data": [
+    {
+      "id": "10131383",
+      "title_en": "taro stem and Freshwater Shrimp Salad",
+      "description_en": "Here’s how to make our family’s absolutely delicious Shrimp and taro stem Salad ;) taro stem or elephant ear stem mixed into a salad is also very sweet and tasty. Besides making sour soup and stir-frying with garlic, our family also eats a lot of salad.",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "788c72cdab2675b944b8a296c279937c3a154aec3af5fe731e4b0a5271add764",
+        "glossary_version": "vi-en-food-v2",
+        "status": "translated"
+      }
+    },
+    {
+      "id": "10153316",
+      "title_en": "Vegetarian Stir-Fried Ridged Luffa with Oyster Mushrooms",
+      "description_en": "Here’s how to make our family’s absolutely delicious Vegetarian Stir-Fried Ridged Luffa with Oyster Mushrooms ;) A simple vegetarian meal featuring this stir-fry. Sweet ridged luffa, crisp and fragrant oyster mushrooms—for your health and a greener Earth! #GlobalApron2024 #eatgreenforthera",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "e033ea97436bdd3dcaf7c21a864b9d4045d63fa493a0780f51092b83f356a166",
+        "glossary_version": "vi-en-food-v2",
+        "status": "translated"
+      }
+    },
+    {
+      "id": "10581838",
+      "title_en": "Slow-Simmered Herbal Chicken Hot Pot with Mushrooms",
+      "description_en": "Here’s how to make my family’s absolutely delicious slow-simmered chicken hot pot with mushrooms ;) Fall has arrived, and the weather has gotten much cooler—cooking up a pot of slow-simmered chicken with mushrooms to slurp on will warm you right up. You can eat it as a hot pot or make it into a hot soup to take to work! #hopcomvuive",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "308f071cd276d577bf4cd422b52a33359112d0bbebf62b0d97c41459e5f8e2e6",
+        "glossary_version": "vi-en-food-v2",
+        "status": "translated"
+      }
+    },
+    {
+      "id": "10668025",
+      "title_en": "Stir-fried squid",
+      "description_en": "How to make my family’s absolutely delicious stir-fried squid ;) #ebepvang Fresh, delicious squid, stir-fried with pineapple and star fruit, served with hot rice.",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "0330de70e9914c6c74f02e595c45961b109a6fe32db8e19374b921a7f2c729c4",
+        "glossary_version": "vi-en-food-v2",
+        "status": "translated"
+      }
+    },
+    {
+      "id": "10668060",
+      "title_en": "Bún đậu mắm tôm",
+      "description_en": "How to make my family’s absolutely delicious Bún đậu mắm tôm ;) #GlobalApron2024 Whenever I feel like having bún đậu mắm tôm at home, I whip it up right away with simple ingredients.",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "e56af0e4dae1bfb9ec5937c483dc34e8a81c8d202cef669215f69042304804a8",
+        "glossary_version": "vi-en-food-v2",
+        "status": "translated"
+      }
+    },
+    {
+      "id": "10668095",
+      "title_en": "Braised Flying Fish with Young Jackfruit",
+      "description_en": "How to make my family’s absolutely delicious braised snakehead fish with young jackfruit ;) #ebepvang This braised snakehead fish with young jackfruit goes really well with rice, everyone!",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "be9a3293e7a2f294106a6c32695897483e81634b29e12283370b3f8b48186349",
+        "glossary_version": "vi-en-food-v2",
+        "status": "translated"
+      }
+    },
+    {
+      "id": "10670111",
+      "title_en": "Fish Soup with Betel Leaf Stems",
+      "description_en": "How to Make My Family’s Absolutely Delicious Bã Trầu Fish Soup ;) #ebepvang I cook fresh bã trầu fish in a soup with pineapple—the fish is nice and chewy, and the broth is incredibly sweet.",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "2e0e72e561981fdbc29f3329107e88895efc81de3125a479825a518202f9e576",
+        "glossary_version": "vi-en-food-v2",
+        "status": "translated"
+      }
+    },
+    {
+      "id": "10733295",
+      "title_en": "Green Papaya Salad with Pork Ears",
+      "description_en": "How to Make My Family’s Absolutely Delicious Green Papaya and Pork Ear Salad ;) #GlobalApron2014 #CookpadPotluck Green papaya and pork ear salad is a simple, down-to-earth dish—you only need one pork ear to make a full plate. This dish is perfect for potluck parties—it makes a great appetizer and is never too heavy.",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "222c9f3cfac19e3dfc8953e78953e370c9acc585d76b04aa87ace572845b79de",
+        "glossary_version": "vi-en-food-v2",
+        "status": "translated"
+      }
+    },
+    {
+      "id": "10749119",
+      "title_en": "Mackerel stewed with bitter melon",
+      "description_en": "How to make my family’s absolutely delicious bitter melon and snakehead fish dish ;) #TapDeVang23 Snakehead fish is in season now and can be used in many delicious dishes. If you like bitter melon, try cooking it with snakehead fish and see how it tastes.",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "672d77ac1dc5dc8a4bfe2165535cb213a530ea27cd207bc222e2f13be2f14b9c",
+        "glossary_version": "vi-en-food-v2",
+        "status": "translated"
+      }
+    },
+    {
+      "id": "10749260",
+      "title_en": "Steamed hanh fish",
+      "description_en": "How to make my family’s absolutely delicious steamed Cá hanh ;) #bepvang Cá hanh is a very healthy fish; steaming it preserves its freshness, flavor, and natural sweetness.",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "6367f3c2ac00ddf073472d20891b3186e597537dcecc2c6a44a3a5f190d78fa8",
+        "glossary_version": "vi-en-food-v2",
+        "status": "translated"
+      }
+    },
+    {
+      "id": "10904151",
+      "title_en": "Sweet Potato Leaf and Clam Soup",
+      "description_en": "How to Make My Family’s Absolutely Delicious Morning Glory and Clam Soup ;) #ebepvang Morning glory is good for your health, and when cooked in a soup with clams, it’s refreshing and light.",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "6c78282ceb0aad9f52de8e44baf4128cdc9e37be6e2ad4c59d4af2fb7167ba24",
+        "glossary_version": "vi-en-food-v2",
+        "status": "translated"
+      }
+    },
+    {
+      "id": "10904161",
+      "title_en": "Watercress Salad with Beef",
+      "description_en": "How to Make Our Family’s Absolutely Delicious Watercress and Beef Salad ;) #GlobalApron2024 #Thachthuckhuugiac Watercress is a vegetable with a flavor that’s hard to get used to, but it’s good for your health. Watercress salad with beef combines the tanginess of the watercress with the sweetness of the beef to create a delicious dish.",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "9bb3018a02f0860a43294039aa969a600ae2f46b7fa3684c5e53175da26c1509",
+        "glossary_version": "vi-en-food-v2",
+        "status": "translated"
+      }
+    },
+    {
+      "id": "10905259",
+      "title_en": "Sour Beef Soup",
+      "description_en": "How to Make My Family’s Absolutely Delicious Beef Sour Soup ;) #ebepvang There are many ways to make sour soup; usually, people make fish sour soup, but I’ve also made beef sour soup, and it’s really delicious.",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "16e54abff53b7060e71880882952b09c2a35e12b2b30a14aee37d1e60227e584",
+        "glossary_version": "vi-en-food-v2",
+        "status": "translated"
+      }
+    },
+    {
+      "id": "10929046",
+      "title_en": "Tofu in a Fresh Mushroom Sauce",
+      "description_en": "How to make my family’s absolutely delicious tofu with fresh mushroom sauce ;) #bepvang If you’re eating vegetarian, a plate of tofu with fresh mushroom sauce is all you need to enjoy a delicious meal.",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "b53f93cde848e4ea6f52478d3147a124531aa504fece46186ccfe8ebe241466b",
+        "glossary_version": "vi-en-food-v2",
+        "status": "translated"
+      }
+    },
+    {
+      "id": "10940465",
+      "title_en": "Dried mackerel simmered in fish sauce and sugar",
+      "description_en": "How to make my family’s absolutely delicious dried mackerel glazed with fish sauce and sugar ;) #ebepvang With the rainy season approaching, all you need for a meal is a plate of dried mackerel—just fry it up, then glaze it with fish sauce and sugar. It goes great with rice.",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "3b475ab00d8e9c76a39099dffa52c7cf1d18f00257fe4ceb2badf6082f5ac7ad",
+        "glossary_version": "vi-en-food-v2",
+        "status": "translated"
+      }
+    },
+    {
+      "id": "10940604",
+      "title_en": "Stir-Fried Yellow Noodles with Beef",
+      "description_en": "How to make my family’s absolutely delicious stir-fried yellow noodles with beef ;) #ebepvang There are many delicious ways to prepare yellow noodles, but my husband absolutely loves the stir-fried version with beef and bean sprouts, so I make it all the time.",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "8f75166c1c69b3dc9af4b5533da91f5d1a8c09043f8428381d33ec9ea89c9da3",
+        "glossary_version": "vi-en-food-v2",
+        "status": "translated"
+      }
+    },
+    {
+      "id": "10976532",
+      "title_en": "Sour soup with fish cakes",
+      "description_en": "How to make my family’s absolutely delicious sour soup with rựa fish cakes ;) #ebepvang As summer approaches, there’s nothing better than a bowl of sour soup—every now and then, I make this sour soup with rựa fish cakes to mix things up for the whole family.",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "735ff0e9f822abbfdc2fe5a4cfc759c1be27d407a21549b072d99fe4219e5efd",
+        "glossary_version": "vi-en-food-v2",
+        "status": "translated"
+      }
+    },
+    {
+      "id": "10977122",
+      "title_en": "Beef braised with Ốp la",
+      "description_en": "How to make our family’s absolutely delicious beef braised with fried eggs ;) #bepvang Our family often eats beef braised with fried eggs for breakfast—the beef is braised the night before, so in the morning, all you have to do is add the fried eggs. And the bread has to be crispy to dip in the sauce—that’s what makes it so good!",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "0718c62bd92ed738268a0c986b7525c996b4b588b17a50895ac83b9a27cb0573",
+        "glossary_version": "vi-en-food-v2",
+        "status": "translated"
+      }
+    },
+    {
+      "id": "11009128",
+      "title_en": "Carol Lettuce Salad with Mushrooms and Tofu",
+      "description_en": "How to make my family’s absolutely delicious Carol lettuce salad with mushrooms and tofu ;) #ebepvang I first tried Carol lettuce when I visited Da Lat—it’s crisp and works perfectly in salads.",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "f4060bcc55a9081937b7480da3da420925eb54868937b66ff7dd061592836ea7",
+        "glossary_version": "vi-en-food-v2",
+        "status": "translated"
+      }
+    },
+    {
+      "id": "11009144",
+      "title_en": "Sour Soup with Mushrooms",
+      "description_en": "How to Make My Family’s Absolutely Delicious Spicy and Sour Soup with Mushrooms ;) #10Years1Journey This spicy and sour soup is light and refreshing; on occasional vegetarian days, I make it with mushrooms and tofu. (September)",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "708752dc270c28f06e8ea7b55a5bdb03f0ebcd774730b2c3cee2c8c1bb836cc1",
+        "glossary_version": "vi-en-food-v2",
+        "status": "translated"
+      }
+    }
+  ],
+  "failures": [],
+  "provider_counts": {
+    "deepl": 20
+  }
+}

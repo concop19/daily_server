@@ -1,0 +1,1038 @@
+{
+  "version": "1.0",
+  "language": "en",
+  "source": "provinces.json",
+  "generated_at": "2026-08-22T07:50:29.943477+00:00",
+  "count": 65,
+  "failed_count": 0,
+  "data": [
+    {
+      "id": 1,
+      "name_en": "Ha Noi",
+      "aliases_en": [
+        "Ha Noi",
+        "Hanoi",
+        "HN",
+        "hn"
+      ],
+      "food_region_en": "Major Urban Area",
+      "climate_type_en": "Subtropical",
+      "cuisine_culture_en": "Northern",
+      "_meta": {
+        "provider": "deterministic",
+        "source_hash": "c4bec0e1a38a8ae431999c4e958c953de7d7dc092fe90cb7a509a397f9bc9b95"
+      }
+    },
+    {
+      "id": 2,
+      "name_en": "Ho Chi Minh City",
+      "aliases_en": [
+        "Ho Chi Minh",
+        "TP HCM",
+        "HCM",
+        "TPHCM",
+        "Sai Gon",
+        "Saigon",
+        "SGN"
+      ],
+      "food_region_en": "Major Urban Area",
+      "climate_type_en": "Tropical",
+      "cuisine_culture_en": "Southern",
+      "_meta": {
+        "provider": "deterministic",
+        "source_hash": "61e0dd29a530ef0a9224acdeadeb985a7791d4c1c67c3306f67f104d5246fa32"
+      }
+    },
+    {
+      "id": 3,
+      "name_en": "Da Nang",
+      "aliases_en": [
+        "Da Nang",
+        "DN",
+        "Danang"
+      ],
+      "food_region_en": "Major Urban Area",
+      "climate_type_en": "tropical_monsoon",
+      "cuisine_culture_en": "Central",
+      "_meta": {
+        "provider": "deterministic",
+        "source_hash": "dfeac0bf4a0363ce002dbbdbaf3f32b3b0998f883c85a11d40446bdc6a099bf7"
+      }
+    },
+    {
+      "id": 4,
+      "name_en": "Can Tho",
+      "aliases_en": [
+        "Can Tho",
+        "CT"
+      ],
+      "food_region_en": "Major Urban Area",
+      "climate_type_en": "Tropical",
+      "cuisine_culture_en": "Southern",
+      "_meta": {
+        "provider": "deterministic",
+        "source_hash": "8c0e88b29e63a73c7f74f14e2f34c488a39c8d85afbe5f45cab89cc8ff46e194"
+      }
+    },
+    {
+      "id": 5,
+      "name_en": "Da Lat",
+      "aliases_en": [
+        "Da Lat",
+        "Dalat",
+        "DL"
+      ],
+      "food_region_en": "Major Urban Area",
+      "climate_type_en": "Highland",
+      "cuisine_culture_en": "highland",
+      "_meta": {
+        "provider": "deterministic",
+        "source_hash": "3fe0e22d99ab983ade4d445537ae49389e51cb60c07fb9c089725eddb80299ae"
+      }
+    },
+    {
+      "id": 10,
+      "name_en": "Hai Phong",
+      "aliases_en": [
+        "Hai Phong",
+        "HP"
+      ],
+      "food_region_en": "red_river_delta",
+      "climate_type_en": "Subtropical",
+      "cuisine_culture_en": "Northern",
+      "_meta": {
+        "provider": "deterministic",
+        "source_hash": "e32f0013a08ca39e93a7c62bdc467df513ae4cb420e39e9ed83de02d7fbc8e90"
+      }
+    },
+    {
+      "id": 11,
+      "name_en": "Hai Duong",
+      "aliases_en": [
+        "Hai Duong",
+        "HD"
+      ],
+      "food_region_en": "red_river_delta",
+      "climate_type_en": "Subtropical",
+      "cuisine_culture_en": "Northern",
+      "_meta": {
+        "provider": "deterministic",
+        "source_hash": "47c0f1bd0f1ab7536f9fa45b76958c55137135afd86e78a21c1a6c84233e73e6"
+      }
+    },
+    {
+      "id": 12,
+      "name_en": "Hung Yen",
+      "aliases_en": [
+        "Hung Yen",
+        "HY"
+      ],
+      "food_region_en": "red_river_delta",
+      "climate_type_en": "Subtropical",
+      "cuisine_culture_en": "Northern",
+      "_meta": {
+        "provider": "deterministic",
+        "source_hash": "080760d2a390e6e48507f6845bc1df70da5048141afb5ea7ba29c9b98ac67e00"
+      }
+    },
+    {
+      "id": 13,
+      "name_en": "Thai Binh",
+      "aliases_en": [
+        "Thai Binh",
+        "TB"
+      ],
+      "food_region_en": "red_river_delta",
+      "climate_type_en": "Subtropical",
+      "cuisine_culture_en": "Northern",
+      "_meta": {
+        "provider": "deterministic",
+        "source_hash": "4337705324392efb09ba554d7de6ef32e1cf2ebc5a8f2475e52183b93a91e28d"
+      }
+    },
+    {
+      "id": 14,
+      "name_en": "Nam Dinh",
+      "aliases_en": [
+        "Nam Dinh",
+        "ND"
+      ],
+      "food_region_en": "red_river_delta",
+      "climate_type_en": "Subtropical",
+      "cuisine_culture_en": "Northern",
+      "_meta": {
+        "provider": "deterministic",
+        "source_hash": "4cf09e5d351c962b1abe3f5a45e03f4f645a8e66a261a6b5dd4ffd2c085d5f70"
+      }
+    },
+    {
+      "id": 15,
+      "name_en": "Ninh Binh",
+      "aliases_en": [
+        "Ninh Binh",
+        "NB"
+      ],
+      "food_region_en": "red_river_delta",
+      "climate_type_en": "Subtropical",
+      "cuisine_culture_en": "Northern",
+      "_meta": {
+        "provider": "deterministic",
+        "source_hash": "5a0c0b3f5e884a53e98aa5078528aabd2a3e68090b27b867061dd04d23a778a4"
+      }
+    },
+    {
+      "id": 16,
+      "name_en": "Ha Nam",
+      "aliases_en": [
+        "Ha Nam",
+        "HNam"
+      ],
+      "food_region_en": "red_river_delta",
+      "climate_type_en": "Subtropical",
+      "cuisine_culture_en": "Northern",
+      "_meta": {
+        "provider": "deterministic",
+        "source_hash": "63a8eaa8569399e27efad52aedc023b4006bc635e5f0f7a0aeaae1c34f1f50d4"
+      }
+    },
+    {
+      "id": 17,
+      "name_en": "Bac Ninh",
+      "aliases_en": [
+        "Bac Ninh",
+        "BNinh"
+      ],
+      "food_region_en": "red_river_delta",
+      "climate_type_en": "Subtropical",
+      "cuisine_culture_en": "Northern",
+      "_meta": {
+        "provider": "deterministic",
+        "source_hash": "137207474ebcbe552143b2a0e003f8c4fd2fb2b05703f4568ee1577f8c802a09"
+      }
+    },
+    {
+      "id": 18,
+      "name_en": "Bac Giang",
+      "aliases_en": [
+        "Bac Giang",
+        "BG"
+      ],
+      "food_region_en": "red_river_delta",
+      "climate_type_en": "Subtropical",
+      "cuisine_culture_en": "Northern",
+      "_meta": {
+        "provider": "deterministic",
+        "source_hash": "606edb2b00581e1f5c6e5620b7ab7c2af6b793b431ae7f02a3ab482491b948b0"
+      }
+    },
+    {
+      "id": 19,
+      "name_en": "Vinh Phuc",
+      "aliases_en": [
+        "Vinh Phuc",
+        "VP"
+      ],
+      "food_region_en": "red_river_delta",
+      "climate_type_en": "Subtropical",
+      "cuisine_culture_en": "Northern",
+      "_meta": {
+        "provider": "deterministic",
+        "source_hash": "cb73fc33b326999dea781e0eaf7912db10b57c9c86fe145f9177761c11d682fb"
+      }
+    },
+    {
+      "id": 20,
+      "name_en": "Ha Giang",
+      "aliases_en": [
+        "Ha Giang",
+        "HGiang"
+      ],
+      "food_region_en": "northern_highland",
+      "climate_type_en": "Highland",
+      "cuisine_culture_en": "highland",
+      "_meta": {
+        "provider": "deterministic",
+        "source_hash": "385ae0f04ac6ca211c3d88250f3b11de135561f59df0e8b61e857175bba2f9fa"
+      }
+    },
+    {
+      "id": 21,
+      "name_en": "Cao Bang",
+      "aliases_en": [
+        "Cao Bang",
+        "CB"
+      ],
+      "food_region_en": "northern_highland",
+      "climate_type_en": "Highland",
+      "cuisine_culture_en": "highland",
+      "_meta": {
+        "provider": "deterministic",
+        "source_hash": "5f872aa48b0a27e509a0a57aff635e73ee2aeefaaccbfdcb6b615dce84cfd062"
+      }
+    },
+    {
+      "id": 22,
+      "name_en": "Bac Kan",
+      "aliases_en": [
+        "Bac Kan",
+        "BKan"
+      ],
+      "food_region_en": "northern_highland",
+      "climate_type_en": "Highland",
+      "cuisine_culture_en": "highland",
+      "_meta": {
+        "provider": "deterministic",
+        "source_hash": "d0e8482328345577b9343b3506f8608702b5013e4ed77670331b78a1fd85d475"
+      }
+    },
+    {
+      "id": 23,
+      "name_en": "Lang Son",
+      "aliases_en": [
+        "Lang Son",
+        "LS"
+      ],
+      "food_region_en": "northern_highland",
+      "climate_type_en": "Highland",
+      "cuisine_culture_en": "highland",
+      "_meta": {
+        "provider": "deterministic",
+        "source_hash": "4f9952964324aa432e37c8f908dd30c3eb2c1a947b7140704f14cf93c6b1d8db"
+      }
+    },
+    {
+      "id": 24,
+      "name_en": "Tuyen Quang",
+      "aliases_en": [
+        "Tuyen Quang",
+        "TQ"
+      ],
+      "food_region_en": "northern_highland",
+      "climate_type_en": "Highland",
+      "cuisine_culture_en": "highland",
+      "_meta": {
+        "provider": "deterministic",
+        "source_hash": "eab523cf3a5b555772e543e78ff23f20e67a6d2bcb9dbe9347f750ac4b191c9a"
+      }
+    },
+    {
+      "id": 25,
+      "name_en": "Lao Cai",
+      "aliases_en": [
+        "Lao Cai",
+        "LC",
+        "Sapa",
+        "Sa Pa"
+      ],
+      "food_region_en": "northern_highland",
+      "climate_type_en": "Highland",
+      "cuisine_culture_en": "highland",
+      "_meta": {
+        "provider": "deterministic",
+        "source_hash": "52cd7fccac419bf5f5d382d2495db672b90ea36b50d030faa02663a6205e7459"
+      }
+    },
+    {
+      "id": 26,
+      "name_en": "Yen Bai",
+      "aliases_en": [
+        "Yen Bai",
+        "YB"
+      ],
+      "food_region_en": "northern_highland",
+      "climate_type_en": "Highland",
+      "cuisine_culture_en": "highland",
+      "_meta": {
+        "provider": "deterministic",
+        "source_hash": "790dc6c358c86a8847eb3399c97819ed8b6ad9ecad17efde9599c311f74dc92c"
+      }
+    },
+    {
+      "id": 27,
+      "name_en": "Thai Nguyen",
+      "aliases_en": [
+        "Thai Nguyen",
+        "TN"
+      ],
+      "food_region_en": "northern_highland",
+      "climate_type_en": "Highland",
+      "cuisine_culture_en": "highland",
+      "_meta": {
+        "provider": "deterministic",
+        "source_hash": "43927ad3b833942bd2bd103aeae8627a517e82ffb1bfa2e6f7b40a89ee5026f0"
+      }
+    },
+    {
+      "id": 28,
+      "name_en": "Phu Tho",
+      "aliases_en": [
+        "Phu Tho",
+        "PT"
+      ],
+      "food_region_en": "northern_highland",
+      "climate_type_en": "Highland",
+      "cuisine_culture_en": "highland",
+      "_meta": {
+        "provider": "deterministic",
+        "source_hash": "3fa603bfd810687d56ee5290b322dc3baa0a3ab8a3e45e6206db820e47daec29"
+      }
+    },
+    {
+      "id": 29,
+      "name_en": "Son La",
+      "aliases_en": [
+        "Son La",
+        "SL"
+      ],
+      "food_region_en": "northern_highland",
+      "climate_type_en": "Highland",
+      "cuisine_culture_en": "highland",
+      "_meta": {
+        "provider": "deterministic",
+        "source_hash": "709388adaf2ce60da747e42d3bda84371e479c30b084c32211ba379cbb5072cc"
+      }
+    },
+    {
+      "id": 30,
+      "name_en": "Dien Bien",
+      "aliases_en": [
+        "Dien Bien",
+        "DB",
+        "Dien Bien Phu"
+      ],
+      "food_region_en": "northern_highland",
+      "climate_type_en": "Highland",
+      "cuisine_culture_en": "highland",
+      "_meta": {
+        "provider": "deterministic",
+        "source_hash": "398ba34aa3a97cb1ca1231efb5cb055658dc7bff4f4a60eb0e26c8bc7c0f095d"
+      }
+    },
+    {
+      "id": 31,
+      "name_en": "Lai Chau",
+      "aliases_en": [
+        "Lai Chau",
+        "LChau"
+      ],
+      "food_region_en": "northern_highland",
+      "climate_type_en": "Highland",
+      "cuisine_culture_en": "highland",
+      "_meta": {
+        "provider": "deterministic",
+        "source_hash": "b3167663643ad6ba659433c3a5ac2fea44143beee8625cfcf011ece02e075162"
+      }
+    },
+    {
+      "id": 32,
+      "name_en": "Hoa Binh",
+      "aliases_en": [
+        "Hoa Binh",
+        "HB"
+      ],
+      "food_region_en": "northern_highland",
+      "climate_type_en": "Highland",
+      "cuisine_culture_en": "highland",
+      "_meta": {
+        "provider": "deterministic",
+        "source_hash": "0595009066a7b6f97531e69803974ab207a5f95036ccb6ad314c7e3b4327cc0c"
+      }
+    },
+    {
+      "id": 33,
+      "name_en": "Quang Ninh",
+      "aliases_en": [
+        "Quang Ninh",
+        "QN",
+        "Ha Long",
+        "Ha Long"
+      ],
+      "food_region_en": "northern_highland",
+      "climate_type_en": "Highland",
+      "cuisine_culture_en": "highland",
+      "_meta": {
+        "provider": "deterministic",
+        "source_hash": "ee9d1942cf5c8c833530e4f2e73a80ef2adeb02242ee71f2c3701cfecd1097c0"
+      }
+    },
+    {
+      "id": 40,
+      "name_en": "Thanh Hoa",
+      "aliases_en": [
+        "Thanh Hoa",
+        "TH"
+      ],
+      "food_region_en": "central_coast",
+      "climate_type_en": "tropical_monsoon",
+      "cuisine_culture_en": "northcentral",
+      "_meta": {
+        "provider": "deterministic",
+        "source_hash": "b1f2e65f45ac5dcd83d37c14be7174f1d4a3766eaeecdad7c629cacd05b4dedc"
+      }
+    },
+    {
+      "id": 41,
+      "name_en": "Nghe An",
+      "aliases_en": [
+        "Nghe An",
+        "NA",
+        "Vinh"
+      ],
+      "food_region_en": "central_coast",
+      "climate_type_en": "tropical_monsoon",
+      "cuisine_culture_en": "northcentral",
+      "_meta": {
+        "provider": "deterministic",
+        "source_hash": "96ee6af24a193236c8533fd1db5405bc287852221098d81d0eb93b8a9b17174f"
+      }
+    },
+    {
+      "id": 42,
+      "name_en": "Ha Tinh",
+      "aliases_en": [
+        "Ha Tinh",
+        "HTinh"
+      ],
+      "food_region_en": "central_coast",
+      "climate_type_en": "tropical_monsoon",
+      "cuisine_culture_en": "northcentral",
+      "_meta": {
+        "provider": "deterministic",
+        "source_hash": "35a3ee53126384d7543118625ccef8c7491c9e1cf7e01c39a156c5de4a785d5f"
+      }
+    },
+    {
+      "id": 43,
+      "name_en": "Quang Binh",
+      "aliases_en": [
+        "Quang Binh",
+        "QB"
+      ],
+      "food_region_en": "central_coast",
+      "climate_type_en": "tropical_monsoon",
+      "cuisine_culture_en": "northcentral",
+      "_meta": {
+        "provider": "deterministic",
+        "source_hash": "a71ef7ae4859a0e6dc4f413fcc07843925dde4e831aa653a0d20c33bf5811768"
+      }
+    },
+    {
+      "id": 44,
+      "name_en": "Quang Tri",
+      "aliases_en": [
+        "Quang Tri",
+        "QTri"
+      ],
+      "food_region_en": "central_coast",
+      "climate_type_en": "tropical_monsoon",
+      "cuisine_culture_en": "northcentral",
+      "_meta": {
+        "provider": "deterministic",
+        "source_hash": "45db8d805b66b121e8dab6739772011a1733f80bbc3ed680f5c546824af12439"
+      }
+    },
+    {
+      "id": 45,
+      "name_en": "Thua Thien Hue",
+      "aliases_en": [
+        "Thua Thien Hue",
+        "Hue",
+        "Hue",
+        "TTHue"
+      ],
+      "food_region_en": "central_coast",
+      "climate_type_en": "tropical_monsoon",
+      "cuisine_culture_en": "Central",
+      "_meta": {
+        "provider": "deterministic",
+        "source_hash": "994bacc051d5d4b11fba3119a9224eeadc86682011aefd3baec277e87e68432c"
+      }
+    },
+    {
+      "id": 46,
+      "name_en": "Quang Nam",
+      "aliases_en": [
+        "Quang Nam",
+        "QNam",
+        "Hoi An",
+        "Hoi An"
+      ],
+      "food_region_en": "central_coast",
+      "climate_type_en": "tropical_monsoon",
+      "cuisine_culture_en": "Central",
+      "_meta": {
+        "provider": "deterministic",
+        "source_hash": "1d9616d6e9ee846cb95d566cc7b2dcea5167a8c8c2b09859313008705e9de537"
+      }
+    },
+    {
+      "id": 47,
+      "name_en": "Quang Ngai",
+      "aliases_en": [
+        "Quang Ngai",
+        "QNgai"
+      ],
+      "food_region_en": "central_coast",
+      "climate_type_en": "tropical_monsoon",
+      "cuisine_culture_en": "Central",
+      "_meta": {
+        "provider": "deterministic",
+        "source_hash": "4908de5a9850cd9c7095e4f9c34a3bb6847892d85e3b2ee2f1ca46f21b5ddcab"
+      }
+    },
+    {
+      "id": 48,
+      "name_en": "Binh Dinh",
+      "aliases_en": [
+        "Binh Dinh",
+        "BDinh",
+        "Quy Nhon",
+        "Quy Nhon"
+      ],
+      "food_region_en": "central_coast",
+      "climate_type_en": "tropical_monsoon",
+      "cuisine_culture_en": "southcentral",
+      "_meta": {
+        "provider": "deterministic",
+        "source_hash": "628793874d685dd7d9e5f09be4464f1decdc62a65a0c860e749b66a8188bc82f"
+      }
+    },
+    {
+      "id": 49,
+      "name_en": "Phu Yen",
+      "aliases_en": [
+        "Phu Yen",
+        "PY",
+        "Tuy Hoa"
+      ],
+      "food_region_en": "central_coast",
+      "climate_type_en": "tropical_monsoon",
+      "cuisine_culture_en": "southcentral",
+      "_meta": {
+        "provider": "deterministic",
+        "source_hash": "32194e9ff6b4c9e27f4307631e0f6064b8e1c4d8752ca5ac6c92d6579b028855"
+      }
+    },
+    {
+      "id": 50,
+      "name_en": "Khanh Hoa",
+      "aliases_en": [
+        "Khanh Hoa",
+        "KH",
+        "Nha Trang"
+      ],
+      "food_region_en": "central_coast",
+      "climate_type_en": "tropical_monsoon",
+      "cuisine_culture_en": "southcentral",
+      "_meta": {
+        "provider": "deterministic",
+        "source_hash": "0e9465630a81f72b2cea2324d4e91dce197fd451f5fe37b839dc6168a0d98a61"
+      }
+    },
+    {
+      "id": 51,
+      "name_en": "Ninh Thuan",
+      "aliases_en": [
+        "Ninh Thuan",
+        "NThuan",
+        "Phan Rang"
+      ],
+      "food_region_en": "central_coast",
+      "climate_type_en": "tropical_monsoon",
+      "cuisine_culture_en": "southcentral",
+      "_meta": {
+        "provider": "deterministic",
+        "source_hash": "993a1251f6af1b57b07fdf957701dbf13c409454fb2f50d84df316ef02c5e653"
+      }
+    },
+    {
+      "id": 52,
+      "name_en": "Binh Thuan",
+      "aliases_en": [
+        "Binh Thuan",
+        "BThuan",
+        "Phan Thiet",
+        "Mui Ne",
+        "Mui Ne"
+      ],
+      "food_region_en": "central_coast",
+      "climate_type_en": "tropical_monsoon",
+      "cuisine_culture_en": "southcentral",
+      "_meta": {
+        "provider": "deterministic",
+        "source_hash": "3e247fb6ce1636873c29772aa4c571796482c928d34e911a72494152961778ae"
+      }
+    },
+    {
+      "id": 53,
+      "name_en": "Phu Quoc",
+      "aliases_en": [
+        "Phu Quoc",
+        "PQ",
+        "Dao Phu Quoc"
+      ],
+      "food_region_en": "central_coast",
+      "climate_type_en": "Tropical",
+      "cuisine_culture_en": "southcentral",
+      "_meta": {
+        "provider": "deterministic",
+        "source_hash": "22b1adb7fa42768334f9fa2817880eb6d7cd98d530c0f8c3e9c9180fadb55263"
+      }
+    },
+    {
+      "id": 60,
+      "name_en": "Kon Tum",
+      "aliases_en": [
+        "Kon Tum",
+        "KT"
+      ],
+      "food_region_en": "central_highland",
+      "climate_type_en": "Highland",
+      "cuisine_culture_en": "highland",
+      "_meta": {
+        "provider": "deterministic",
+        "source_hash": "fe23acdc555d9511cae8093b386f6b96c30a06bfc098d63859ae7c1229ba7dc9"
+      }
+    },
+    {
+      "id": 61,
+      "name_en": "Gia Lai",
+      "aliases_en": [
+        "Gia Lai",
+        "GL",
+        "Pleiku"
+      ],
+      "food_region_en": "central_highland",
+      "climate_type_en": "Highland",
+      "cuisine_culture_en": "highland",
+      "_meta": {
+        "provider": "deterministic",
+        "source_hash": "73b79b56bd2a424f73832a664010ba9c30249b9ca9ebf10a077db27638d0a1c7"
+      }
+    },
+    {
+      "id": 62,
+      "name_en": "Dak Lak",
+      "aliases_en": [
+        "Dak Lak",
+        "DLak",
+        "Buon Ma Thuot",
+        "Buon Ma Thuot"
+      ],
+      "food_region_en": "central_highland",
+      "climate_type_en": "Highland",
+      "cuisine_culture_en": "highland",
+      "_meta": {
+        "provider": "deterministic",
+        "source_hash": "7d902cbea3cd0458a7d37d77b1d945ebe859b1ba3cc04c48f26fdb24f85c55d8"
+      }
+    },
+    {
+      "id": 63,
+      "name_en": "Dak Nong",
+      "aliases_en": [
+        "Dak Nong",
+        "DNong"
+      ],
+      "food_region_en": "central_highland",
+      "climate_type_en": "Highland",
+      "cuisine_culture_en": "highland",
+      "_meta": {
+        "provider": "deterministic",
+        "source_hash": "cb2de1a799324f6195a13b7acd6d7b66832936edea0d17669b3c8e30825f7060"
+      }
+    },
+    {
+      "id": 64,
+      "name_en": "Lam Dong",
+      "aliases_en": [
+        "Lam Dong",
+        "LDong"
+      ],
+      "food_region_en": "central_highland",
+      "climate_type_en": "Highland",
+      "cuisine_culture_en": "highland",
+      "_meta": {
+        "provider": "deterministic",
+        "source_hash": "640c98c051fa0830fba7e4d8209e7cc93274b382d9fc11759a14b0ba72b47821"
+      }
+    },
+    {
+      "id": 70,
+      "name_en": "Binh Phuoc",
+      "aliases_en": [
+        "Binh Phuoc",
+        "BPhuoc"
+      ],
+      "food_region_en": "southeast",
+      "climate_type_en": "Tropical",
+      "cuisine_culture_en": "Southern",
+      "_meta": {
+        "provider": "deterministic",
+        "source_hash": "320b30fe998e4360d6cc66488cda7aae39491b4d045c040c2549153237070962"
+      }
+    },
+    {
+      "id": 71,
+      "name_en": "Tay Ninh",
+      "aliases_en": [
+        "Tay Ninh",
+        "TNinh"
+      ],
+      "food_region_en": "southeast",
+      "climate_type_en": "Tropical",
+      "cuisine_culture_en": "Southern",
+      "_meta": {
+        "provider": "deterministic",
+        "source_hash": "10e536fab86922fab5c0400c9738be777c3a00a0cd1f138f35aceda99f2988a3"
+      }
+    },
+    {
+      "id": 72,
+      "name_en": "Binh Duong",
+      "aliases_en": [
+        "Binh Duong",
+        "BDuong",
+        "Thu Dau Mot"
+      ],
+      "food_region_en": "southeast",
+      "climate_type_en": "Tropical",
+      "cuisine_culture_en": "Southern",
+      "_meta": {
+        "provider": "deterministic",
+        "source_hash": "2e20611f224c49a2d459a2570df4f28bce3814af4b700790976bd0abe42db1b1"
+      }
+    },
+    {
+      "id": 73,
+      "name_en": "Dong Nai",
+      "aliases_en": [
+        "Dong Nai",
+        "DNai",
+        "Bien Hoa",
+        "Bien Hoa"
+      ],
+      "food_region_en": "southeast",
+      "climate_type_en": "Tropical",
+      "cuisine_culture_en": "Southern",
+      "_meta": {
+        "provider": "deterministic",
+        "source_hash": "0e09dc0bf0f9480f9cec9be76ee75cb9908875bbd3586d04059ecbcb306157a2"
+      }
+    },
+    {
+      "id": 74,
+      "name_en": "Ba Ria-Vung Tau",
+      "aliases_en": [
+        "Ba Ria Vung Tau",
+        "BRVT",
+        "Vung Tau",
+        "Vung Tau"
+      ],
+      "food_region_en": "southeast",
+      "climate_type_en": "Tropical",
+      "cuisine_culture_en": "Southern",
+      "_meta": {
+        "provider": "deterministic",
+        "source_hash": "1fe27b664a1b0ce5a155ecbb4ab3fcfbc861f888550b698df527bbbdce6359c9"
+      }
+    },
+    {
+      "id": 80,
+      "name_en": "Long An",
+      "aliases_en": [
+        "Long An",
+        "LA"
+      ],
+      "food_region_en": "mekong_delta",
+      "climate_type_en": "Tropical",
+      "cuisine_culture_en": "Southern",
+      "_meta": {
+        "provider": "deterministic",
+        "source_hash": "f09530ead96030f59e2463aa1e0bb3e858fb678405e7d022e95c0873d128e1de"
+      }
+    },
+    {
+      "id": 81,
+      "name_en": "Tien Giang",
+      "aliases_en": [
+        "Tien Giang",
+        "TGiang",
+        "My Tho",
+        "My Tho"
+      ],
+      "food_region_en": "mekong_delta",
+      "climate_type_en": "Tropical",
+      "cuisine_culture_en": "Southern",
+      "_meta": {
+        "provider": "deterministic",
+        "source_hash": "6cfb841fceef9fca9bed66a4a4ec782115b1d3bbca730ea498442d39d718bab1"
+      }
+    },
+    {
+      "id": 82,
+      "name_en": "Ben Tre",
+      "aliases_en": [
+        "Ben Tre",
+        "BTre"
+      ],
+      "food_region_en": "mekong_delta",
+      "climate_type_en": "Tropical",
+      "cuisine_culture_en": "Southern",
+      "_meta": {
+        "provider": "deterministic",
+        "source_hash": "7bf3052f84d07f01cfd6fa25a2857a01c3276889dc1ab939baeef2f68131d630"
+      }
+    },
+    {
+      "id": 83,
+      "name_en": "Tra Vinh",
+      "aliases_en": [
+        "Tra Vinh",
+        "TVinh"
+      ],
+      "food_region_en": "mekong_delta",
+      "climate_type_en": "Tropical",
+      "cuisine_culture_en": "Southern",
+      "_meta": {
+        "provider": "deterministic",
+        "source_hash": "d69da5b2ce6da7135745cacfbbaed66bd84f29df4497d2625a2b28812bf6de96"
+      }
+    },
+    {
+      "id": 84,
+      "name_en": "Vinh Long",
+      "aliases_en": [
+        "Vinh Long",
+        "VLong"
+      ],
+      "food_region_en": "mekong_delta",
+      "climate_type_en": "Tropical",
+      "cuisine_culture_en": "Southern",
+      "_meta": {
+        "provider": "deterministic",
+        "source_hash": "fcf5f0c26773600a33abce24c57cd6f1fd1fe89f5d61d93f58c075c9a32c0638"
+      }
+    },
+    {
+      "id": 85,
+      "name_en": "Dong Thap",
+      "aliases_en": [
+        "Dong Thap",
+        "DThap",
+        "Cao Lanh",
+        "Cao Lanh"
+      ],
+      "food_region_en": "mekong_delta",
+      "climate_type_en": "Tropical",
+      "cuisine_culture_en": "Southern",
+      "_meta": {
+        "provider": "deterministic",
+        "source_hash": "618f5180722dd094e148b6dd8f2b819c61a8c33958eaac3dc54db4ebb47959d9"
+      }
+    },
+    {
+      "id": 86,
+      "name_en": "An Giang",
+      "aliases_en": [
+        "An Giang",
+        "AG",
+        "Long Xuyen",
+        "Long Xuyen",
+        "Chau Doc",
+        "Chau Doc"
+      ],
+      "food_region_en": "mekong_delta",
+      "climate_type_en": "Tropical",
+      "cuisine_culture_en": "Southern",
+      "_meta": {
+        "provider": "deterministic",
+        "source_hash": "8a5e7fbb158948ff56d25a8167a972a8ce1673e7e112f585b43aaade5a049768"
+      }
+    },
+    {
+      "id": 87,
+      "name_en": "Kien Giang",
+      "aliases_en": [
+        "Kien Giang",
+        "KGiang",
+        "Rach Gia",
+        "Rach Gia"
+      ],
+      "food_region_en": "mekong_delta",
+      "climate_type_en": "Tropical",
+      "cuisine_culture_en": "Southern",
+      "_meta": {
+        "provider": "deterministic",
+        "source_hash": "147cee56cb6fb680c2ea6a0c32c88bd5480977b8a01764c91be36d45c2468c7a"
+      }
+    },
+    {
+      "id": 88,
+      "name_en": "Hau Giang",
+      "aliases_en": [
+        "Hau Giang",
+        "HGiang",
+        "Vi Thanh",
+        "Vi Thanh"
+      ],
+      "food_region_en": "mekong_delta",
+      "climate_type_en": "Tropical",
+      "cuisine_culture_en": "Southern",
+      "_meta": {
+        "provider": "deterministic",
+        "source_hash": "a1f7fdc9b41bc245431cd8ec3cc55c156a37e86b59c344ca35a61229633ef8e6"
+      }
+    },
+    {
+      "id": 89,
+      "name_en": "Soc Trang",
+      "aliases_en": [
+        "Soc Trang",
+        "STrang"
+      ],
+      "food_region_en": "mekong_delta",
+      "climate_type_en": "Tropical",
+      "cuisine_culture_en": "Southern",
+      "_meta": {
+        "provider": "deterministic",
+        "source_hash": "5d82d9cdc89c34ec725328e6b58e3f5ba1dce7f879afe9800b6f810a8f1ba986"
+      }
+    },
+    {
+      "id": 90,
+      "name_en": "Bac Lieu",
+      "aliases_en": [
+        "Bac Lieu",
+        "BLieu"
+      ],
+      "food_region_en": "mekong_delta",
+      "climate_type_en": "Tropical",
+      "cuisine_culture_en": "Southern",
+      "_meta": {
+        "provider": "deterministic",
+        "source_hash": "25cb5d2c19fc16ce9c15dc8d36224a5cfea646e0c878c9acf352ee586cfd9878"
+      }
+    },
+    {
+      "id": 91,
+      "name_en": "Ca Mau",
+      "aliases_en": [
+        "Ca Mau",
+        "CMau"
+      ],
+      "food_region_en": "mekong_delta",
+      "climate_type_en": "Tropical",
+      "cuisine_culture_en": "Southern",
+      "_meta": {
+        "provider": "deterministic",
+        "source_hash": "c529da01e3dfb67a81487c82b24e88810947fcfc5b2e021ae80efdacfacee893"
+      }
+    }
+  ],
+  "failures": [],
+  "provider_counts": {
+    "deterministic": 65
+  },
+  "checkpoint": false
+}

@@ -1,7 +1,7 @@
 # monitoring.py
 import os
 import requests
-from datetime import datetime
+from datetime import datetime, timezone
 from flask import g, request
 
 SUPABASE_URL    = os.environ["SUPABASE_URL"]
@@ -30,7 +30,7 @@ def _insert_log(payload: dict):
 def init_monitoring(app):
     @app.before_request
     def _start_timer():
-        g.req_start = datetime.utcnow()
+        g.req_start = datetime.now(timezone.utc)
 
     @app.after_request
     def _log_request(response):
@@ -38,14 +38,14 @@ def init_monitoring(app):
         if request.endpoint in ("health", "static"):
             return response
         try:
-            latency_ms = (datetime.utcnow() - g.req_start).total_seconds() * 1000
+            latency_ms = (datetime.now(timezone.utc) - g.req_start).total_seconds() * 1000
             _insert_log({
                 "uid":         getattr(g, "uid", None),
                 "endpoint":    request.endpoint,
                 "method":      request.method,
                 "status_code": response.status_code,
                 "latency_ms":  round(latency_ms, 2),
-                "logged_at":   datetime.utcnow().isoformat(),
+                "logged_at":   datetime.now(timezone.utc).isoformat(),
             })
         except Exception:
             pass

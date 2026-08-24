@@ -1,0 +1,796 @@
+{
+  "version": "1.0",
+  "language": "en",
+  "source": "mobile_provinces.json",
+  "generated_at": "2026-08-22T07:50:30.995002+00:00",
+  "count": 65,
+  "failed_count": 0,
+  "data": [
+    {
+      "id": 1,
+      "name_en": "Ha Noi",
+      "food_region_en": "Major Urban Area",
+      "climate_type_en": "Subtropical",
+      "cuisine_culture_en": "Northern",
+      "regional_flavor_label_en": "Fusion, diversity",
+      "_meta": {
+        "provider": "deterministic+deepl",
+        "source_hash": "ca045446b27ee50fe4387122b545a33f83a58b390773fda703aeb83e4508a114"
+      }
+    },
+    {
+      "id": 2,
+      "name_en": "Ho Chi Minh City",
+      "food_region_en": "Major Urban Area",
+      "climate_type_en": "Tropical",
+      "cuisine_culture_en": "Southern",
+      "regional_flavor_label_en": "Fusion, diversity",
+      "_meta": {
+        "provider": "deterministic+deepl",
+        "source_hash": "f1ee86c32e0c8207d1c1b9ef66bef1769c9e5a411dd9f6c3fbfe2898239438e8"
+      }
+    },
+    {
+      "id": 3,
+      "name_en": "Da Nang",
+      "food_region_en": "Major Urban Area",
+      "climate_type_en": "tropical_monsoon",
+      "cuisine_culture_en": "Central",
+      "regional_flavor_label_en": "Fusion, diversity",
+      "_meta": {
+        "provider": "deterministic+deepl",
+        "source_hash": "941e450fdce2b2624803151b5d0442b86454895a78eb5b3c099a4689708367e9"
+      }
+    },
+    {
+      "id": 4,
+      "name_en": "Can Tho",
+      "food_region_en": "Major Urban Area",
+      "climate_type_en": "Tropical",
+      "cuisine_culture_en": "Southern",
+      "regional_flavor_label_en": "Fusion, diversity",
+      "_meta": {
+        "provider": "deterministic+deepl",
+        "source_hash": "3f6329cb37b00bf55f80dd6b6edc4f7eead65df0b07a9ad3aa66ac6e8bc68747"
+      }
+    },
+    {
+      "id": 5,
+      "name_en": "Da Lat",
+      "food_region_en": "Major Urban Area",
+      "climate_type_en": "Highland",
+      "cuisine_culture_en": "highland",
+      "regional_flavor_label_en": "Fusion, diversity",
+      "_meta": {
+        "provider": "deterministic+deepl",
+        "source_hash": "8f07c9056b2e238206a6cb35cc1df53fbd074f42b6bfcbe31357d74c7fba4f86"
+      }
+    },
+    {
+      "id": 10,
+      "name_en": "Hai Phong",
+      "food_region_en": "red_river_delta",
+      "climate_type_en": "Subtropical",
+      "cuisine_culture_en": "Northern",
+      "regional_flavor_label_en": "Moderate, light",
+      "_meta": {
+        "provider": "deterministic+deepl",
+        "source_hash": "cf4f5639f0849e0c9f6fc21362d6b29c7e097feffff87512ec9c4c8591938822"
+      }
+    },
+    {
+      "id": 11,
+      "name_en": "Hai Duong",
+      "food_region_en": "red_river_delta",
+      "climate_type_en": "Subtropical",
+      "cuisine_culture_en": "Northern",
+      "regional_flavor_label_en": "Moderate, light",
+      "_meta": {
+        "provider": "deterministic+deepl",
+        "source_hash": "5ee44e6ef27fad42e1d3f0839354ecaf93246efe72af508a9175acfb937171e7"
+      }
+    },
+    {
+      "id": 12,
+      "name_en": "Hung Yen",
+      "food_region_en": "red_river_delta",
+      "climate_type_en": "Subtropical",
+      "cuisine_culture_en": "Northern",
+      "regional_flavor_label_en": "Moderate, light",
+      "_meta": {
+        "provider": "deterministic+deepl",
+        "source_hash": "14f2c3d070c793a385d305a398413fbf98997d321fd915af627e107acba0960f"
+      }
+    },
+    {
+      "id": 13,
+      "name_en": "Thai Binh",
+      "food_region_en": "red_river_delta",
+      "climate_type_en": "Subtropical",
+      "cuisine_culture_en": "Northern",
+      "regional_flavor_label_en": "Moderate, light",
+      "_meta": {
+        "provider": "deterministic+deepl",
+        "source_hash": "4b20d1cfe4d3bdffa1f4a2796ce0330278f6caa3cde20b887c5f99286787d0b1"
+      }
+    },
+    {
+      "id": 14,
+      "name_en": "Nam Dinh",
+      "food_region_en": "red_river_delta",
+      "climate_type_en": "Subtropical",
+      "cuisine_culture_en": "Northern",
+      "regional_flavor_label_en": "Moderate, light",
+      "_meta": {
+        "provider": "deterministic+deepl",
+        "source_hash": "bbb6da8108dfe65301b5338afdeea31fea7574396eaa231f32463b761583a7d5"
+      }
+    },
+    {
+      "id": 15,
+      "name_en": "Ninh Binh",
+      "food_region_en": "red_river_delta",
+      "climate_type_en": "Subtropical",
+      "cuisine_culture_en": "Northern",
+      "regional_flavor_label_en": "Moderate, light",
+      "_meta": {
+        "provider": "deterministic+deepl",
+        "source_hash": "590015cf580daef295ec386194846fb21713d6b313c901c1d0ffa6c240082cbe"
+      }
+    },
+    {
+      "id": 16,
+      "name_en": "Ha Nam",
+      "food_region_en": "red_river_delta",
+      "climate_type_en": "Subtropical",
+      "cuisine_culture_en": "Northern",
+      "regional_flavor_label_en": "Moderate, light",
+      "_meta": {
+        "provider": "deterministic+deepl",
+        "source_hash": "05cd80ded38e850b619e8e13098d38492fb50e7ef5935bba2c3776b8ece74268"
+      }
+    },
+    {
+      "id": 17,
+      "name_en": "Bac Ninh",
+      "food_region_en": "red_river_delta",
+      "climate_type_en": "Subtropical",
+      "cuisine_culture_en": "Northern",
+      "regional_flavor_label_en": "Moderate, light",
+      "_meta": {
+        "provider": "deterministic+deepl",
+        "source_hash": "49a7b94a854ae2fac7d093ba7d48a7ec54c7248cdfe442a2466c51483c66c0cd"
+      }
+    },
+    {
+      "id": 18,
+      "name_en": "Bac Giang",
+      "food_region_en": "red_river_delta",
+      "climate_type_en": "Subtropical",
+      "cuisine_culture_en": "Northern",
+      "regional_flavor_label_en": "Moderate, light",
+      "_meta": {
+        "provider": "deterministic+deepl",
+        "source_hash": "b3ec278fcefb89ded45473f238debf6b7dc75df47f2724526e0ea7688c92af3e"
+      }
+    },
+    {
+      "id": 19,
+      "name_en": "Vinh Phuc",
+      "food_region_en": "red_river_delta",
+      "climate_type_en": "Subtropical",
+      "cuisine_culture_en": "Northern",
+      "regional_flavor_label_en": "Moderate, light",
+      "_meta": {
+        "provider": "deterministic+deepl",
+        "source_hash": "3cdbcfcb6dff7648b5ea35d4da7b710c6e06b50ed275f777370226e433523bac"
+      }
+    },
+    {
+      "id": 20,
+      "name_en": "Ha Giang",
+      "food_region_en": "northern_highland",
+      "climate_type_en": "Highland",
+      "cuisine_culture_en": "highland",
+      "regional_flavor_label_en": "Rich, sour, fish sauce",
+      "_meta": {
+        "provider": "deterministic+deepl",
+        "source_hash": "48ad03c3eef867e861c4ba752fddc071148607e69363bc6626ae27e00e57aa10"
+      }
+    },
+    {
+      "id": 21,
+      "name_en": "Cao Bang",
+      "food_region_en": "northern_highland",
+      "climate_type_en": "Highland",
+      "cuisine_culture_en": "highland",
+      "regional_flavor_label_en": "Rich, sour, fish sauce",
+      "_meta": {
+        "provider": "deterministic+deepl",
+        "source_hash": "0b8f5bcbb8382b6a24d22779e658d6ccbd97f8e1b37eeef3e951153dbaa1c808"
+      }
+    },
+    {
+      "id": 22,
+      "name_en": "Bac Kan",
+      "food_region_en": "northern_highland",
+      "climate_type_en": "Highland",
+      "cuisine_culture_en": "highland",
+      "regional_flavor_label_en": "Rich, sour, fish sauce",
+      "_meta": {
+        "provider": "deterministic+deepl",
+        "source_hash": "492564a1141570d90fa84fb49cadf68e252b1894c673ee412b368ecbc4c7667f"
+      }
+    },
+    {
+      "id": 23,
+      "name_en": "Lang Son",
+      "food_region_en": "northern_highland",
+      "climate_type_en": "Highland",
+      "cuisine_culture_en": "highland",
+      "regional_flavor_label_en": "Rich, sour, fish sauce",
+      "_meta": {
+        "provider": "deterministic+deepl",
+        "source_hash": "1091ea1d44acccd0e86ebf299c3f63a1dfdd72eed85bb106d75c0561a992da4a"
+      }
+    },
+    {
+      "id": 24,
+      "name_en": "Tuyen Quang",
+      "food_region_en": "northern_highland",
+      "climate_type_en": "Highland",
+      "cuisine_culture_en": "highland",
+      "regional_flavor_label_en": "Rich, sour, fish sauce",
+      "_meta": {
+        "provider": "deterministic+deepl",
+        "source_hash": "e0378acdebeddca45a569d3b20e19707da863684ec42feefb52ce7a872bf2bd9"
+      }
+    },
+    {
+      "id": 25,
+      "name_en": "Lao Cai",
+      "food_region_en": "northern_highland",
+      "climate_type_en": "Highland",
+      "cuisine_culture_en": "highland",
+      "regional_flavor_label_en": "Rich, sour, fish sauce",
+      "_meta": {
+        "provider": "deterministic+deepl",
+        "source_hash": "ec06bbcfe226669007ffdc71135083fccebde055c9a07f9912f5cb2af82fc801"
+      }
+    },
+    {
+      "id": 26,
+      "name_en": "Yen Bai",
+      "food_region_en": "northern_highland",
+      "climate_type_en": "Highland",
+      "cuisine_culture_en": "highland",
+      "regional_flavor_label_en": "Rich, sour, fish sauce",
+      "_meta": {
+        "provider": "deterministic+deepl",
+        "source_hash": "a148729804f743b6deaedb80581bab4b3eb254e103b991af092cf58a35151767"
+      }
+    },
+    {
+      "id": 27,
+      "name_en": "Thai Nguyen",
+      "food_region_en": "northern_highland",
+      "climate_type_en": "Highland",
+      "cuisine_culture_en": "highland",
+      "regional_flavor_label_en": "Rich, sour, fish sauce",
+      "_meta": {
+        "provider": "deterministic+deepl",
+        "source_hash": "72877fc14a3ab8133d593aecef32509bfac4a51375f12700d8365e5fc9049f4d"
+      }
+    },
+    {
+      "id": 28,
+      "name_en": "Phu Tho",
+      "food_region_en": "northern_highland",
+      "climate_type_en": "Highland",
+      "cuisine_culture_en": "highland",
+      "regional_flavor_label_en": "Rich, sour, fish sauce",
+      "_meta": {
+        "provider": "deterministic+deepl",
+        "source_hash": "937ac62003e85d67427494801d25620d3f84e6c1022192d9e720a42499dcc6b3"
+      }
+    },
+    {
+      "id": 29,
+      "name_en": "Son La",
+      "food_region_en": "northern_highland",
+      "climate_type_en": "Highland",
+      "cuisine_culture_en": "highland",
+      "regional_flavor_label_en": "Rich, sour, fish sauce",
+      "_meta": {
+        "provider": "deterministic+deepl",
+        "source_hash": "86243e645f48ea1421d69f7277ba2d875b183312570d4577ecdcf31e0a48854f"
+      }
+    },
+    {
+      "id": 30,
+      "name_en": "Dien Bien",
+      "food_region_en": "northern_highland",
+      "climate_type_en": "Highland",
+      "cuisine_culture_en": "highland",
+      "regional_flavor_label_en": "Rich, sour, fish sauce",
+      "_meta": {
+        "provider": "deterministic+deepl",
+        "source_hash": "cc8fc6a31749a27b7d75b40bb7d587e4e240a2d07d1177c2d3348bfaec1e41ae"
+      }
+    },
+    {
+      "id": 31,
+      "name_en": "Lai Chau",
+      "food_region_en": "northern_highland",
+      "climate_type_en": "Highland",
+      "cuisine_culture_en": "highland",
+      "regional_flavor_label_en": "Rich, sour, fish sauce",
+      "_meta": {
+        "provider": "deterministic+deepl",
+        "source_hash": "d39a8c07b44451adfa61cb9536843371687de085de19a979fbc148fd814b2c3a"
+      }
+    },
+    {
+      "id": 32,
+      "name_en": "Hoa Binh",
+      "food_region_en": "northern_highland",
+      "climate_type_en": "Highland",
+      "cuisine_culture_en": "highland",
+      "regional_flavor_label_en": "Rich, sour, fish sauce",
+      "_meta": {
+        "provider": "deterministic+deepl",
+        "source_hash": "e8c6009786bad6b1f1cff92d3a69ea26035f926847b8dfa6a945c816991e2288"
+      }
+    },
+    {
+      "id": 33,
+      "name_en": "Quang Ninh",
+      "food_region_en": "northern_highland",
+      "climate_type_en": "Highland",
+      "cuisine_culture_en": "highland",
+      "regional_flavor_label_en": "Rich, sour, fish sauce",
+      "_meta": {
+        "provider": "deterministic+deepl",
+        "source_hash": "7a30b43c6592d8d2f57588dd2223f3b746e369f3f836009d0826fc24f5c6fccc"
+      }
+    },
+    {
+      "id": 40,
+      "name_en": "Thanh Hoa",
+      "food_region_en": "central_coast",
+      "climate_type_en": "tropical_monsoon",
+      "cuisine_culture_en": "northcentral",
+      "regional_flavor_label_en": "Spicy, salty, and rich",
+      "_meta": {
+        "provider": "deterministic+deepl",
+        "source_hash": "ac9f7916e969f9eaf1f93fa72cbe8c2f2fb06482038e29262a8006fa0e92ca80"
+      }
+    },
+    {
+      "id": 41,
+      "name_en": "Nghe An",
+      "food_region_en": "central_coast",
+      "climate_type_en": "tropical_monsoon",
+      "cuisine_culture_en": "northcentral",
+      "regional_flavor_label_en": "Spicy, salty, and rich",
+      "_meta": {
+        "provider": "deterministic+deepl",
+        "source_hash": "0d668efbbdb757562fe3e8540e32dc8757f425c2cf3b3d4f01dee1758817361d"
+      }
+    },
+    {
+      "id": 42,
+      "name_en": "Ha Tinh",
+      "food_region_en": "central_coast",
+      "climate_type_en": "tropical_monsoon",
+      "cuisine_culture_en": "northcentral",
+      "regional_flavor_label_en": "Spicy, salty, and rich",
+      "_meta": {
+        "provider": "deterministic+deepl",
+        "source_hash": "468db2f18f605e6fe2203a6766a5f477b4728b871b9108a1ac24677bd1502b19"
+      }
+    },
+    {
+      "id": 43,
+      "name_en": "Quang Binh",
+      "food_region_en": "central_coast",
+      "climate_type_en": "tropical_monsoon",
+      "cuisine_culture_en": "northcentral",
+      "regional_flavor_label_en": "Spicy, salty, and rich",
+      "_meta": {
+        "provider": "deterministic+deepl",
+        "source_hash": "d644e09948d9956776772a6e8b58b84d1bb6603909b14fb9eaaa93bde72b586c"
+      }
+    },
+    {
+      "id": 44,
+      "name_en": "Quang Tri",
+      "food_region_en": "central_coast",
+      "climate_type_en": "tropical_monsoon",
+      "cuisine_culture_en": "northcentral",
+      "regional_flavor_label_en": "Spicy, salty, and rich",
+      "_meta": {
+        "provider": "deterministic+deepl",
+        "source_hash": "003d8f6bd43cae1c248f22ebf1d6a2b344bc4abda37904bfa1cce5a8a9c04664"
+      }
+    },
+    {
+      "id": 45,
+      "name_en": "Thua Thien Hue",
+      "food_region_en": "central_coast",
+      "climate_type_en": "tropical_monsoon",
+      "cuisine_culture_en": "Central",
+      "regional_flavor_label_en": "Spicy, salty, and rich",
+      "_meta": {
+        "provider": "deterministic+deepl",
+        "source_hash": "31ad7a6178dd82e80c876709cd6157f6298f8d45938f175b68afa79bb7ef6f17"
+      }
+    },
+    {
+      "id": 46,
+      "name_en": "Quang Nam",
+      "food_region_en": "central_coast",
+      "climate_type_en": "tropical_monsoon",
+      "cuisine_culture_en": "Central",
+      "regional_flavor_label_en": "Spicy, salty, and rich",
+      "_meta": {
+        "provider": "deterministic+deepl",
+        "source_hash": "48b0f3adca92346c2ac3909f2475f9bae9b8b9af45debd7bd66b1b2fa7d2fcc6"
+      }
+    },
+    {
+      "id": 47,
+      "name_en": "Quang Ngai",
+      "food_region_en": "central_coast",
+      "climate_type_en": "tropical_monsoon",
+      "cuisine_culture_en": "Central",
+      "regional_flavor_label_en": "Spicy, salty, and rich",
+      "_meta": {
+        "provider": "deterministic+deepl",
+        "source_hash": "8074b1622737cf05729bd37b9c2946a44471175db32925f1310d838bd0d862ff"
+      }
+    },
+    {
+      "id": 48,
+      "name_en": "Binh Dinh",
+      "food_region_en": "central_coast",
+      "climate_type_en": "tropical_monsoon",
+      "cuisine_culture_en": "southcentral",
+      "regional_flavor_label_en": "Spicy, salty, and rich",
+      "_meta": {
+        "provider": "deterministic+deepl",
+        "source_hash": "381c2930e25cf9b373d83d59c2a1d4777d21db5ca70c4440e6694e14a66a7cc9"
+      }
+    },
+    {
+      "id": 49,
+      "name_en": "Phu Yen",
+      "food_region_en": "central_coast",
+      "climate_type_en": "tropical_monsoon",
+      "cuisine_culture_en": "southcentral",
+      "regional_flavor_label_en": "Spicy, salty, and rich",
+      "_meta": {
+        "provider": "deterministic+deepl",
+        "source_hash": "a132ce53454a6a4e62db036162cd17047d4ac70f6d1b7f15533ba8a1c484d532"
+      }
+    },
+    {
+      "id": 50,
+      "name_en": "Khanh Hoa",
+      "food_region_en": "central_coast",
+      "climate_type_en": "tropical_monsoon",
+      "cuisine_culture_en": "southcentral",
+      "regional_flavor_label_en": "Spicy, salty, and rich",
+      "_meta": {
+        "provider": "deterministic+deepl",
+        "source_hash": "0f51d401ca1788d684945d24a46599b51ae3840c22b5b586aade98f249d25c08"
+      }
+    },
+    {
+      "id": 51,
+      "name_en": "Ninh Thuan",
+      "food_region_en": "central_coast",
+      "climate_type_en": "tropical_monsoon",
+      "cuisine_culture_en": "southcentral",
+      "regional_flavor_label_en": "Spicy, salty, and rich",
+      "_meta": {
+        "provider": "deterministic+deepl",
+        "source_hash": "569df75bfd11312df21ec2abaef708720e90b1a924613a85cbfc6f3b5522459e"
+      }
+    },
+    {
+      "id": 52,
+      "name_en": "Binh Thuan",
+      "food_region_en": "central_coast",
+      "climate_type_en": "tropical_monsoon",
+      "cuisine_culture_en": "southcentral",
+      "regional_flavor_label_en": "Spicy, salty, and rich",
+      "_meta": {
+        "provider": "deterministic+deepl",
+        "source_hash": "0bd519303ca0b5a9910b13b21d2766d831db433227b5d57c8fa66bdc09ad565a"
+      }
+    },
+    {
+      "id": 53,
+      "name_en": "Phu Quoc",
+      "food_region_en": "central_coast",
+      "climate_type_en": "Tropical",
+      "cuisine_culture_en": "southcentral",
+      "regional_flavor_label_en": "Spicy, salty, and rich",
+      "_meta": {
+        "provider": "deterministic+deepl",
+        "source_hash": "a64a63b2bc5d61bc2acf0e3b15f8fabff8d948948af3d1b20167b037bd8c1838"
+      }
+    },
+    {
+      "id": 60,
+      "name_en": "Kon Tum",
+      "food_region_en": "central_highland",
+      "climate_type_en": "Highland",
+      "cuisine_culture_en": "highland",
+      "regional_flavor_label_en": "Mild, lightly seasoned",
+      "_meta": {
+        "provider": "deterministic+deepl",
+        "source_hash": "dd07081edf14f7a4a0555028a0eee7a0e0b40d8ac3037730e75bbc62e129b2e5"
+      }
+    },
+    {
+      "id": 61,
+      "name_en": "Gia Lai",
+      "food_region_en": "central_highland",
+      "climate_type_en": "Highland",
+      "cuisine_culture_en": "highland",
+      "regional_flavor_label_en": "Mild, lightly seasoned",
+      "_meta": {
+        "provider": "deterministic+deepl",
+        "source_hash": "5744352aebb29d25ceb9deaf9455c7da3488f2fc73d31df6dfdb3b23092f13ab"
+      }
+    },
+    {
+      "id": 62,
+      "name_en": "Dak Lak",
+      "food_region_en": "central_highland",
+      "climate_type_en": "Highland",
+      "cuisine_culture_en": "highland",
+      "regional_flavor_label_en": "Mild, lightly seasoned",
+      "_meta": {
+        "provider": "deterministic+deepl",
+        "source_hash": "3d8dd39850efed5c732eb54855ff13fe3e167cd5bebbed6c3f552d27b5438cca"
+      }
+    },
+    {
+      "id": 63,
+      "name_en": "Dak Nong",
+      "food_region_en": "central_highland",
+      "climate_type_en": "Highland",
+      "cuisine_culture_en": "highland",
+      "regional_flavor_label_en": "Mild, lightly seasoned",
+      "_meta": {
+        "provider": "deterministic+deepl",
+        "source_hash": "da3f6c2c1bcf36e8845118b91519e181db874eda82dad52137002531787317f2"
+      }
+    },
+    {
+      "id": 64,
+      "name_en": "Lam Dong",
+      "food_region_en": "central_highland",
+      "climate_type_en": "Highland",
+      "cuisine_culture_en": "highland",
+      "regional_flavor_label_en": "Mild, lightly seasoned",
+      "_meta": {
+        "provider": "deterministic+deepl",
+        "source_hash": "5d77d9fccda92c33708e8104296187ce39024d1bec52e556438de1ee48a00454"
+      }
+    },
+    {
+      "id": 70,
+      "name_en": "Binh Phuoc",
+      "food_region_en": "southeast",
+      "climate_type_en": "Tropical",
+      "cuisine_culture_en": "Southern",
+      "regional_flavor_label_en": "Moderately sweet, diverse",
+      "_meta": {
+        "provider": "deterministic+deepl",
+        "source_hash": "4df5356fdbf774d41a3e6ca119105e2fd1c3391266e0fea777652b0cdec07918"
+      }
+    },
+    {
+      "id": 71,
+      "name_en": "Tay Ninh",
+      "food_region_en": "southeast",
+      "climate_type_en": "Tropical",
+      "cuisine_culture_en": "Southern",
+      "regional_flavor_label_en": "Moderately sweet, diverse",
+      "_meta": {
+        "provider": "deterministic+deepl",
+        "source_hash": "5e893e5f9e2b887ec35ff86d309a72c96bde1dd3564f3a31428bb5702ae877be"
+      }
+    },
+    {
+      "id": 72,
+      "name_en": "Binh Duong",
+      "food_region_en": "southeast",
+      "climate_type_en": "Tropical",
+      "cuisine_culture_en": "Southern",
+      "regional_flavor_label_en": "Moderately sweet, diverse",
+      "_meta": {
+        "provider": "deterministic+deepl",
+        "source_hash": "a9d8c90fdd018f35eb942c874ae5c484ee5cecdcbbfd7ccd45fbadd629e97c62"
+      }
+    },
+    {
+      "id": 73,
+      "name_en": "Dong Nai",
+      "food_region_en": "southeast",
+      "climate_type_en": "Tropical",
+      "cuisine_culture_en": "Southern",
+      "regional_flavor_label_en": "Moderately sweet, diverse",
+      "_meta": {
+        "provider": "deterministic+deepl",
+        "source_hash": "4b4eb566160170eb6e03f88cbea8e5ec88d0e474c449ec7190d4d3d7acab6c90"
+      }
+    },
+    {
+      "id": 74,
+      "name_en": "Ba Ria-Vung Tau",
+      "food_region_en": "southeast",
+      "climate_type_en": "Tropical",
+      "cuisine_culture_en": "Southern",
+      "regional_flavor_label_en": "Moderately sweet, diverse",
+      "_meta": {
+        "provider": "deterministic+deepl",
+        "source_hash": "4cbefa020216a587cdf8db1bccf4d00c60f05854b95891e72af1cdadfe75d18e"
+      }
+    },
+    {
+      "id": 80,
+      "name_en": "Long An",
+      "food_region_en": "mekong_delta",
+      "climate_type_en": "Tropical",
+      "cuisine_culture_en": "Southern",
+      "regional_flavor_label_en": "Sweet, coconut, rich",
+      "_meta": {
+        "provider": "deterministic+deepl",
+        "source_hash": "f23478499fa1e130f5a677cbbe5672076b5f817806b3c47ca55a254d04155bd5"
+      }
+    },
+    {
+      "id": 81,
+      "name_en": "Tien Giang",
+      "food_region_en": "mekong_delta",
+      "climate_type_en": "Tropical",
+      "cuisine_culture_en": "Southern",
+      "regional_flavor_label_en": "Sweet, coconut, rich",
+      "_meta": {
+        "provider": "deterministic+deepl",
+        "source_hash": "21eafe978a98c658800879654f604ed52df2fa33fb4161fc17d1b4652f300e3e"
+      }
+    },
+    {
+      "id": 82,
+      "name_en": "Ben Tre",
+      "food_region_en": "mekong_delta",
+      "climate_type_en": "Tropical",
+      "cuisine_culture_en": "Southern",
+      "regional_flavor_label_en": "Sweet, coconut, rich",
+      "_meta": {
+        "provider": "deterministic+deepl",
+        "source_hash": "a1e303c14a0d2b54646c6f4f75dc20a107e46cae6f4cf4890afa6c94afb13d43"
+      }
+    },
+    {
+      "id": 83,
+      "name_en": "Tra Vinh",
+      "food_region_en": "mekong_delta",
+      "climate_type_en": "Tropical",
+      "cuisine_culture_en": "Southern",
+      "regional_flavor_label_en": "Sweet, coconut, rich",
+      "_meta": {
+        "provider": "deterministic+deepl",
+        "source_hash": "780f933dfb5ad6b462bd6da999d429c3dd8965f788825d9abd83291374ae7c55"
+      }
+    },
+    {
+      "id": 84,
+      "name_en": "Vinh Long",
+      "food_region_en": "mekong_delta",
+      "climate_type_en": "Tropical",
+      "cuisine_culture_en": "Southern",
+      "regional_flavor_label_en": "Sweet, coconut, rich",
+      "_meta": {
+        "provider": "deterministic+deepl",
+        "source_hash": "ce20e4db7783095f0d6484f742312a43a0a264e8baad3e49d42cd2794c13a3b7"
+      }
+    },
+    {
+      "id": 85,
+      "name_en": "Dong Thap",
+      "food_region_en": "mekong_delta",
+      "climate_type_en": "Tropical",
+      "cuisine_culture_en": "Southern",
+      "regional_flavor_label_en": "Sweet, coconut, rich",
+      "_meta": {
+        "provider": "deterministic+deepl",
+        "source_hash": "e14668dfed23ee2d9be70570658888dcf30701623e66ec080b56835802fc0705"
+      }
+    },
+    {
+      "id": 86,
+      "name_en": "An Giang",
+      "food_region_en": "mekong_delta",
+      "climate_type_en": "Tropical",
+      "cuisine_culture_en": "Southern",
+      "regional_flavor_label_en": "Sweet, coconut, rich",
+      "_meta": {
+        "provider": "deterministic+deepl",
+        "source_hash": "3388fa5b3e50f90af9be8d1bb5e7d2247070a813fa92ed01aa75d01486fa8035"
+      }
+    },
+    {
+      "id": 87,
+      "name_en": "Kien Giang",
+      "food_region_en": "mekong_delta",
+      "climate_type_en": "Tropical",
+      "cuisine_culture_en": "Southern",
+      "regional_flavor_label_en": "Sweet, coconut, rich",
+      "_meta": {
+        "provider": "deterministic+deepl",
+        "source_hash": "e5710cb61cc12ac48a9657052e477dc1a0159d8600146ee3c89b832ef6dd9fa9"
+      }
+    },
+    {
+      "id": 88,
+      "name_en": "Hau Giang",
+      "food_region_en": "mekong_delta",
+      "climate_type_en": "Tropical",
+      "cuisine_culture_en": "Southern",
+      "regional_flavor_label_en": "Sweet, coconut, rich",
+      "_meta": {
+        "provider": "deterministic+deepl",
+        "source_hash": "b52e143cc2ff9a87ac5153d55516ed29fdf809721b61752429e2ef07cd7ba1ce"
+      }
+    },
+    {
+      "id": 89,
+      "name_en": "Soc Trang",
+      "food_region_en": "mekong_delta",
+      "climate_type_en": "Tropical",
+      "cuisine_culture_en": "Southern",
+      "regional_flavor_label_en": "Sweet, coconut, rich",
+      "_meta": {
+        "provider": "deterministic+deepl",
+        "source_hash": "3c3e520255424dbc9d9740baacf711561f618780de619da34df3301f052782ff"
+      }
+    },
+    {
+      "id": 90,
+      "name_en": "Bac Lieu",
+      "food_region_en": "mekong_delta",
+      "climate_type_en": "Tropical",
+      "cuisine_culture_en": "Southern",
+      "regional_flavor_label_en": "Sweet, coconut, rich",
+      "_meta": {
+        "provider": "deterministic+deepl",
+        "source_hash": "1b4d687064fbff948023a800189064350cdff2f921a403719e45966f56dea66a"
+      }
+    },
+    {
+      "id": 91,
+      "name_en": "Ca Mau",
+      "food_region_en": "mekong_delta",
+      "climate_type_en": "Tropical",
+      "cuisine_culture_en": "Southern",
+      "regional_flavor_label_en": "Sweet, coconut, rich",
+      "_meta": {
+        "provider": "deterministic+deepl",
+        "source_hash": "57793bab7f18f4d0788dae749004b8f84c2a7969f15e9a3f24bec57817023986"
+      }
+    }
+  ],
+  "failures": [],
+  "provider_counts": {
+    "deterministic": 65,
+    "deepl": 7
+  },
+  "checkpoint": false
+}

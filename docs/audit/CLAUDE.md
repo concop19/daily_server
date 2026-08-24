@@ -10,10 +10,11 @@
 | Thuộc tính | Giá trị |
 |---|---|
 | Tên | Daily Mate — Food Recommendation Server |
-| Stack | Python 3.12 · Flask · SQLite · Supabase (PostgreSQL) |
+| Stack | Python 3.12 · Flask · JSON DataStore · Supabase (PostgreSQL) |
 | Auth | Supabase JWT (ES256 / HS256) · PyJWKClient |
-| DB chính | `recipe.db` — SQLite local (dishes, ingredients, dish_ingredient) |
-| DB phụ | Supabase — `request_log`, `session_feedback`, `weather_cache` |
+| Data chính | `data/*.json` — catalog được nạp vào memory (dishes, ingredients, relations) |
+| Data phụ | Supabase — `request_log`, `session_feedback`, `weather_cache` |
+| Push state | `data/device_tokens.json` — được persist sau mỗi upsert |
 | Deploy | Fly.io / Railway (xem DEPLOY_FLYIO.md, DEPLOY_RAILWAY.md) |
 | Entry point | `app.py` |
 
@@ -86,7 +87,7 @@ demo_server/
 ```bash
 SUPABASE_URL               # không được hardcode trong code
 SUPABASE_SERVICE_ROLE_KEY  # admin key — bypass toàn bộ RLS, RẤT nhạy cảm
-DB_PATH                    # path tuyệt đối — cần validate trước khi dùng
+DATA_DIR                   # thư mục JSON dataset; mặc định là ./data
 ```
 
 > CẢNH BÁO: SUPABASE_SERVICE_ROLE_KEY là admin key, bypass toàn bộ Row Level
@@ -100,7 +101,7 @@ DB_PATH                    # path tuyệt đối — cần validate trước khi
 | Pattern | Lý do chấp nhận |
 |---|---|
 | OPTIONS request bypass auth | CORS preflight yêu cầu, cố ý |
-| DB_PATH fallback về Windows path | Chỉ dùng khi dev local |
+| JSON DataStore load vào memory | Cố ý để giảm latency lookup |
 | _random.seed(seed) trong /challenge | Seeded random để reproducible, không cần CSPRNG |
-| Hai algorithm trong JWT decode (ES256+HS256) | Supabase hỗ trợ cả hai — nhưng CẦN kiểm tra algorithm confusion |
+| L1 weather cache mất khi restart | Chỉ là cache tốc độ; L2 Supabase phục hồi được |
 | datetime.utcnow() còn sót | Technical debt, chưa phải security issue |

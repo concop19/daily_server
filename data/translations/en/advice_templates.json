@@ -1,0 +1,1865 @@
+{
+  "version": "1.0",
+  "language": "en",
+  "source": "advice_templates.json",
+  "generated_at": "2026-08-22T07:48:41.284171+00:00",
+  "count": 185,
+  "failed_count": 0,
+  "data": [
+    {
+      "id": 28,
+      "template_text_en": "Today it’s {temperature}°C with high humidity—your body is losing fluids faster than usual, so you need to drink twice as much.",
+      "notes_en": "extremely hot and humid",
+      "lang": "en",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "4822119a251a7d6dd6e18d9f8ed9e876a734888e1661d440e7d7c917c476cc37"
+      }
+    },
+    {
+      "id": 29,
+      "template_text_en": "The temperature is {temperature}°C—it’s pretty hot. Prioritize hydrating foods to help you stay energized throughout the afternoon.",
+      "notes_en": "medium-hot",
+      "lang": "en",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "e276ff90c3d2aa77b6bedbe458ba828c4e95da84955d0705a2be535f6d7b93a1"
+      }
+    },
+    {
+      "id": 30,
+      "template_text_en": "It’s a warm day today at {temperature}°C. Be sure to drink plenty of water with your meals to maintain your energy throughout the day.",
+      "notes_en": "mild fever",
+      "lang": "en",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "dce6b691d55da4c8dc30a34b61c4df3e7ffdaeb0502d244daa089b5c51d9b64e"
+      }
+    },
+    {
+      "id": 31,
+      "template_text_en": "The weather is pleasant today, but don’t forget that your body still needs plenty of water—water-rich foods are always a smart choice.",
+      "notes_en": "Light - Reminders",
+      "lang": "en",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "6257d961a59ce77d157b4e67cd1b6777a48544c4a096933eba685c3ef16840ab"
+      }
+    },
+    {
+      "id": 32,
+      "template_text_en": "It’s scorching hot {temperature}°C today—your body needs to cool down from the inside, so definitely prioritize cooling foods.",
+      "notes_en": "super hot",
+      "lang": "en",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "231d2a87b8053ae50cbe0ae2b1d5e4b26baa7aeda50279a542ac1904ab5eafd1"
+      }
+    },
+    {
+      "id": 33,
+      "template_text_en": "Temperature {temperature}°C—it’s hot and uncomfortable. Choose something refreshing to help you feel more comfortable throughout the afternoon.",
+      "notes_en": "Hot",
+      "lang": "en",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "df7e91843d481e4f789efb143a9271ca194265e2d37efa4b7e50d4cf0a9b1a48"
+      }
+    },
+    {
+      "id": 34,
+      "template_text_en": "It’s a bit hot today—a cooling dish will help balance your body temperature better.",
+      "notes_en": "mild fever",
+      "lang": "en",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "e59bc016a2cd27a8a4f25e3022aaa15002db30af27e58994dc0d4f0fef353af8"
+      }
+    },
+    {
+      "id": 35,
+      "template_text_en": "Temperatures are dropping to {temperature}°C — warm, hot meals will help your body retain heat and effectively prevent colds.",
+      "notes_en": "cold",
+      "lang": "en",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "c3083432444f5a479dc56ffb498171e88f628efdb759a15513361c71df3fa1c3"
+      }
+    },
+    {
+      "id": 36,
+      "template_text_en": "It’s {temperature}°C today—a warm, hearty meal will be very comforting and help you feel energized.",
+      "notes_en": "cold weather",
+      "lang": "en",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "53122b9ab18ddd7d0b65f017ea4425e93a5f288073097c297950c24eb9b5a3fe"
+      }
+    },
+    {
+      "id": 37,
+      "template_text_en": "It’s a bit chilly out, so a warm meal will help your body maintain a stable temperature throughout the day.",
+      "notes_en": "Light and Refreshing",
+      "lang": "en",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "894493e88cf69d8cd30c07fa192a9d9252b5ec69a88de6167fed26ebedd5e20f"
+      }
+    },
+    {
+      "id": 38,
+      "template_text_en": "Air quality is very poor today—boost your intake of vitamin C and antioxidants through your meals to protect your respiratory system.",
+      "notes_en": "AQI: Severely Poor",
+      "lang": "en",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "21daf18271547442269c4f23ccd7ee807a03dccff0e40b600aa2fbc3e7765f20"
+      }
+    },
+    {
+      "id": 39,
+      "template_text_en": "As the seasons change, you’re more prone to getting sick than usual—adding more leafy greens and mineral-rich foods to your diet is ideal.",
+      "notes_en": "Seasonal Transition",
+      "lang": "en",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "40155205904f7802d6d9f2faefeffac252a86566490288a6a01784c22ea820d3"
+      }
+    },
+    {
+      "id": 40,
+      "template_text_en": "The air quality is a bit poor today—choose meals rich in vegetables to boost your immunity every day.",
+      "notes_en": "AQI just",
+      "lang": "en",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "ea1aabf2bb705ffe58331300377e1da7c01fed2dc55b9ead615fad4698174b11"
+      }
+    },
+    {
+      "id": 41,
+      "template_text_en": "Strong, biting winds — your body burns significantly more energy to stay warm, so you need meals that are nutritious and high in calories.",
+      "notes_en": "strong cold wind",
+      "lang": "en",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "7abf06486e6e6fabac3066d5956b0febee3a50d4fd9275aebcdc8d661afff6e7"
+      }
+    },
+    {
+      "id": 42,
+      "template_text_en": "It’s chilly today—adding a warm, protein-rich dish will help your body stay warm.",
+      "notes_en": "a light chill",
+      "lang": "en",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "2659048ca412ea2d4dfdf16aa800e2ac30bd263f83ba4b6feff2a3ef55c34b1c"
+      }
+    },
+    {
+      "id": 43,
+      "template_text_en": "The weather is pleasant at {temperature}°C today — it’s the perfect time to enjoy a delicious meal without worrying about being too hot or too cold.",
+      "notes_en": "ideal weather",
+      "lang": "en",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "1341b70347b08df0652049235b81a646a72f5ca452d170a6d3621ce6138a2539"
+      }
+    },
+    {
+      "id": 44,
+      "template_text_en": "The temperature is {temperature}°C—a comfortable day—perfect for trying new dishes or cooking at a slower pace than usual.",
+      "notes_en": "comfortable",
+      "lang": "en",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "b8604db8fbf1285cc710a69ab80c5c09d2281e65f8a7fcdd15072df7a52df37a"
+      }
+    },
+    {
+      "id": 45,
+      "template_text_en": "Rainy days are perfect for hot, steaming meals—your body also needs extra energy to combat the damp, cold weather.",
+      "notes_en": "heavy rain",
+      "lang": "en",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "4c6f9be355a27f392bc9caf17c54838516d0cddab4ee6bc052e2d19cde2e5cad"
+      }
+    },
+    {
+      "id": 46,
+      "template_text_en": "It’s raining today, so be careful of high humidity—warm, easily digestible meals will help you feel more comfortable.",
+      "notes_en": "light rain/drizzle",
+      "lang": "en",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "5eab243e71cbbfc28396535aa92efa9d06a9403a086149879a6f7e04bfcfdfa6"
+      }
+    },
+    {
+      "id": 47,
+      "template_text_en": "Today’s dry, crisp air can easily lead to hidden dehydration—so choose foods with high water content and avoid overly salty foods.",
+      "notes_en": "Dried ginger",
+      "lang": "en",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "118f9909e863c6dbc9fda44823dbc3612261a7e3aa3621aded169ea240340ba7"
+      }
+    },
+    {
+      "id": 48,
+      "template_text_en": "Humidity is a bit low — increase your water intake with meals to prevent your skin and mucous membranes from drying out.",
+      "notes_en": "Lightly dried",
+      "lang": "en",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "76f0b5c76e50c52a826020dd3e9f15df0512a88e3f6d87f6e87835e35490f04c"
+      }
+    },
+    {
+      "id": 49,
+      "template_text_en": "First thing in the morning, when your body has just woken up—you need a light, easily digestible boost of energy to start your day off right.",
+      "notes_en": "Breakfast",
+      "lang": "en",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "e50bf20ecd58b26378776d16031bc36a41eacaa38b88a50f85acd342feb127a5"
+      }
+    },
+    {
+      "id": 50,
+      "template_text_en": "Lunch is the time of day when your energy needs are highest—today, be sure to stay hydrated and get enough nutrients.",
+      "notes_en": "lunch",
+      "lang": "en",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "eb0182da318c264e816954532f639214e2438304bed03fdf1e7fb6c518e39d9f"
+      }
+    },
+    {
+      "id": 51,
+      "template_text_en": "In the evening, your body begins to cool down—opt for light, easily digestible meals to ensure a good night’s sleep and optimal recovery overnight.",
+      "notes_en": "dinner",
+      "lang": "en",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "f0d23be9b8ad9d160d8d2e040a4a128e1491435a5d8f359a9f38880babc019cb"
+      }
+    },
+    {
+      "id": 52,
+      "template_text_en": "If you eat late, choose light, low-calorie meals—this helps prevent your digestive system from having to work too hard while you sleep.",
+      "notes_en": "late at night",
+      "lang": "en",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "4b378b50e37b6aaecc9eb155366b6272dac6a2c7a795563fbc16d5b7f591b230"
+      }
+    },
+    {
+      "id": 53,
+      "template_text_en": "Low sodium content ({sodium_mg} mg per serving) — ideal for keeping blood pressure within a safe range.",
+      "notes_en": "hypertension - low-sodium",
+      "lang": "en",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "66e8fe23868ac9cf8f819d79040e2570ac96f83ba7a17fec4a4e20c362519ac5"
+      }
+    },
+    {
+      "id": 54,
+      "template_text_en": "This dish has a moderate amount of sodium—pair it with plenty of leafy greens and drink enough water to balance it out.",
+      "notes_en": "Hypertension - Moderate Alert",
+      "lang": "en",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "16addb4557f6c3ed2969bca8d81955d8027ae73bbd79383565c7efccb05ddf7f"
+      }
+    },
+    {
+      "id": 55,
+      "template_text_en": "Note: This dish may be a little salty—eat half a serving or ask for less salt when cooking.",
+      "notes_en": "Hypertension - High Sodium",
+      "lang": "en",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "b804fc5fca636dff2d9cdd236bd1747463f6d6bb928152e36fa4bd1c20bba2d7"
+      }
+    },
+    {
+      "id": 56,
+      "template_text_en": "Very low glycemic load (GL) — ideal for maintaining stable blood sugar levels after meals. {glycemic_load}",
+      "notes_en": "diabetes - low GI",
+      "lang": "en",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "e1a532032cb20a449eb221590004b9654ede515142299a5968e88e79e8d02efe"
+      }
+    },
+    {
+      "id": 57,
+      "template_text_en": "Moderate glycemic load (GL {glycemic_load}) — eat slowly, chew thoroughly, and pair with leafy greens to minimize the impact on blood sugar levels.",
+      "notes_en": "diabetes - average glycemic load",
+      "lang": "en",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "a45ad3f70ebf09abcb2886394b80a244bce0253f249e134580c74f172a9405bb"
+      }
+    },
+    {
+      "id": 58,
+      "template_text_en": "High levels of natural fiber help slow down sugar absorption — which is good for maintaining stable blood sugar levels.",
+      "notes_en": "diabetes - fiber",
+      "lang": "en",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "02f7bc89fd4015f6ead53fd3cafbb523358dc73565f17298c997f4e465fb2041"
+      }
+    },
+    {
+      "id": 59,
+      "template_text_en": "Low in purines — suitable for people with gout and less likely to cause an increase in uric acid.",
+      "notes_en": "gout",
+      "lang": "en",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "64f24e55bd6b4a6266a1a0c1dbf740a371755e287ef8a6cc0ca984bbb86d1f1e"
+      }
+    },
+    {
+      "id": 60,
+      "template_text_en": "If you’re experiencing an acute gout attack, prioritize vegetables and limit the amount of meat in this dish.",
+      "notes_en": "Gout - Warning",
+      "lang": "en",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "2d6f7e8d80dd5d45369aa58b32783bed9d72d9baf27cb488ed721101a2760628"
+      }
+    },
+    {
+      "id": 61,
+      "template_text_en": "Gentle, easily digestible ingredients — gentle on sensitive stomachs and suitable for those with irritable bowel syndrome.",
+      "notes_en": "ibs",
+      "lang": "en",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "7b4282531dafdd2f0258c973c35ca26a457b2558465e04609ea9cb79faaa58c6"
+      }
+    },
+    {
+      "id": 62,
+      "template_text_en": "The soluble fiber in this dish helps regulate bowel movements and reduce IBS symptoms.",
+      "notes_en": "IBS - Soluble Fiber",
+      "lang": "en",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "611380b4d129a4baaa39ab02e34e54b466b5c07855108c2800742fa6bc12b27b"
+      }
+    },
+    {
+      "id": 63,
+      "template_text_en": "100% plant-based — contains no animal ingredients whatsoever and is fully compatible with a vegan diet.",
+      "notes_en": "vegan",
+      "lang": "en",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "b50227d91949775a28bf72e6539bf8ba50a05cd29303e92586c251c5a688a1d9"
+      }
+    },
+    {
+      "id": 64,
+      "template_text_en": "Vegetarian dishes—meat-free, suitable for your diet while still providing enough plant-based protein.",
+      "notes_en": "vegetarian",
+      "lang": "en",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "2e51fd33221385629b099bf51b6775f91baecb87c5a4d20891983d6b9f632b4c"
+      }
+    },
+    {
+      "id": 65,
+      "template_text_en": "Calorie balance ({calorie} kcal/serving) — just enough to feel full without excess energy, supporting gradual weight loss.",
+      "notes_en": "BMI 25–28",
+      "lang": "en",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "a4951f18b1a5789c2fb143f8d8d3baf462b66e27c75df28105a537f3ed8d652f"
+      }
+    },
+    {
+      "id": 66,
+      "template_text_en": "Low in calories and high in fiber ({calorie} kcal/serving) — helps you stay full longer while effectively controlling your calorie intake.",
+      "notes_en": "BMI > 28",
+      "lang": "en",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "2349a56f29804158ad4f81a1191a3077b6195f2905778995dfab41a9971d3e0d"
+      }
+    },
+    {
+      "id": 67,
+      "template_text_en": "High in energy ({calorie} kcal/serving) and nutrients—to help you gain weight healthily in line with your goals.",
+      "notes_en": "underweight",
+      "lang": "en",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "04818ef420a54883b8aba551c1d8c35318986675e8ee4ca148e1fcbee00a9856"
+      }
+    },
+    {
+      "id": 68,
+      "template_text_en": "You’re very active—this meal provides enough protein and calories ({calorie}kcal) to help your muscles recover after a workout.",
+      "notes_en": "very active",
+      "lang": "en",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "ae35bb21d6da99d19feb4070a8af9f65ccb4705398cf4e53e2610a45dedc9afb"
+      }
+    },
+    {
+      "id": 69,
+      "template_text_en": "After a workout, your body needs protein and carbs to replenish glycogen—this dish meets both of those needs.",
+      "notes_en": "Post-Workout Recovery",
+      "lang": "en",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "c5851c1bd2c4f320ee86ae7bfd17e6a68567cecd234ad6345b726a4726b0eab1"
+      }
+    },
+    {
+      "id": 70,
+      "template_text_en": "Soft, easy-to-chew, and easy-to-digest ingredients—ideal for seniors and gentle on the digestive system.",
+      "notes_en": "seniors",
+      "lang": "en",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "40ad0cabeb833c56fb2387e39c073d690926e9a5ce8db5476860672db6244500"
+      }
+    },
+    {
+      "id": 71,
+      "template_text_en": "Rich in natural calcium and vitamin D — supports strong bones and joints as you age.",
+      "notes_en": "Seniors - Bones and Joints",
+      "lang": "en",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "4f7e06a4a653f17ce26189e65b7d8de640c4faf21b394737d4cc6fa4328f9702"
+      }
+    },
+    {
+      "id": 72,
+      "template_text_en": "Low in sodium ({sodium_mg} mg) and low in glycemic load ({glycemic_load})—it’s rare to find a dish that’s this good for both blood pressure and blood sugar.",
+      "notes_en": "Combining Hypertension and Diabetes",
+      "lang": "en",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "2a6d9a1d40618b697700a6a80dd4c207606d384fdc095ffd0cfd7e385786b18e"
+      }
+    },
+    {
+      "id": 73,
+      "template_text_en": "Easy to digest, doesn’t weigh you down — ideal for days when your digestive system isn’t at its best.",
+      "notes_en": "Weak digestion",
+      "lang": "en",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "81338aef80c8505da58eebdc233982d37f38f2837adc913c72b6c47f75f10dd2"
+      }
+    },
+    {
+      "id": 74,
+      "template_text_en": "Rich in vitamin C, zinc, and antioxidants—a natural “combo” that boosts immunity through your daily meals.",
+      "notes_en": "Boost Your Immunity",
+      "lang": "en",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "52d9a494550d12095339d780c520a9e79fed42b0a1d74082468ef734443c2474"
+      }
+    },
+    {
+      "id": 75,
+      "template_text_en": "Summer is the time of year when {main_ingredient} is at its freshest and most affordable—cook with it today to make the most of its flavor.",
+      "notes_en": "Summer—the peak season",
+      "lang": "en",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "3253318cc9610833557908cf142dbf892ba3732439c0267ece42239b52d5ae91"
+      }
+    },
+    {
+      "id": 76,
+      "template_text_en": "In the summer, {dish_name} is a refreshing and seasonal choice—the ingredients are in season, fresh, and easy to find.",
+      "notes_en": "Summer - Suitable",
+      "lang": "en",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "7c53cd629f7249d352c13a067b1c2d9ac84cf592cd1718a92c1deb60d72b1f21"
+      }
+    },
+    {
+      "id": 77,
+      "template_text_en": "{dish_name} is a great choice for the current summer weather, helping to regulate body temperature.",
+      "notes_en": "Summer - in moderation",
+      "lang": "en",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "5f37d69f363230929b0292538ac664adc44afcc22c50668b457e3424cfa011a6"
+      }
+    },
+    {
+      "id": 78,
+      "template_text_en": "In winter, {dish_name} is piping hot and full of flavor—it’s exactly the kind of dish made to warm you up on cold days.",
+      "notes_en": "Winter – Peak Season",
+      "lang": "en",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "9b083b99e7afb975ee07dd0a0c64a8b733615eff581b8e1502a919a903a828de"
+      }
+    },
+    {
+      "id": 79,
+      "template_text_en": "When it’s cold outside, prioritize hot, nutritious meals like {dish_name} to keep your body warm all day long.",
+      "notes_en": "Winter - Suitable",
+      "lang": "en",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "af084b14c610a497ba4b3dd6491e33a5c7130f1b12e5c20f9e31fbe63c7de954"
+      }
+    },
+    {
+      "id": 80,
+      "template_text_en": "{dish_name} is perfect for winter—the ingredients are in season and easier to cook with than in other seasons.",
+      "notes_en": "East - Moderate",
+      "lang": "en",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "66e01ba8c9bf1f1fd522f42e02e639a3f1d50e8b23fa4c0b58d0b8ad53e40e38"
+      }
+    },
+    {
+      "id": 81,
+      "template_text_en": "A cool and vibrant spring—{dish_name} offers balanced nutrition, perfect for kicking off your day with energy.",
+      "notes_en": "Spring - Highly Suitable",
+      "lang": "en",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "58cbe1b6536986e7ea6aeaf852b56b60557603b42431a992c52250fdcacedc18"
+      }
+    },
+    {
+      "id": 82,
+      "template_text_en": "As spring begins, vegetables are in season — {dish_name} makes the most of the freshest ingredients available right now.",
+      "notes_en": "Spring - In moderation",
+      "lang": "en",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "54018c7206767a4c6005fc0843717041e098a1e791edb28fc710045ed8468f06"
+      }
+    },
+    {
+      "id": 83,
+      "template_text_en": "As the cool, crisp air of early fall sets in, {dish_name} is just the right balance of warmth and lightness—a wonderful way to ease into the transition from summer to winter.",
+      "notes_en": "Thu - Highly suitable",
+      "lang": "en",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "04335eac90f103431dccf83d6168928be4606c915423d363544be0a40a2514ae"
+      }
+    },
+    {
+      "id": 84,
+      "template_text_en": "Fall offers a wide variety of delicious ingredients—{dish_name} is at its best right now.",
+      "notes_en": "Thu - Moderate",
+      "lang": "en",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "cf47e3aa07aab4b69313e245bbc599993cd0b6e75b42b5176c4a68b79eb77567"
+      }
+    },
+    {
+      "id": 85,
+      "template_text_en": "During the rainy season, fresh produce is abundant—{dish_name} is both affordable and delicious right now, and it also helps your body better withstand the damp, cold weather.",
+      "notes_en": "Vietnam's rainy season",
+      "lang": "en",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "ba86f2e2c215ddd6c686fbb6f72a80d1ad13c3c2e28c6add7b2be68a8c67a059"
+      }
+    },
+    {
+      "id": 86,
+      "template_text_en": "On long, rainy days, a steaming bowl of {dish_name} is the perfect choice to keep you full and warm.",
+      "notes_en": "Light Rainy Season",
+      "lang": "en",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "2f7598d948c47f11764ef00ff6de34ba66c2d8c419633ce33eee965732ada622"
+      }
+    },
+    {
+      "id": 87,
+      "template_text_en": "Dry season — {dish_name} is rich in water and minerals, helping to replenish the moisture your body loses each day.",
+      "notes_en": "Vietnam’s Dry Season",
+      "lang": "en",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "1a280d59414c4fe5352404abdf4bef260e31397edc0604c7fac6362d9527bd17"
+      }
+    },
+    {
+      "id": 88,
+      "template_text_en": "Northern Vietnam is entering the cold winter season — {dish_name} is particularly popular among northerners during this time of year.",
+      "notes_en": "Northern Vietnam in Winter",
+      "lang": "en",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "6d918591a1b27dd13678e314e38832c4d27995d058b30345939cea4db7991d67"
+      }
+    },
+    {
+      "id": 89,
+      "template_text_en": "The dry season in the South — {dish_name} is light and refreshing, just the thing for Southerners during this time of year.",
+      "notes_en": "Southern Vietnam during the dry season",
+      "lang": "en",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "e8cf3b06d493bc8874eb927e48920efe9ee2d63f6c480986fa036d5fcca1558a"
+      }
+    },
+    {
+      "id": 90,
+      "template_text_en": "With Tet approaching, {main_ingredient} is in season and easy to find—this is also when {dish_name} tastes best all year round.",
+      "notes_en": "As the Lunar New Year approaches",
+      "lang": "en",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "bd84ada7b7ab7604de64df7f7f74826ece527770e49f3f3cb8fe118f34b4bf55"
+      }
+    },
+    {
+      "id": 91,
+      "template_text_en": "Most of the main ingredients ({ingredient_names}) are already in your cart—just head to the kitchen and start cooking!",
+      "notes_en": "boost >= 80%",
+      "lang": "en",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "e66c8000df94b2010709dd029b12cfb8c3229b4fa2e5f437586c8cebadb0b9b5"
+      }
+    },
+    {
+      "id": 92,
+      "template_text_en": "{ingredient_names} — the ingredients you bought today are enough to start cooking this dish.",
+      "notes_en": "boost by 60–80%",
+      "lang": "en",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "49f93e59f9048ef2025a65c8bc462588bec7ed2481edb5b4e87eaa01f7147dac"
+      }
+    },
+    {
+      "id": 93,
+      "template_text_en": "The {ingredient_names} from today’s shopping cart are used in this recipe—just pick up a few additional ingredients.",
+      "notes_en": "boost by 40–60%",
+      "lang": "en",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "4f317603209e78f8267df16d326842ace158960643ad7f3185023a75e950c28e"
+      }
+    },
+    {
+      "id": 94,
+      "template_text_en": "You already have some of the ingredients ({ingredient_names}) — save on today’s grocery shopping.",
+      "notes_en": "boost by 20–40%",
+      "lang": "en",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "b1811e0e632a98e8e8dd936c9b6dc038b311e1ee77442a7cbda3f079b4f712f9"
+      }
+    },
+    {
+      "id": 95,
+      "template_text_en": "Some of the ingredients you’ve already bought ({ingredient_names}) can be used in this dish instead of letting them go to waste.",
+      "notes_en": "boost by 10–20%",
+      "lang": "en",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "27c2573a01c8a9dab82ee9032585b2bb9ebf3ec05ada42b40b87139cd9fc275f"
+      }
+    },
+    {
+      "id": 96,
+      "template_text_en": "Fresh ingredients—you’ll need to buy these, but they’re easy to find at your local market or supermarket.",
+      "notes_en": "boost ~0",
+      "lang": "en",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "8d0cba8d0c8c75bb91d5c716a2116e724ac6ec62c9e75deeec834502f91d7f40"
+      }
+    },
+    {
+      "id": 97,
+      "template_text_en": "{ingredient_names} — the ingredients you bought today are featured in this recipe.",
+      "notes_en": "just 1 ingredient",
+      "lang": "en",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "649c4fa172600ebb9495cb5b6fcfd88b2de87731936f7eff740569fdf02b6e69"
+      }
+    },
+    {
+      "id": 98,
+      "template_text_en": "The fresh vegetables you’ve chosen ({ingredient_names}) are the main ingredients in this dish—they’re fresh and most nutritious when eaten right away.",
+      "notes_en": "Vegetables and Fruits for Joint Health",
+      "lang": "en",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "1d70a59c3b1101e43fee8399446266a45c1acd690952f75a8758edd107338c8b"
+      }
+    },
+    {
+      "id": 99,
+      "template_text_en": "{ingredient_names} — fresh protein from today’s shopping cart; cook it the same day to ensure the best quality.",
+      "notes_en": "Joint Protein",
+      "lang": "en",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "de637f8c7d2aeb447ad6130b27f781128da73ba951af67185c5add102d74c859"
+      }
+    },
+    {
+      "id": 100,
+      "template_text_en": "Spices and dried ingredients ({ingredient_names}) you already have on hand — significantly reduce costs and preparation time.",
+      "notes_en": "pantry staples",
+      "lang": "en",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "8ad0fe7facc301bb04c83da8d564f0b80f986e26eec8e85d15ca259e8ffefd25"
+      }
+    },
+    {
+      "id": 101,
+      "template_text_en": "{dish_name} — the top choice for staying hydrated on this hot day",
+      "notes_en": "High Hydration",
+      "lang": "en",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "e9af559561fdca32c08296a2e07ec0ade965f919ea0f99763de6f3fcef6f95ce"
+      }
+    },
+    {
+      "id": 102,
+      "template_text_en": "{dish_name} — provides natural hydration and minerals for the body",
+      "notes_en": "moderate hydration",
+      "lang": "en",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "0f5a007ad5d1e4e7d96a4fe415498a45e2180584d6f15decdb9a837256ba68a9"
+      }
+    },
+    {
+      "id": 103,
+      "template_text_en": "{dish_name} — a refreshing dish that effectively cools you down on a hot day",
+      "notes_en": "high fever",
+      "lang": "en",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "ceea8e75d64e3385bc924c5fd4a76be8114349144c8cefb2ad2852ecb7600e72"
+      }
+    },
+    {
+      "id": 104,
+      "template_text_en": "{dish_name} — light, refreshing, and perfect for summer",
+      "notes_en": "moderate cooling",
+      "lang": "en",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "414f8fc00de7a996fb91ebcefba6db5742e6574c70324e296be2bb785097b948"
+      }
+    },
+    {
+      "id": 105,
+      "template_text_en": "{dish_name} — warms you from the inside out, perfect for cold days",
+      "notes_en": "Warming Cao",
+      "lang": "en",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "dd634577fd6ca7e36e923cc954f2841348ad5e15b40c07236f7cb1d9c087504e"
+      }
+    },
+    {
+      "id": 106,
+      "template_text_en": "{dish_name} — just warm enough to help you beat today’s chilly weather",
+      "notes_en": "Warming up",
+      "lang": "en",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "441171aed33e013ab7eface958a1a9a7053e884a8f049b1bac88d5838d84a077"
+      }
+    },
+    {
+      "id": 107,
+      "template_text_en": "{dish_name} — Boost Your Immunity During Seasonal Changes",
+      "notes_en": "Immunity",
+      "lang": "en",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "75e796e9bb793e5964a3f3c99c07376fbac41921ac64bffae2339de891461715"
+      }
+    },
+    {
+      "id": 108,
+      "template_text_en": "{dish_name} — Start your morning off lightly and with plenty of energy",
+      "notes_en": "Breakfast",
+      "lang": "en",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "5289457ebc69d6ea9baa390e12fe7920c21ed8508e0aa9fe1e248a22806af34f"
+      }
+    },
+    {
+      "id": 109,
+      "template_text_en": "{dish_name} — a nutritious lunch to help you stay focused all afternoon",
+      "notes_en": "lunch",
+      "lang": "en",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "9570729bb3386fe8354d7040111e9a438e03110b41ca34670419c28e3db9f0d4"
+      }
+    },
+    {
+      "id": 110,
+      "template_text_en": "{dish_name} — a light, easy-to-digest dinner to end the day on a perfect note",
+      "notes_en": "dinner",
+      "lang": "en",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "d0b91a2410e668a38581e3fff9e1136cb3b0dce02fbbd90367bc73e2775f8ae3"
+      }
+    },
+    {
+      "id": 111,
+      "template_text_en": "{dish_name} — If you have some free time this weekend, give this elaborate dish a try",
+      "notes_en": "Weekend",
+      "lang": "en",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "ac2b4e5287d70cef31077022c0d16c31ae44e16dba58f77a3a488cd8b8b4a204"
+      }
+    },
+    {
+      "id": 112,
+      "template_text_en": "{dish_name} — quick to cook in under 20 minutes, so you don’t have to worry even on busy days",
+      "notes_en": "Busy Day",
+      "lang": "en",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "450d5d4b56db84a780984724b672a488fd493bd7482db65538b4ed79f0140f59"
+      }
+    },
+    {
+      "id": 113,
+      "template_text_en": "{dish_name} — Recover from your workout with plenty of protein and minerals",
+      "notes_en": "After a workout",
+      "lang": "en",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "0993ae3dc1e3c4240b35f0eca6b02e9ac0bb5f1cad6913b71188dc458c18ae7b"
+      }
+    },
+    {
+      "id": 114,
+      "template_text_en": "{dish_name} — a delicious dish for the whole family, suitable for all ages",
+      "notes_en": "Family Meal",
+      "lang": "en",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "a2aa628a395c41720bb3e0b42c6f2ab45f13095dae09941257a30198d0821a48"
+      }
+    },
+    {
+      "id": 115,
+      "template_text_en": "{dish_name} — nutritionally balanced, the right choice for today",
+      "notes_en": "fallback balanced",
+      "lang": "en",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "2f241d96f3ecf28b3e012ff56d2860c2cb47fd52365caf87f31ab49fe1e5ed89"
+      }
+    },
+    {
+      "id": 116,
+      "template_text_en": "#Hydration",
+      "notes_en": "",
+      "lang": "en",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "f807c238f50d5d8f045a398dc51f16fb22fb268434f775fd65ff30feaadf1e11"
+      }
+    },
+    {
+      "id": 117,
+      "template_text_en": "#StayHydrated",
+      "notes_en": "",
+      "lang": "en",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "00e6ebeeeb8d5e1c65ae82c62908717901ebea71b895d7d4bccbe9e06aeebe90"
+      }
+    },
+    {
+      "id": 118,
+      "template_text_en": "#Cool and Refreshing",
+      "notes_en": "",
+      "lang": "en",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "416e7e210043cd058a2bb163f92239f3cd8e1de6bea6b1fcd518000ec621cbb2"
+      }
+    },
+    {
+      "id": 119,
+      "template_text_en": "#FreshAndCool",
+      "notes_en": "",
+      "lang": "en",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "351ac9d19f3e9b340a78057cef606f5589056c6ecc0b09f3d642524c647d7d8a"
+      }
+    },
+    {
+      "id": 120,
+      "template_text_en": "#WarmStomach",
+      "notes_en": "",
+      "lang": "en",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "f6ad578013deb70830518e6f2b05948a4fabb17f99a8733df8dc26b30c596fe1"
+      }
+    },
+    {
+      "id": 121,
+      "template_text_en": "#StayWarm",
+      "notes_en": "",
+      "lang": "en",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "b745d63739782cc3bc663030ee863df05b0de14b32279f3c657c637824ee2089"
+      }
+    },
+    {
+      "id": 122,
+      "template_text_en": "#RainyDay",
+      "notes_en": "",
+      "lang": "en",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "900f8ee07efcaf2d744045cd776180423e76ac322da482d411220d327574dff9"
+      }
+    },
+    {
+      "id": 123,
+      "template_text_en": "#NiceWeather",
+      "notes_en": "",
+      "lang": "en",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "38e0e5dd777c30578c361261d00521c51a8256d289143aad27d287c82ff2db94"
+      }
+    },
+    {
+      "id": 124,
+      "template_text_en": "#LessSalt",
+      "notes_en": "",
+      "lang": "en",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "cc579e2576a842fb99039954fbb0235dc72d939aca073f56008dbeab821c4db5"
+      }
+    },
+    {
+      "id": 125,
+      "template_text_en": "#LowSugar",
+      "notes_en": "",
+      "lang": "en",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "7b7d5888843b13ca6f3f8f23b77bf8a4008ea523942e5c6aaf485c471f1e8ded"
+      }
+    },
+    {
+      "id": 126,
+      "template_text_en": "#HighFiber",
+      "notes_en": "",
+      "lang": "en",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "f1d11f03f4908289aaf72915718a81c081f2eaf652e4478889499882472ff3f6"
+      }
+    },
+    {
+      "id": 127,
+      "template_text_en": "#BoostYourImmunity",
+      "notes_en": "",
+      "lang": "en",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "8b5c9e99ca698dba8d0b38b797c7da7bf992b8ec3770b96d5b3a32777f964dc3"
+      }
+    },
+    {
+      "id": 128,
+      "template_text_en": "#Vegan",
+      "notes_en": "",
+      "lang": "en",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "5bb0777de5c5e5497e38a0fc773f923339319539e4e5a5e6587e064c06812d51"
+      }
+    },
+    {
+      "id": 129,
+      "template_text_en": "#Vegetarian",
+      "notes_en": "",
+      "lang": "en",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "1cecee5752946d8d406d5af285d70e927a814abeb844b1f8e77c7706d11af8b7"
+      }
+    },
+    {
+      "id": 130,
+      "template_text_en": "#Recharge",
+      "notes_en": "",
+      "lang": "en",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "dd555ae6489810cec5b9cd8798228540899c8c478ebe9f838aad9d4c8e1d7c6a"
+      }
+    },
+    {
+      "id": 131,
+      "template_text_en": "#DigestiveComfort",
+      "notes_en": "",
+      "lang": "en",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "d10ef6c3177ad3c74874c708ec9b44363b4535a919976e081b2355b5f8e97ce1"
+      }
+    },
+    {
+      "id": 132,
+      "template_text_en": "#WeightLoss",
+      "notes_en": "",
+      "lang": "en",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "16f0f16e113e08f27225391fc0ced873b0570cbcfbbbc328326115db5ce09b42"
+      }
+    },
+    {
+      "id": 133,
+      "template_text_en": "#Post-Workout",
+      "notes_en": "",
+      "lang": "en",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "ddd28d3c1b254fe8ce62703ca525b2e15aba56d1af0c281dffebaaf88ab29644"
+      }
+    },
+    {
+      "id": 134,
+      "template_text_en": "#HealthyBonesAndJoints",
+      "notes_en": "",
+      "lang": "en",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "9eb4d64002dd81031af49e7e521301199ccdeb2da133cb2689ce4ec452dbd035"
+      }
+    },
+    {
+      "id": 135,
+      "template_text_en": "#HealthyStomach",
+      "notes_en": "",
+      "lang": "en",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "080b9df22edb7a6ffdf8b1de69d33a4b3cc4f55aa4ad119792c5f0df9c0160ed"
+      }
+    },
+    {
+      "id": 136,
+      "template_text_en": "#QuickCooking",
+      "notes_en": "",
+      "lang": "en",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "e6a998eb071acc142b2ff4c70a018f3304dc10030f9c8013695d39de087bb5b0"
+      }
+    },
+    {
+      "id": 137,
+      "template_text_en": "#EasyToCook",
+      "notes_en": "",
+      "lang": "en",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "8a6b8dd386801f506b2833c14155394e81176ed36b117d1eacb5e2d2ef6f6649"
+      }
+    },
+    {
+      "id": 138,
+      "template_text_en": "#UseWhatYouHaveOnHand",
+      "notes_en": "",
+      "lang": "en",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "166526c943289caa3ba70bf068a308d7daf01a87e939f4b0ae37d35caba133df"
+      }
+    },
+    {
+      "id": 139,
+      "template_text_en": "#FreshIngredients",
+      "notes_en": "",
+      "lang": "en",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "3297edc2b9ace39d3fcecc19355a761535f3d74d584bfb5fd0e68384c22ab4fb"
+      }
+    },
+    {
+      "id": 140,
+      "template_text_en": "#Seasonal",
+      "notes_en": "",
+      "lang": "en",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "f8c2326844d6f257e2d962f74d9c99a60f7e03fe11e697e479c1f831ac911877"
+      }
+    },
+    {
+      "id": 141,
+      "template_text_en": "#RegionalSpecialties",
+      "notes_en": "",
+      "lang": "en",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "e8d420375c0e59207b1dc69d9b56a734a0afe31d14771812d82f0b77ffa5e371"
+      }
+    },
+    {
+      "id": 142,
+      "template_text_en": "#PeakSeason",
+      "notes_en": "",
+      "lang": "en",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "a9b63967397c1e9f55c655e0bb222093c5422fa0c6d083a518df472a51f67b9f"
+      }
+    },
+    {
+      "id": 143,
+      "template_text_en": "#Breakfast",
+      "notes_en": "",
+      "lang": "en",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "4247822cedf466174765f53d001d373ae602207b195918285a88edbb9243fa11"
+      }
+    },
+    {
+      "id": 144,
+      "template_text_en": "#Dinner",
+      "notes_en": "",
+      "lang": "en",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "af6986933fbffd9ec71362c2e3dd42a70e453170edf3addfbd3ee30382f0ea1e"
+      }
+    },
+    {
+      "id": 145,
+      "template_text_en": "#FamilyMeal",
+      "notes_en": "",
+      "lang": "en",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "c7fe469265ed53371d88717fba5e1618a20108b1550c03fcee5f0f305b9fb067"
+      }
+    },
+    {
+      "id": 146,
+      "template_text_en": "{dish_name} — low in purines, completely safe for people with gout",
+      "notes_en": "",
+      "lang": "en",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "a95265176c14b1525304651ed4590f93522edb1c96f32f7c47f4adb70218836e"
+      }
+    },
+    {
+      "id": 147,
+      "template_text_en": "{dish_name} — low in purines, gentle on joints and kidneys",
+      "notes_en": "",
+      "lang": "en",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "f4cdf411ca1b21be6a1dc9ee440637287cf7c017b2e74219f234a71cf4787e6f"
+      }
+    },
+    {
+      "id": 148,
+      "template_text_en": "{dish_name} — a healthy choice that helps reduce the risk of gout flare-ups",
+      "notes_en": "",
+      "lang": "en",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "a07e799d285435db1cab97aef3434e28ac8174f7cda915cf279567e7fc4228b5"
+      }
+    },
+    {
+      "id": 149,
+      "template_text_en": "{dish_name} — extremely low in sodium, ideal for managing blood pressure",
+      "notes_en": "",
+      "lang": "en",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "99369d913dc028dfa50189f9cc9e3de7b9cad377bebf84bb79ccadb135440903"
+      }
+    },
+    {
+      "id": 150,
+      "template_text_en": "{dish_name} — Reducing salt the right way is good for your heart and blood pressure",
+      "notes_en": "",
+      "lang": "en",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "6116e78b53382045753b9146a3622a5dd1015072dca0ed3316869e285507eec7"
+      }
+    },
+    {
+      "id": 151,
+      "template_text_en": "{dish_name} — low in sodium, suitable for people who need to monitor their blood pressure",
+      "notes_en": "",
+      "lang": "en",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "7c3392a64abe427f4962440dc6a88f1ea183fdd57bccc52240ab7934e3caedfc"
+      }
+    },
+    {
+      "id": 152,
+      "template_text_en": "{dish_name} — Low GL, helps keep blood sugar stable all day",
+      "notes_en": "",
+      "lang": "en",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "6d3c31a1a6b7973f5aa3568de9069a1f0f74f7acef084a92fee9411be63d4820"
+      }
+    },
+    {
+      "id": 153,
+      "template_text_en": "{dish_name} — slow-release, does not cause blood sugar spikes",
+      "notes_en": "",
+      "lang": "en",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "517d51e78c2762f3d830554c041a08b0b422b5ccc4e9acd80308450b0a5a41df"
+      }
+    },
+    {
+      "id": 154,
+      "template_text_en": "{dish_name} — Safe Glycemic Index for People with Diabetes",
+      "notes_en": "",
+      "lang": "en",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "446039260283ad5e5ba76fe4d19d02a8f10ab0e269f2bb68aa6fb683fba0d2d6"
+      }
+    },
+    {
+      "id": 155,
+      "template_text_en": "{dish_name} — mild and gentle, ideal for sensitive digestive systems",
+      "notes_en": "",
+      "lang": "en",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "be35aa93a4feebc9d7511afcebca3bc53fd443397ff08c57bf7d75a335bcb94c"
+      }
+    },
+    {
+      "id": 156,
+      "template_text_en": "{dish_name} — easy to digest, gentle on the stomach",
+      "notes_en": "",
+      "lang": "en",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "19f08363a94fe22fa0aa3c9b9ce02926e21f0c38dcdb8d7feaf5b7d06c235974"
+      }
+    },
+    {
+      "id": 157,
+      "template_text_en": "{dish_name} — gut-friendly, enjoy it without worrying about discomfort",
+      "notes_en": "",
+      "lang": "en",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "59efe28951e4591bd2783b1f9bad80a8f9a27eeda11474f72996872017d453a2"
+      }
+    },
+    {
+      "id": 158,
+      "template_text_en": "{dish_name} — replenishes potassium, sodium, and magnesium after heavy sweating",
+      "notes_en": "",
+      "lang": "en",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "d1d8094201328555a9e2e32a72781646135c621f738261cdd94848e1ef50969c"
+      }
+    },
+    {
+      "id": 159,
+      "template_text_en": "{dish_name} — natural electrolyte balance, quick recovery",
+      "notes_en": "",
+      "lang": "en",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "7464e04d90decd51a35d70da6252e5d7cfa4a8cfb3fd7fdfeee7a590de1651ca"
+      }
+    },
+    {
+      "id": 160,
+      "template_text_en": "{dish_name} — hearty and energizing, keeps you warm in the cold",
+      "notes_en": "",
+      "lang": "en",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "563e796bfc1b32477b05abab9c04e7e7877d357c9dda2a2e4eaa9e306f647b87"
+      }
+    },
+    {
+      "id": 161,
+      "template_text_en": "{dish_name} — Warms you from the inside out and effectively protects against the cold",
+      "notes_en": "",
+      "lang": "en",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "d9bdc834479967c01e75a795288061822e57af1cbbb6300894162208e72f8f02"
+      }
+    },
+    {
+      "id": 162,
+      "template_text_en": "{dish_name} — boosts natural immunity and protects the body during seasonal changes",
+      "notes_en": "",
+      "lang": "en",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "5eb935b7876d3e7999e99df0f79c0103cefb1f020481d11a90ff2f5c55b3d5ef"
+      }
+    },
+    {
+      "id": 163,
+      "template_text_en": "{dish_name} — rich in micronutrients to help keep your body healthy every day",
+      "notes_en": "",
+      "lang": "en",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "be2f0ea540488eb7825cbcdd73511ba573be6944d495d99b01546127b482d2d0"
+      }
+    },
+    {
+      "id": 164,
+      "template_text_en": "{dish_name} — light and refreshing, helping your body feel more comfortable",
+      "notes_en": "",
+      "lang": "en",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "c6c298cce32720bf70236485c5ef5ba8fae69d62cf584a37fc3ad0b941ae89ee"
+      }
+    },
+    {
+      "id": 165,
+      "template_text_en": "{dish_name} — a warm, comforting meal perfect for a chilly day",
+      "notes_en": "",
+      "lang": "en",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "8dbd72ea8e5141811829107b5f8b20ecabec158354e2ec2d21f3141127be15fe"
+      }
+    },
+    {
+      "id": 166,
+      "template_text_en": "{dish_name} — helps maintain body hydration and replenish fluids with every meal",
+      "notes_en": "",
+      "lang": "en",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "87355523602aa585de4a6f32ba39d59da82c5194d71696b2d285f269c0c39d8a"
+      }
+    },
+    {
+      "id": 167,
+      "template_text_en": "Temperature {temperature}°C, excessive sweating — your body is losing potassium and sodium rapidly; you need to replenish electrolytes immediately.",
+      "notes_en": "",
+      "lang": "en",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "fc9aa393d8f226b68e76d1f3f0121c607b520d60c8a4a6bf2716f6a105b6fc5d"
+      }
+    },
+    {
+      "id": 168,
+      "template_text_en": "It’s {temperature}°C outside; intense physical activity can lead to electrolyte loss—prioritize mineral-rich foods to help your body recover.",
+      "notes_en": "",
+      "lang": "en",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "ad268dd2c079e4eeda117683f87b629368060b63d4c9fbd4d8c46c2c642f1e9b"
+      }
+    },
+    {
+      "id": 169,
+      "template_text_en": "Today {temperature}°C — a reminder to get enough minerals through your meals, especially if you’re active.",
+      "notes_en": "",
+      "lang": "en",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "eda6ae921b49fcd09eef1646390f914ec201abb18c479d5ed40520c089c91f51"
+      }
+    },
+    {
+      "id": 170,
+      "template_text_en": "It’s chilly today—add warm, protein-rich meals to your diet to help your body retain heat more effectively.",
+      "notes_en": "",
+      "lang": "en",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "84643626eb9872b8ea4dd9245192290e0db378eb55f7d83d4180b4b5281b0862"
+      }
+    },
+    {
+      "id": 171,
+      "template_text_en": "The temperature is {temperature}°C—a pleasant day perfect for cooking whatever you like.",
+      "notes_en": "",
+      "lang": "en",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "458a086d3e7e7c31131f888751fc8edfaf16613181ce60678e21ddfb1353e87a"
+      }
+    },
+    {
+      "id": 172,
+      "template_text_en": "It’s drizzling outside—a hot, steaming meal is always a great choice for a rainy day.",
+      "notes_en": "",
+      "lang": "en",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "c3616006b67d400e735d5b06ec720c793a4ca1ab36a0b41260c48a09e8e598cd"
+      }
+    },
+    {
+      "id": 173,
+      "template_text_en": "Even though it’s not too hot today, your body still needs enough water—a meal rich in vegetables is a smart way to stay hydrated.",
+      "notes_en": "",
+      "lang": "en",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "4110a5b95a1abad26bf5cf7ccaa31df122dcdbefd823b1c8947fe5357577e6e1"
+      }
+    },
+    {
+      "id": 174,
+      "template_text_en": "Today’s Warmth — Choose light, refreshing dishes to help your body avoid overheating.",
+      "notes_en": "",
+      "lang": "en",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "c96e5f5508df25a9a186e45efe872f30e78cd84fd3d48828afd8d7543a0b5951"
+      }
+    },
+    {
+      "id": 175,
+      "template_text_en": "Mild cold — warm meals help maintain a stable body temperature throughout the day.",
+      "notes_en": "",
+      "lang": "en",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "932246c1f5560e9f9058e68d769ebadae2219e88532a46ce09180e7fdb178385"
+      }
+    },
+    {
+      "id": 176,
+      "template_text_en": "{dish_name} is perfect for the dry season—the ingredients are easy to find, easy to store, and still delicious even in dry weather.",
+      "notes_en": "",
+      "lang": "en",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "ea8ef825e3f73ee59b4627b8dbdef478ff408e6d0e35bf190d889c9f2054c971"
+      }
+    },
+    {
+      "id": 177,
+      "template_text_en": "{dish_name} helps replenish moisture during the dry season, especially when eaten with plenty of water or soup.",
+      "notes_en": "",
+      "lang": "en",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "c7b9af86e1f57efc0d5858df61cfc072c2b17a7a573df78ac89e84c437c725d4"
+      }
+    },
+    {
+      "id": 178,
+      "template_text_en": "{dish_name} warms the stomach—the kind of Northern Vietnamese dish often cooked on cold winter days.",
+      "notes_en": "",
+      "lang": "en",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "0fa30262c2cb8ca5697a48478778130476eb494245a7c0c194c27c9806ae4d87"
+      }
+    },
+    {
+      "id": 179,
+      "template_text_en": "{dish_name}—simple yet nutritious—to help you stay strong through the long winter days in the North.",
+      "notes_en": "",
+      "lang": "en",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "1adf40c27a9720db0f7b128a994670ba867da0398236e9a6ff79d424c703e118"
+      }
+    },
+    {
+      "id": 180,
+      "template_text_en": "{dish_name} is refreshing and suits the mild tastes of Southerners during the hot, dry season.",
+      "notes_en": "",
+      "lang": "en",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "022c9e75b729ee8180d48b71a84bc0dc8e698d90111ceccba74e6757dbb7c6e7"
+      }
+    },
+    {
+      "id": 181,
+      "template_text_en": "{dish_name}—simple and refreshing—a favorite choice for Southerners during hot weather.",
+      "notes_en": "",
+      "lang": "en",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "0dbe9a2f0bea5b6499cf76b8f3085f71fa85e66b5a8520a6a694e11956cb7bbd"
+      }
+    },
+    {
+      "id": 182,
+      "template_text_en": "{dish_name}—a light, balanced meal to help you get back on track after the high-protein, high-fat days of Tet.",
+      "notes_en": "",
+      "lang": "en",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "fc3ea8e1a807fbb4d6442d58162d5ddd64371524a9bd5391349bfb340e717dd8"
+      }
+    },
+    {
+      "id": 183,
+      "template_text_en": "{dish_name} is light and refreshing—perfect for the cool autumn weather, and you won’t get tired of eating it as winter sets in.",
+      "notes_en": "",
+      "lang": "en",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "ae2c445a1fa3c92289478bdd041c7a2f92ea93408b0c363345213c8e634bd34c"
+      }
+    },
+    {
+      "id": 184,
+      "template_text_en": "#HighWaterContent",
+      "notes_en": "",
+      "lang": "en",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "16847db87a059773e6045894dcbda21768714bfe32821a70e9315e813140203f"
+      }
+    },
+    {
+      "id": 185,
+      "template_text_en": "#StayHydrated",
+      "notes_en": "",
+      "lang": "en",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "ccaf178664b5617fbf5ee3f30421de2d527db4f0ed5e2de0595c586795f5a594"
+      }
+    },
+    {
+      "id": 186,
+      "template_text_en": "#Hydration",
+      "notes_en": "",
+      "lang": "en",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "822c946ad8432066a1ee8c468cd4403c52eb7f389320e3ffbfef263c033d3bca"
+      }
+    },
+    {
+      "id": 187,
+      "template_text_en": "#Cooling",
+      "notes_en": "",
+      "lang": "en",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "77f029e7d3b458b69ee44d8d534499b51e7a647deecc6fc1fe6d37a009decdac"
+      }
+    },
+    {
+      "id": 188,
+      "template_text_en": "#CoolDown",
+      "notes_en": "",
+      "lang": "en",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "03f8ccf18b322d10f2fb54f93eb5bc76d71038bf2257a710e6e7e196d784e85a"
+      }
+    },
+    {
+      "id": 189,
+      "template_text_en": "#HealthyLiving",
+      "notes_en": "",
+      "lang": "en",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "58051f13b856399e55be9963c827cf026479f0c847a65b0e9c151c79e8fcd5b0"
+      }
+    },
+    {
+      "id": 190,
+      "template_text_en": "#HotOffThePress",
+      "notes_en": "",
+      "lang": "en",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "4e7b490c149760f2ddc60aeabacddfafa78176ef95e3ecac1f15136f9370569d"
+      }
+    },
+    {
+      "id": 191,
+      "template_text_en": "#StayWarm",
+      "notes_en": "",
+      "lang": "en",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "adf4200526141190db5eabe2d7dd2ca272dd005313f2db3fdc50517357884365"
+      }
+    },
+    {
+      "id": 192,
+      "template_text_en": "#Warmth",
+      "notes_en": "",
+      "lang": "en",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "cf11bf207ef42ed282991a9037a85ac61afa463b20ba3fced0bf39b6332ead1f"
+      }
+    },
+    {
+      "id": 193,
+      "template_text_en": "#BoostYourImmuneSystem",
+      "notes_en": "",
+      "lang": "en",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "0c7c851eece1fb01ac3c0eee5a8660758a78f2c3453ece3d6aba504927232097"
+      }
+    },
+    {
+      "id": 194,
+      "template_text_en": "#Antioxidants",
+      "notes_en": "",
+      "lang": "en",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "38d678fd586427274dd0f092ce6bef209ee24516f6a3de307466aa1e551d87a1"
+      }
+    },
+    {
+      "id": 195,
+      "template_text_en": "#InSeason",
+      "notes_en": "",
+      "lang": "en",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "c1a1fd90f9dc6e7b961b35c557ea797caad13e0c4f800eda04575df2c8e886d5"
+      }
+    },
+    {
+      "id": 196,
+      "template_text_en": "#InSeason",
+      "notes_en": "",
+      "lang": "en",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "f238c5e7c891c780b081d617f5fdb37abfa1cf5c78c5b15dd944cbfac7aba436"
+      }
+    },
+    {
+      "id": 197,
+      "template_text_en": "#CookNow",
+      "notes_en": "",
+      "lang": "en",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "69196a266e56f49c2c1be9d46ee4dedad18bc8d02212070e38cba8381e1b8eb7"
+      }
+    },
+    {
+      "id": 198,
+      "template_text_en": "#IngredientsOnHand",
+      "notes_en": "",
+      "lang": "en",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "235896c7c19c0b3931078f6df89d2607fb24d91c173f5c7e35be289586c029f9"
+      }
+    },
+    {
+      "id": 199,
+      "template_text_en": "#Under20Minutes",
+      "notes_en": "",
+      "lang": "en",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "0b2cd3bdb90022489383c6bb487a7a3fb973dbda950e020529c217c1fe0a3ef5"
+      }
+    },
+    {
+      "id": 200,
+      "template_text_en": "#QuickCooking",
+      "notes_en": "",
+      "lang": "en",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "e8e27f960c4039cfd6ca8dc32c0628586b1e58545b497a1fa337d1d1b671b1e7"
+      }
+    },
+    {
+      "id": 201,
+      "template_text_en": "#LessSalt",
+      "notes_en": "",
+      "lang": "en",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "e9e84d5b4d12f470a0e1611b74ce8e96bdf052a50b3f7d0058ff7a142c3a2d06"
+      }
+    },
+    {
+      "id": 202,
+      "template_text_en": "#HealthyBloodPressure",
+      "notes_en": "",
+      "lang": "en",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "c1a47451f836384771098bbda13eb8c26578e01c4629106dfd641cd0ef90255a"
+      }
+    },
+    {
+      "id": 203,
+      "template_text_en": "#LowBloodSugar",
+      "notes_en": "",
+      "lang": "en",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "6d4267f400dd34f07914fa6b87232e86ac9b2afe8d8d49913138dae837daefb8"
+      }
+    },
+    {
+      "id": 204,
+      "template_text_en": "#BloodSugarSafety",
+      "notes_en": "",
+      "lang": "en",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "71c9b3150ca09cdaeef605e2b2fc195b3c55e6ca2393197188c24f5f86198b32"
+      }
+    },
+    {
+      "id": 205,
+      "template_text_en": "#Vegan",
+      "notes_en": "",
+      "lang": "en",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "7dae2054a3116da93a6da40e0b1a7ead6f004ebf16c61d8e9c7aae9bba3d1d46"
+      }
+    },
+    {
+      "id": 206,
+      "template_text_en": "#Vegetarian",
+      "notes_en": "",
+      "lang": "en",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "9db357fd56d193c9307bff7d3dedf765f03164831644d57c0958efc8fd8b4bd4"
+      }
+    },
+    {
+      "id": 207,
+      "template_text_en": "#FreshAndDelicious",
+      "notes_en": "",
+      "lang": "en",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "c108b10d695ba788ed4f769c65573c405bac3b56737545149c06e612617f2390"
+      }
+    },
+    {
+      "id": 208,
+      "template_text_en": "#BeautifulWeatherToday",
+      "notes_en": "",
+      "lang": "en",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "9bfc4be7e086fd269c5b783f6be848a391bc9a5805ee3293c511d73a72d36cb0"
+      }
+    },
+    {
+      "id": 209,
+      "template_text_en": "#RainMeansCooking",
+      "notes_en": "",
+      "lang": "en",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "05826a689cfb706e0c2866aa1474b0e55c886d3311040a4fde7ade1c86ff819e"
+      }
+    },
+    {
+      "id": 210,
+      "template_text_en": "{ingredient_names} — You’ve got everything you need! Just open the fridge and you’re all set.",
+      "notes_en": "",
+      "lang": "en",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "a346fbfe5c76ccc2ccc6e331aaa0f132a30465fd7f4e5d8d9566f5ee7cad1dbe"
+      }
+    },
+    {
+      "id": 211,
+      "template_text_en": "{ingredient_names} are in the pantry—just add a few more items and you’re ready to cook.",
+      "notes_en": "",
+      "lang": "en",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "5a3cedea50941270e96f7d218b4972b897b1a972f5b7c219b4121e9bed6e24fa"
+      }
+    },
+    {
+      "id": 212,
+      "template_text_en": "The {ingredient_names} in your cart are still usable—use them instead of buying new ones.",
+      "notes_en": "",
+      "lang": "en",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "5ea3394ef7242c5ca04dc20b46c5e31ef0064874333c9cd2cdc33a95eb6b5f0f"
+      }
+    }
+  ],
+  "failures": [],
+  "provider_counts": {
+    "deepl": 185
+  },
+  "checkpoint": false
+}

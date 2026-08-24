@@ -17,6 +17,7 @@ import json
 from typing import Any
 
 import data_store
+from localization import localize_ingredient
 
 # ─────────────────────────────────────────────────────────────────────────────
 # Internal helpers
@@ -37,9 +38,9 @@ def _fill(template: str, **kwargs) -> str:
 
 
 def _query_templates(db=None, context_type: str = "", trigger_dim: str = "",
-                     intensity: float = 0.5) -> list[dict]:
+                     intensity: float = 0.5, language: str = "vi") -> list[dict]:
     """Query templates từ data_store (in-memory). db parameter giữ để tương thích."""
-    all_tmpl = data_store.get_all_advice_templates()
+    all_tmpl = data_store.get_all_advice_templates(language=language)
     matched = [
         t for t in all_tmpl
         if t.get("context_type") == context_type
@@ -51,8 +52,9 @@ def _query_templates(db=None, context_type: str = "", trigger_dim: str = "",
 
 
 def _get_best_template(db=None, context_type: str = "", trigger_dim: str = "",
-                       intensity: float = 0.5, fallback: str = "", **fill_vars) -> str:
-    rows = _query_templates(db, context_type, trigger_dim, intensity)
+                       intensity: float = 0.5, fallback: str = "", language: str = "vi",
+                       **fill_vars) -> str:
+    rows = _query_templates(db, context_type, trigger_dim, intensity, language=language)
     template = rows[0]["text"] if rows else fallback
     return _fill(template, **fill_vars)
 
@@ -203,6 +205,7 @@ def _build_ingredient_source_note(
     dish: dict,
     active_reasons: set[str],
     db=None,
+    language: str = "vi",
 ) -> str | None:
     """
     Truy nguyên tại sao món có chỉ số như vậy.
@@ -229,6 +232,22 @@ def _build_ingredient_source_note(
     if not label_info:
         return None
     dim_display, ingr_score_col, unit_label = label_info
+    is_en = str(language or "vi").lower().startswith("en")
+    if is_en:
+        dim_display = {
+            "weather_cooling": "cooling effect",
+            "weather_warming": "warming effect",
+            "weather_hydration": "hydration",
+            "weather_energy": "energy effect",
+            "disease_hypertension": "sodium level",
+            "disease_diabetes": "glycemic load",
+            "disease_gout": "purine level",
+        }.get(active_dim, dim_display)
+        unit_label = {
+            "điểm mát": "cooling score", "điểm ấm": "warming score",
+            "điểm bù nước": "hydration score", "điểm nhiệt": "energy score",
+            "mg sodium": "sodium", "chỉ số GI": "GI", "điểm purine": "purine score",
+        }.get(unit_label, unit_label)
 
     dish_id = dish.get("id")
     if not dish_id:
@@ -249,8 +268,9 @@ def _build_ingredient_source_note(
         if cat in PANTRY:
             continue
         score_val = ing.get(ingr_score_col) if ingr_score_col else None
+        display_ing = localize_ingredient(ing, language)
         enriched.append({
-            "name": ing.get("name", ""),
+            "name": display_ing.get("name", ing.get("name", "")),
             "quantity_g": float(row["quantity_g"]),
             "score_val": float(score_val) if score_val is not None else None,
         })
@@ -285,22 +305,29 @@ def _build_ingredient_source_note(
         return None
 
     ingr_str = "; ".join(parts)
-    sentence = f"{dim_display.capitalize()} của món chủ yếu đến từ: {ingr_str}."
+    sentence = (
+        f"The dish's {dim_display} mainly comes from: {ingr_str}."
+        if is_en else f"{dim_display.capitalize()} của món chủ yếu đến từ: {ingr_str}."
+    )
 
     # ── Câu tổng kết weighted calculation ────────────────────────────────
     if has_scores and len(rows_data) >= 2:
         if active_dim == "disease_gout":
             # gout_risk_score = 1 - weighted_purine → an toàn bao nhiêu %
             safety_pct = round((1.0 - weighted_sum) * 100)
-            sentence += f" Purine tổng hợp ≈ {weighted_sum:.2f} → điểm an toàn gout ≈ {safety_pct}%."
+            sentence += (f" Combined purine is about {weighted_sum:.2f}; gout safety is about {safety_pct}%."
+                          if is_en else f" Purine tổng hợp ≈ {weighted_sum:.2f} → điểm an toàn gout ≈ {safety_pct}%.")
         elif active_dim == "disease_hypertension":
-            sentence += f" Sodium tổng hợp từ nguyên liệu ≈ {weighted_sum:.1f} mg/100g."
+            sentence += (f" Combined sodium from ingredients is about {weighted_sum:.1f} mg/100g."
+                          if is_en else f" Sodium tổng hợp từ nguyên liệu ≈ {weighted_sum:.1f} mg/100g.")
         elif active_dim == "disease_diabetes":
-            sentence += f" Chỉ số GI tổng hợp ≈ {weighted_sum:.1f}."
+            sentence += (f" Combined GI is about {weighted_sum:.1f}."
+                          if is_en else f" Chỉ số GI tổng hợp ≈ {weighted_sum:.1f}.")
         else:
             # weather dims — show weighted score
             score_pct = round(weighted_sum * 100)
-            sentence += f" {dim_display.capitalize()} tổng hợp từ nguyên liệu ≈ {score_pct}%."
+            sentence += (f" The combined {dim_display} score is about {score_pct}%."
+                          if is_en else f" {dim_display.capitalize()} tổng hợp từ nguyên liệu ≈ {score_pct}%.")
 
     # ── Cooking method note ───────────────────────────────────────────────
     method_name_raw = None
@@ -317,7 +344,8 @@ def _build_ingredient_source_note(
                 mult_val, effect_desc = effect
                 retained_pct = round(mult_val * 100)
                 method_display = COOKING_METHOD_LABEL.get(method_name_raw, method_name_raw)
-                sentence += f" Phương pháp {method_display}: {effect_desc} (≈{retained_pct}% purine còn lại)."
+                sentence += (f" Cooking method {method_display}: about {retained_pct}% of purine remains."
+                              if is_en else f" Phương pháp {method_display}: {effect_desc} (≈{retained_pct}% purine còn lại).")
     else:
         # Dùng DIM_MULT_COL như cũ cho các dimension khác
         mult_col = DIM_MULT_COL.get(active_dim)
@@ -368,7 +396,7 @@ def _primary_demand(demand: dict) -> tuple[str, float]:
     return tops[0] if tops else ("hydration_need", 0.0)
 
 
-def _build_headline(dish: dict, demand: dict, db=None) -> str:
+def _build_headline(dish: dict, demand: dict, db=None, language: str = "vi") -> str:
     dish_name = dish.get("title", "Món ăn")
     tops = _dominant_demands(demand, top_k=2)
     DISEASE_HEADLINES = {
@@ -383,19 +411,21 @@ def _build_headline(dish: dict, demand: dict, db=None) -> str:
     headline = _get_best_template(
         db, "headline", dim, val,
         fallback=f"{dish_name} — phù hợp với điều kiện hôm nay",
+        language=language,
         dish_name=dish_name,
     )
     if val < 0.3:
         headline = _get_best_template(
             db, "headline", "balanced", 0.5,
             fallback=f"{dish_name} — cân bằng dinh dưỡng hôm nay",
+            language=language,
             dish_name=dish_name,
         )
     return headline
 
 
 def _build_weather_reason(demand: dict, temperature: float | None,
-                           db=None) -> str:
+                           db=None, language: str = "vi") -> str:
     WEATHER_DIMS = {
         "hydration_need", "cooling_food_need", "warming_food_need",
         "infection_risk", "cold_stress_index", "electrolyte_need",
@@ -417,11 +447,12 @@ def _build_weather_reason(demand: dict, temperature: float | None,
     return _get_best_template(
         db, "weather", dim, val,
         fallback=fallbacks.get(dim, f"Thời tiết hôm nay {temp_str}°C — chọn món phù hợp cơ thể."),
+        language=language,
         temperature=temp_str,
     )
 
 
-def _build_dish_match(dish: dict, demand: dict) -> str:
+def _build_dish_match(dish: dict, demand: dict, language: str = "vi") -> str:
     tops = _dominant_demands(demand, top_k=2)
     name = dish.get("title", "Món này")
     DIM_TEMPLATES = {
@@ -462,6 +493,18 @@ def _build_dish_match(dish: dict, demand: dict) -> str:
             None, None, False
         ),
     }
+    if str(language or "vi").lower().startswith("en"):
+        DIM_TEMPLATES = {
+            "hydration_need": ("{name} is rich in water (hydration score: {score:.0%}), helping maintain hydration.", "adj_hydration_score", "dish_hydration_score", False),
+            "cooling_food_need": ("{name} has a cooling effect and may help reduce internal heat (cooling score: {score:.0%}).", "adj_cooling_score", "dish_cooling_score", False),
+            "warming_food_need": ("{name} has a warming effect and may help maintain body heat in cold weather (warming score: {score:.0%}).", "adj_warming_score", "dish_warming_score", False),
+            "infection_risk": ("{name} provides micronutrients and antioxidants that support immunity.", "adj_thermogenic_score", "dish_thermogenic_score", False),
+            "cold_stress_index": ("{name} provides steady energy to help the body cope with cold wind.", "adj_warming_score", "dish_warming_score", False),
+            "sodium_control_need": ("{name} is low in sodium ({score:.0f} mg per serving), which may suit blood-pressure control.", "adj_sodium_total", "dish_sodium_total", False),
+            "glycemic_control_need": ("{name} has a low glycemic load (GL {score:.1f}), supporting steadier blood sugar.", "adj_glycemic_load", "dish_glycemic_load", False),
+            "gout_control_need": ("{name} is relatively low in purines (safety score: {score:.0%}).", "gout_risk_score", None, False),
+            "ibs_control_need": ("{name} uses ingredients that may be easier on a sensitive gut.", None, None, False),
+        }
     parts = []
     for dim, val in tops:
         if dim not in DIM_TEMPLATES:
@@ -477,10 +520,39 @@ def _build_dish_match(dish: dict, demand: dict) -> str:
         if invert and dish_score > 0:
             dish_score = 1.0 - dish_score
         parts.append(tpl.format(name=name, score=dish_score))
-    return " ".join(parts) if parts else f"{name} phù hợp với nhu cầu dinh dưỡng hôm nay."
+    return " ".join(parts) if parts else (
+        f"{name} fits today's nutrition needs."
+        if str(language or "vi").lower().startswith("en")
+        else f"{name} phù hợp với nhu cầu dinh dưỡng hôm nay."
+    )
 
 
-def _build_nutrition_note(dish: dict, profile: dict) -> str | None:
+def _build_nutrition_note(dish: dict, profile: dict, language: str = "vi") -> str | None:
+    if str(language or "vi").lower().startswith("en"):
+        df = profile.get("disease_flags", {})
+        sodium = dish.get("adj_sodium_total") or dish.get("dish_sodium_total") or 0
+        gl = dish.get("adj_glycemic_load") or dish.get("dish_glycemic_load") or 0
+        cal = dish.get("adj_energy_total") or dish.get("dish_energy_total") or 0
+        gout_s = dish.get("gout_risk_score")
+        parts = []
+        if df.get("hypertension") and sodium:
+            parts.append(f"Low sodium ({sodium:.0f} mg/serving) — suitable for blood-pressure control." if sodium < 600 else f"Caution: sodium is {sodium:.0f} mg/serving; avoid adding fish sauce or salt.")
+        if df.get("diabetes") and gl:
+            parts.append(f"Low glycemic load (GL {gl:.1f}) — supports blood-sugar control." if gl < 10 else f"Caution: glycemic load is {gl:.1f}; eat slowly and pair with high-fiber vegetables.")
+        if df.get("gout"):
+            parts.append("Very low purine — generally suitable for gout." if gout_s is not None and gout_s >= 0.8 else "Moderate or uncertain purine level — keep portions moderate and drink plenty of water.")
+        if df.get("ibs"):
+            parts.append("The ingredients may be easier on a sensitive gut; avoid eating too quickly or too much.")
+        bmi = profile.get("BMI", 22)
+        if bmi and bmi > 25 and cal:
+            parts.append(f"Lower in calories ({cal:.0f} kcal/serving) — may support weight management.")
+        elif bmi and bmi < 18.5 and cal:
+            parts.append(f"Energy-dense ({cal:.0f} kcal/serving) — helps add nutrition.")
+        if profile.get("diet_type") == "vegan":
+            parts.append("Plant-based — contains no animal ingredients.")
+        elif profile.get("diet_type") == "vegetarian" and dish.get("is_vegetarian"):
+            parts.append("Vegetarian — contains no meat.")
+        return " | ".join(parts) if parts else None
     parts = []
     df    = profile.get("disease_flags", {})
     sodium = dish.get("adj_sodium_total") or dish.get("dish_sodium_total") or 0
@@ -549,7 +621,7 @@ def _build_nutrition_note(dish: dict, profile: dict) -> str | None:
 
 
 def _build_ingredient_note(boost: float, basket_ingredient_ids: set,
-                            dish_id: Any, db=None) -> str | None:
+                            dish_id: Any, db=None, language: str = "vi") -> str | None:
     if boost <= 0.05 or not basket_ingredient_ids:
         return None
 
@@ -583,12 +655,12 @@ def _build_ingredient_note(boost: float, basket_ingredient_ids: set,
         dim_key  = "boost_low"
         fallback = f"Một số nguyên liệu bạn đã mua ({ingredient_names}) có thể dùng cho món này."
 
-    tmpl_rows = data_store.get_advice_templates("ingredient", dim_key, "medium")
+    tmpl_rows = data_store.get_advice_templates("ingredient", dim_key, "medium", language=language)
     tpl = tmpl_rows[0]["template_text"] if tmpl_rows else fallback
     return _fill(tpl, ingredient_names=ingredient_names)
 
 
-def _build_seasonal_note(dish: dict, season: str, db=None) -> str | None:
+def _build_seasonal_note(dish: dict, season: str, db=None, language: str = "vi") -> str | None:
     sm = _safe_json(dish.get("season_suitability"), {})
     score = sm.get(season, 0.0) if isinstance(sm, dict) else 0.0
     if score < 0.55:
@@ -597,17 +669,18 @@ def _build_seasonal_note(dish: dict, season: str, db=None) -> str | None:
     return _get_best_template(
         db, "season", season, score,
         fallback=f"{dish_name} rất hợp với thời tiết {season} hiện tại.",
+        language=language,
         dish_name=dish_name,
         main_ingredient=dish_name,
     )
 
 
 def _generate_tags(dish: dict, demand: dict, profile: dict, boost: float,
-                   season: str, db=None) -> list[str]:
+                   season: str, db=None, language: str = "vi") -> list[str]:
     tags: list[str] = []
 
     def _lookup_tag(trigger_dim: str, intensity: float) -> str | None:
-        rows = data_store.get_advice_templates("tag", trigger_dim, "medium")
+        rows = data_store.get_advice_templates("tag", trigger_dim, "medium", language=language)
         return rows[0]["template_text"] if rows else None
 
     h = demand.get("hydration_need", 0)
@@ -688,6 +761,7 @@ def build_explanation(
     basket_ingredient_ids: set,
     db=None,
     temperature: float | None = None,
+    language: str = "vi",
 ) -> dict:
     """
     v2: FitChecker quyết định khía cạnh nào thực sự fit trước khi build.
@@ -711,7 +785,7 @@ def build_explanation(
     active_reasons = check_fit_reasons(dish, demand, profile, loc, season)
 
     # ── Step 2: Headline — luôn có ──────────────────────────────────────────
-    headline = _build_headline(dish, demand, db)
+    headline = _build_headline(dish, demand, db, language=language)
 
     # Định nghĩa nhóm reasons — dùng từ step 3 trở đi
     WEATHER_REASONS = {"weather_cooling", "weather_warming", "weather_hydration", "weather_energy"}
@@ -721,34 +795,34 @@ def build_explanation(
     # ── Step 3: Weather reason — chỉ build nếu có weather reason active ─────
     weather_reason = None
     if active_reasons & WEATHER_REASONS:
-        weather_reason = _build_weather_reason(demand, temperature, db)
+        weather_reason = _build_weather_reason(demand, temperature, db, language=language)
 
     # ── Step 4: Dish match — build khi có weather HOẶC disease reason active ─
     dish_match = None
     if active_reasons & (WEATHER_REASONS | DISEASE_REASONS):
-        dish_match = _build_dish_match(dish, demand)
+        dish_match = _build_dish_match(dish, demand, language=language)
 
     # ── Step 5: Nutrition note — chỉ build nếu disease / BMI fit ────────────
     nutrition_note = None
     if active_reasons & (DISEASE_REASONS | BMI_REASONS):
-        nutrition_note = _build_nutrition_note(dish, profile)
+        nutrition_note = _build_nutrition_note(dish, profile, language=language)
 
     # ── Step 6: Ingredient source note — NEW ────────────────────────────────
     # Build khi có ít nhất 1 reason (weather hoặc disease) để truy nguyên
     ingredient_source_note = None
     if active_reasons - {"location_season"}:   # bỏ location_season vì không có dimension rõ ràng
-        ingredient_source_note = _build_ingredient_source_note(dish, active_reasons, db)
+        ingredient_source_note = _build_ingredient_source_note(dish, active_reasons, db, language=language)
 
     # ── Step 7: Ingredient basket note — giữ nguyên v1 ──────────────────────
-    ingredient_note = _build_ingredient_note(boost, basket_ingredient_ids, dish.get("id"), db)
+    ingredient_note = _build_ingredient_note(boost, basket_ingredient_ids, dish.get("id"), db, language=language)
 
     # ── Step 8: Seasonal note — chỉ build nếu location_season fit ───────────
     seasonal_note = None
     if "location_season" in active_reasons:
-        seasonal_note = _build_seasonal_note(dish, season, db)
+        seasonal_note = _build_seasonal_note(dish, season, db, language=language)
 
     # ── Step 9: Tags ─────────────────────────────────────────────────────────
-    tags = _generate_tags(dish, demand, profile, boost, season, db)
+    tags = _generate_tags(dish, demand, profile, boost, season, db, language=language)
 
     return {
         "headline":               headline,

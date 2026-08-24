@@ -23,8 +23,10 @@ _provinces: list[dict] = []
 _availability_matrix: list[dict] = []
 _advice_templates: list[dict] = []
 _device_tokens: list[dict] = []
+_fixed_question_embeddings: dict[str, dict] = {}
 _tokens_lock = threading.Lock()
 _loaded = False
+_advice_translations: list[dict] | None = None
 
 
 def _load_json(filename: str) -> list[dict]:
@@ -42,7 +44,8 @@ def load_all():
     global _ingredients, _ingredients_by_id
     global _dish_ingredients, _dish_ingredients_by_dish
     global _cooking_methods, _provinces, _availability_matrix
-    global _advice_templates, _device_tokens, _loaded
+    global _advice_templates, _device_tokens, _loaded, _advice_translations
+    global _fixed_question_embeddings
 
     _dishes = _load_json("dishes.json")
     _dishes_by_id = {int(d["id"]): d for d in _dishes}
@@ -60,6 +63,7 @@ def load_all():
     _provinces = _load_json("provinces.json")
     _availability_matrix = _load_json("availability_matrix.json")
     _advice_templates = _load_json("advice_templates.json")
+    _advice_translations = None
 
     # device_tokens co the chua ton tai (server fresh)
     tokens_path = DATA_DIR / "device_tokens.json"
@@ -69,11 +73,23 @@ def load_all():
     else:
         _device_tokens = []
 
+    # fixed_question_embeddings
+    fixed_q_path = DATA_DIR / "fixed_question_embeddings.json"
+    if fixed_q_path.exists():
+        try:
+            raw = json.loads(fixed_q_path.read_text(encoding="utf-8"))
+            _fixed_question_embeddings = raw.get("questions", {})
+        except Exception as e:
+            print(f"[DataStore] Warning loading fixed_question_embeddings.json: {e}")
+            _fixed_question_embeddings = {}
+    else:
+        _fixed_question_embeddings = {}
+
     _loaded = True
     print(
         f"[DataStore] Loaded: dishes={len(_dishes)}, ingredients={len(_ingredients)}, "
         f"dish_ingredients={len(_dish_ingredients)}, provinces={len(_provinces)}, "
-        f"templates={len(_advice_templates)}"
+        f"templates={len(_advice_templates)}, question_embeddings={len(_fixed_question_embeddings)}"
     )
 
 
@@ -168,18 +184,47 @@ def get_availability(distribution_reach: str, food_region: str) -> dict | None:
 
 # ── Advice templates ────────────────────────────────────────────────────────────
 
-def get_advice_templates(context_type: str, trigger_dim: str, intensity: str) -> list[dict]:
+def _get_advice_templates_for_language(language: str = "vi") -> list[dict]:
+    """Return source templates or the English overlay merged onto source rows."""
+    global _advice_translations
+    if str(language or "vi").lower().split("-", 1)[0] != "en":
+        return _advice_templates
+
+    if _advice_translations is None:
+        path = DATA_DIR / "translations" / "en" / "advice_templates.json"
+        overlay = {}
+        if path.exists():
+            payload = json.loads(path.read_text(encoding="utf-8"))
+            overlay = {str(row.get("id")): row for row in payload.get("data", [])}
+
+        merged = []
+        for source in _advice_templates:
+            row = dict(source)
+            translated = overlay.get(str(source.get("id")), {})
+            if translated.get("template_text_en"):
+                row["template_text"] = translated["template_text_en"]
+            if translated.get("notes_en"):
+                row["notes"] = translated["notes_en"]
+            row["lang"] = "en"
+            merged.append(row)
+        _advice_translations = merged
+
+    return _advice_translations
+
+
+def get_advice_templates(context_type: str, trigger_dim: str, intensity: str,
+                         language: str = "vi") -> list[dict]:
     """Tuong duong: SELECT * FROM advice_templates WHERE context_type=? AND trigger_dim=? AND intensity=?"""
     return [
-        t for t in _advice_templates
+        t for t in _get_advice_templates_for_language(language)
         if t.get("context_type") == context_type
         and t.get("trigger_dim") == trigger_dim
         and t.get("intensity") == intensity
     ]
 
 
-def get_all_advice_templates() -> list[dict]:
-    return _advice_templates
+def get_all_advice_templates(language: str = "vi") -> list[dict]:
+    return _get_advice_templates_for_language(language)
 
 
 # ── Cooking methods ─────────────────────────────────────────────────────────────
@@ -236,16 +281,40 @@ def get_all_device_tokens() -> list[dict]:
         return list(_device_tokens)
 
 
+# ── Fixed Question Embeddings (0ms In-Memory) ───────────────────────────────────
+
+def get_fixed_question_embedding(question_id: str, language: str = "vi") -> tuple[list[float], dict] | None:
+    """
+    Retrieve precomputed vector and metadata for a fixed question from memory (0ms).
+    Prioritizes requested language, falls back to 'vi' if missing.
+    Returns: (embedding_list, metadata_dict) or None if not found.
+    """
+    lang = (language or "vi").strip().lower()
+    key = f"{question_id}:{lang}"
+    item = _fixed_question_embeddings.get(key)
+    if not item and lang != "vi":
+        item = _fixed_question_embeddings.get(f"{question_id}:vi")
+    if not item:
+        return None
+    return item.get("embedding"), item
+
+
+def get_all_fixed_question_embeddings() -> dict[str, dict]:
+    return _fixed_question_embeddings
+
+
 # ── Stats helper ────────────────────────────────────────────────────────────────
 
 def get_stats() -> dict:
     return {
-        "dishes":              len(_dishes),
-        "ingredients":         len(_ingredients),
-        "dish_ingredients":    len(_dish_ingredients),
-        "cooking_methods":     len(_cooking_methods),
-        "provinces":           len(_provinces),
-        "availability_matrix": len(_availability_matrix),
-        "advice_templates":    len(_advice_templates),
-        "device_tokens":       len(_device_tokens),
+        "dishes":                     len(_dishes),
+        "ingredients":                len(_ingredients),
+        "dish_ingredients":           len(_dish_ingredients),
+        "cooking_methods":            len(_cooking_methods),
+        "provinces":                  len(_provinces),
+        "availability_matrix":        len(_availability_matrix),
+        "advice_templates":           len(_advice_templates),
+        "device_tokens":              len(_device_tokens),
+        "fixed_question_embeddings":  len(_fixed_question_embeddings),
     }
+

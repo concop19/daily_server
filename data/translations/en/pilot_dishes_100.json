@@ -1,0 +1,1114 @@
+{
+  "version": "1.0",
+  "language": "en",
+  "source": "dishes.json",
+  "generated_at": "2026-08-22T02:39:43.275957+00:00",
+  "count": 100,
+  "failed_count": 0,
+  "data": [
+    {
+      "id": "10131383",
+      "title_en": "taro stem and Freshwater Shrimp Salad",
+      "description_en": "Here’s how to make our family’s absolutely delicious Shrimp and taro stem Salad ;) taro stem or elephant ear stem mixed into a salad is also very sweet and tasty. Besides making sour soup and stir-frying with garlic, our family also eats a lot of this salad.",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "788c72cdab2675b944b8a296c279937c3a154aec3af5fe731e4b0a5271add764",
+        "glossary_version": "vi-en-food-v2",
+        "status": "translated"
+      }
+    },
+    {
+      "id": "10153316",
+      "title_en": "Vegetarian Stir-Fried Ridged Luffa with Oyster Mushrooms",
+      "description_en": "Here’s how to make our family’s absolutely delicious Vegetarian Stir-Fried Ridged Luffa with Oyster Mushrooms ;) A simple vegetarian meal featuring this stir-fry. The ridged luffa is sweet, and the mushrooms are crisp and fragrant—all for our health and a greener planet! #GlobalApron2024 #eatgreenfortheroad",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "e033ea97436bdd3dcaf7c21a864b9d4045d63fa493a0780f51092b83f356a166",
+        "glossary_version": "vi-en-food-v2",
+        "status": "translated"
+      }
+    },
+    {
+      "id": "10581838",
+      "title_en": "Slow-simmered chicken hot pot with mushrooms",
+      "description_en": "Here’s how to make my family’s absolutely delicious slow-simmered chicken hot pot with mushrooms ;) Fall is here, and the weather is much cooler now—cooking up a pot of slow-simmered chicken with mushrooms to slurp on will warm you right up. You can eat it as a hot pot or pack it as a hot soup to take to work! #hopcomvuive",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "308f071cd276d577bf4cd422b52a33359112d0bbebf62b0d97c41459e5f8e2e6",
+        "glossary_version": "vi-en-food-v2",
+        "status": "translated"
+      }
+    },
+    {
+      "id": "10668025",
+      "title_en": "Stir-fried squid",
+      "description_en": "How to make my family’s absolutely delicious stir-fried squid ;) #ebepvang Fresh, delicious squid, stir-fried with pineapple and star fruit, served with hot rice.",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "0330de70e9914c6c74f02e595c45961b109a6fe32db8e19374b921a7f2c729c4",
+        "glossary_version": "vi-en-food-v2",
+        "status": "translated"
+      }
+    },
+    {
+      "id": "10668060",
+      "title_en": "Bún đậu mắm tôm",
+      "description_en": "How to make my family’s absolutely delicious Bún đậu mắm tôm ;) #GlobalApron2024 Whenever I feel like having bún đậu mắm tôm at home, I whip it up right away with simple ingredients.",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "e56af0e4dae1bfb9ec5937c483dc34e8a81c8d202cef669215f69042304804a8",
+        "glossary_version": "vi-en-food-v2",
+        "status": "translated"
+      }
+    },
+    {
+      "id": "10668095",
+      "title_en": "Braised mackerel with young jackfruit",
+      "description_en": "How to make my family’s absolutely delicious braised snakehead fish with young jackfruit ;) #ebepvang This braised snakehead fish with young jackfruit goes really well with rice, everyone!",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "be9a3293e7a2f294106a6c32695897483e81634b29e12283370b3f8b48186349",
+        "glossary_version": "vi-en-food-v2",
+        "status": "translated"
+      }
+    },
+    {
+      "id": "10670111",
+      "title_en": "Fish Soup with Betel Leaf Stems",
+      "description_en": "How to Make My Family’s Absolutely Delicious Betel Leaf Fish Soup ;) #ebepvang I use fresh betel leaf fish to make this soup with pineapple—the fish is chewy, and the broth is incredibly sweet.",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "2e0e72e561981fdbc29f3329107e88895efc81de3125a479825a518202f9e576",
+        "glossary_version": "vi-en-food-v2",
+        "status": "translated"
+      }
+    },
+    {
+      "id": "10733295",
+      "title_en": "Green Papaya and Pork Ear Salad",
+      "description_en": "How to Make My Family’s Absolutely Delicious Green Papaya and Pork Ear Salad ;) #GlobalApron2014 #CookpadPotluck Green papaya and pork ear salad is a simple, down-to-earth dish—you only need one pork ear to make a full plate. This dish is perfect for potluck parties—it makes a great appetizer that’s light and refreshing.",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "222c9f3cfac19e3dfc8953e78953e370c9acc585d76b04aa87ace572845b79de",
+        "glossary_version": "vi-en-food-v2",
+        "status": "translated"
+      }
+    },
+    {
+      "id": "10749119",
+      "title_en": "Mackerel stewed with bitter melon",
+      "description_en": "How to make my family’s absolutely delicious fried snakehead fish with bitter melon ;) #TapDeVang23 Snakehead fish is in season now and can be used in many delicious dishes. If you like bitter melon, try cooking it with snakehead fish and see how it tastes.",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "672d77ac1dc5dc8a4bfe2165535cb213a530ea27cd207bc222e2f13be2f14b9c",
+        "glossary_version": "vi-en-food-v2",
+        "status": "translated"
+      }
+    },
+    {
+      "id": "10749260",
+      "title_en": "Steamed hanh fish",
+      "description_en": "How to make our family’s absolutely delicious steamed Cá hanh ;) #bepvang Cá hanh is a very healthy fish; steaming it preserves its freshness, flavor, and natural sweetness.",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "6367f3c2ac00ddf073472d20891b3186e597537dcecc2c6a44a3a5f190d78fa8",
+        "glossary_version": "vi-en-food-v2",
+        "status": "translated"
+      }
+    },
+    {
+      "id": "10904151",
+      "title_en": "Sweet Potato Leaf Soup with Clams",
+      "description_en": "How to Make My Family's Absolutely Delicious Sweet Potato Leaf and Clam Soup ;) #ebepvang Sweet potato leaves are good for your health, and when cooked in a soup with clams, the result is refreshing and light.",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "6c78282ceb0aad9f52de8e44baf4128cdc9e37be6e2ad4c59d4af2fb7167ba24",
+        "glossary_version": "vi-en-food-v2",
+        "status": "translated"
+      }
+    },
+    {
+      "id": "10904161",
+      "title_en": "Watercress Salad with Beef",
+      "description_en": "How to Make Our Family’s Delicious Watercress and Beef Salad ;) #GlobalApron2024 #Thachthuckhuugiac Watercress is a vegetable that, while it may have an acquired taste, is very good for your health. Watercress salad with beef combines the tanginess of watercress with the sweetness of beef to create a delicious dish.",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "9bb3018a02f0860a43294039aa969a600ae2f46b7fa3684c5e53175da26c1509",
+        "glossary_version": "vi-en-food-v2",
+        "status": "translated"
+      }
+    },
+    {
+      "id": "10905259",
+      "title_en": "Sour Beef Soup",
+      "description_en": "How to Make My Family’s Absolutely Delicious Beef Sour Soup ;) #ebepvang There are many ways to make sour soup; usually, people make fish sour soup, but I’ve also made beef sour soup, and it’s really delicious, too.",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "16e54abff53b7060e71880882952b09c2a35e12b2b30a14aee37d1e60227e584",
+        "glossary_version": "vi-en-food-v2",
+        "status": "translated"
+      }
+    },
+    {
+      "id": "10929046",
+      "title_en": "Tofu in a Fresh Mushroom Sauce",
+      "description_en": "How to Make My Family’s Absolutely Delicious Tofu with Fresh Mushroom Sauce ;) #bepvang If you’re eating vegetarian, a plate of tofu with fresh mushroom sauce is all you need to enjoy a delicious meal.",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "b53f93cde848e4ea6f52478d3147a124531aa504fece46186ccfe8ebe241466b",
+        "glossary_version": "vi-en-food-v2",
+        "status": "translated"
+      }
+    },
+    {
+      "id": "10940465",
+      "title_en": "Dried mackerel simmered in fish sauce and sugar",
+      "description_en": "How to make my family’s absolutely delicious dried mackerel simmered in fish sauce and sugar ;) #ebepvang With the rainy season approaching, all you need for a meal is a plate of dried mackerel—just fry it up, then simmer it in fish sauce and sugar. It goes great with rice.",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "3b475ab00d8e9c76a39099dffa52c7cf1d18f00257fe4ceb2badf6082f5ac7ad",
+        "glossary_version": "vi-en-food-v2",
+        "status": "translated"
+      }
+    },
+    {
+      "id": "10940604",
+      "title_en": "Stir-Fried Yellow Noodles with Beef",
+      "description_en": "How to make my family’s absolutely delicious stir-fried yellow noodles with beef ;) #ebepvang There are many delicious ways to prepare yellow noodles, but my husband absolutely loves this stir-fried version with beef and bean sprouts, so I make it all the time.",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "8f75166c1c69b3dc9af4b5533da91f5d1a8c09043f8428381d33ec9ea89c9da3",
+        "glossary_version": "vi-en-food-v2",
+        "status": "translated"
+      }
+    },
+    {
+      "id": "10976532",
+      "title_en": "Sour soup with fish cakes",
+      "description_en": "How to make my family’s absolutely delicious sour soup with rựa fish cakes ;) #ebepvang Now that summer is here, there’s nothing better than a bowl of sour soup—every now and then, I make sour soup with rựa fish cakes to mix things up for the whole family.",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "735ff0e9f822abbfdc2fe5a4cfc759c1be27d407a21549b072d99fe4219e5efd",
+        "glossary_version": "vi-en-food-v2",
+        "status": "translated"
+      }
+    },
+    {
+      "id": "10977122",
+      "title_en": "Beef Braised in Egg",
+      "description_en": "How to make our family’s absolutely delicious beef braised with fried eggs ;) #bepvang We often eat beef braised with fried eggs for breakfast—the beef is braised the night before, so in the morning, all we have to do is add the fried eggs. And the bread has to be crispy to dip in the sauce—that’s what makes it so good!",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "0718c62bd92ed738268a0c986b7525c996b4b588b17a50895ac83b9a27cb0573",
+        "glossary_version": "vi-en-food-v2",
+        "status": "translated"
+      }
+    },
+    {
+      "id": "11009128",
+      "title_en": "Carol Lettuce Salad with Mushrooms and Tofu",
+      "description_en": "How to Make Our Family’s Delicious Carol Lettuce Salad with Mushrooms and Tofu ;) #ebepvang I first tried Carol lettuce when I visited Da Lat—it’s crisp and perfect for salads.",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "f4060bcc55a9081937b7480da3da420925eb54868937b66ff7dd061592836ea7",
+        "glossary_version": "vi-en-food-v2",
+        "status": "translated"
+      }
+    },
+    {
+      "id": "11009144",
+      "title_en": "Sour Soup with Mushrooms",
+      "description_en": "How to Make My Family’s Absolutely Delicious Sour Soup with Mushrooms ;) #10Years1Journey Sour soup is light and refreshing; on occasional vegetarian days, I make it with mushrooms and tofu. (September)",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "708752dc270c28f06e8ea7b55a5bdb03f0ebcd774730b2c3cee2c8c1bb836cc1",
+        "glossary_version": "vi-en-food-v2",
+        "status": "translated"
+      }
+    },
+    {
+      "id": "11068397",
+      "title_en": "Lã Vọng Grouper",
+      "description_en": "How to Make Our Family’s Absolutely Delicious Lã Vọng Grouper ;) This is one of our family’s favorite dishes. You can make this dish with sea bass, sturgeon, or other types of fish fillets, and today, I chose grouper. Sturgeon is especially delicious in this dish, and you can find it served in Phú Quốc! Grouper in Phú...",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "87de60ee1745260939cfa777a0d6f4761e5c7b3fe471877f2c8548c652542e6f",
+        "glossary_version": "vi-en-food-v2",
+        "status": "translated"
+      }
+    },
+    {
+      "id": "11095480",
+      "title_en": "Steamed mackerel fish cakes",
+      "description_en": "How to make my family’s absolutely delicious steamed mackerel fish cakes ;) #GlobalApron2024 #Sangtaochangon I buy fresh mackerel, clean it, and scrape off the flesh to make fish cakes. Pounding the fish cake mixture thoroughly makes it tastier, and it’s very versatile—you can use it in many different dishes.",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "3dbd7fefe335fbb1fd13b323ee7c85314d2cd29104aa219673bfa47d406116fc",
+        "glossary_version": "vi-en-food-v2",
+        "status": "translated"
+      }
+    },
+    {
+      "id": "11127540",
+      "title_en": "Korean Seaweed with Shrimp",
+      "description_en": "How to make my family’s delicious Korean seaweed and shrimp dish ;) #ebepvang I bought this dried Korean seaweed—which makes a sweet, flavorful soup—directly in Korea while I was traveling.",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "4a70eb547b66cc43ddb19a0a2b0438bf6a47e4ca75415408b8814adddfbe4107",
+        "glossary_version": "vi-en-food-v2",
+        "status": "translated"
+      }
+    },
+    {
+      "id": "11151649",
+      "title_en": "Dớn Salad",
+      "description_en": "How to Make Our Family’s Absolutely Delicious Fern Salad ;) #ebepvang Ferns belong to the fern family and have many medicinal uses. A simple yet delicious dish to make is fern salad.",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "2342af61bbe6283fa4f044568a68107a5499f67cdade2ec432272e0de03198c4",
+        "glossary_version": "vi-en-food-v2",
+        "status": "translated"
+      }
+    },
+    {
+      "id": "11228131",
+      "title_en": "Grilled mackerel wrapped in banana leaves",
+      "description_en": "Here’s how to make my family’s absolutely delicious grilled mackerel wrapped in banana leaves ;) Since we have plenty of banana leaves around the house, I used them to grill the fish! I guarantee it’s delicious, everyone! #ebepvang",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "f255e5745a61aaecd149bb242306f125809aa06151f4585652e5827240978618",
+        "glossary_version": "vi-en-food-v2",
+        "status": "translated"
+      }
+    },
+    {
+      "id": "11314511",
+      "title_en": "Stir-Fried Pork Belly with Shrimp",
+      "description_en": "How to Make My Family’s Absolutely Delicious Stir-Fried Pork Belly with Shrimp ;) #ebepvang Whenever I manage to get some fresh, delicious freshwater shrimp, I like to make this stir-fried pork belly with shrimp dish—it’s best served with hot rice.",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "215614df229c719b763f0a034a98b1ce69d4fab3d84fd197252c16190e494dfa",
+        "glossary_version": "vi-en-food-v2",
+        "status": "translated"
+      }
+    },
+    {
+      "id": "11323535",
+      "title_en": "Dried goby fish braised with turmeric",
+      "description_en": "How to make my family’s absolutely delicious braised milkfish with turmeric ;) #10Nam1HanhTrinh Braised milkfish with fresh turmeric served with rice—its deliciousness speaks for itself. (August)",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "9d50fb5b4ddf6f95d8361c9ffa5210e63319af7ba1c5eb02e9659345a4abb97a",
+        "glossary_version": "vi-en-food-v2",
+        "status": "translated"
+      }
+    },
+    {
+      "id": "11323725",
+      "title_en": "Minced Beef Porridge",
+      "description_en": "How to Make My Family’s Delicious Minced Beef Congee ;) #ebepvang Whenever I’m not feeling well, I usually make minced beef congee and eat it while it’s still piping hot.",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "af4607ece66575f434c3678b0f05e4e1ad4d0c9b1eb0fcf354fdac70e32129c7",
+        "glossary_version": "vi-en-food-v2",
+        "status": "translated"
+      }
+    },
+    {
+      "id": "11323743",
+      "title_en": "Grilled Chìa Vôi Fish",
+      "description_en": "How to make our family’s absolutely delicious grilled sea bream ;) #ebepvang Sea bream is a type of fresh saltwater fish with firm flesh. It’s delicious when grilled whole, wrapped in cabbage, and dipped in green chili salt.",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "b770c5656f039b27d637656759f05afc1e4859977b13a490b943f1fc838d226e",
+        "glossary_version": "vi-en-food-v2",
+        "status": "translated"
+      }
+    },
+    {
+      "id": "11329900",
+      "title_en": "Vegetarian vegetable bún",
+      "description_en": "How to make my family’s absolutely delicious vegetarian vegetable bún ;) It’s been a while since Jou has posted a new recipe, so today Jou is sharing a dish for a vegetarian day—it’s super easy to make and cooks up really fast: vegetarian vegetable bún. Highlight: Jou realized that as long as you have a delicious broth, you can make bún, bánh canh, or nui...",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "efccfca5e56794546532f4018cda51382c71fe458d8d968bd2c111b78d740875",
+        "glossary_version": "vi-en-food-v2",
+        "status": "translated"
+      }
+    },
+    {
+      "id": "11346679",
+      "title_en": "Braised lean pork with salted winter melon",
+      "description_en": "Here’s how to make my family’s absolutely delicious braised lean pork with pickled winter melon ;) #ebepvang The pickled winter melon is crispy and crunchy, and when braised with lean pork, it’s guaranteed to be a real rice-eater that day.",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "f4c22933084c4927a388bf9ac4ad5c6cbef5482317368504b0547680a091ac41",
+        "glossary_version": "vi-en-food-v2",
+        "status": "translated"
+      }
+    },
+    {
+      "id": "11346695",
+      "title_en": "Stir-fried squid tentacles with water spinach",
+      "description_en": "How to make our family’s delicious stir-fried cuttlefish tentacles with water spinach ;) #TapDeVang23 The cuttlefish tentacles are firm, crisp, and chewy; stir-fried with water spinach, they’re delicious served with hot rice.",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "1e54fdefa5515e3eb2aabaf962d616dcae76718f96d60e3845e1094644fd746f",
+        "glossary_version": "vi-en-food-v2",
+        "status": "translated"
+      }
+    },
+    {
+      "id": "11360193",
+      "title_en": "Braised catfish with turmeric",
+      "description_en": "How to make my family’s absolutely delicious turmeric-braised catfish ;) #12thangbepvui Marinate the catfish in turmeric, add a few chili peppers, then braise it in just enough water to serve over rice.",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "f21cdefca028c56afe0c7e81cf08cd572b3c7810b65d4287f44fb2bcbfbcabcf",
+        "glossary_version": "vi-en-food-v2",
+        "status": "translated"
+      }
+    },
+    {
+      "id": "11360240",
+      "title_en": "Spicy braised anchovies",
+      "description_en": "How to make my family’s absolutely delicious spicy braised anchovies ;) #ebepvang Fresh black anchovies, braised to perfection and served with flavorful rice.",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "2435fb22bfe7324bffd7d4c80c31620254a19974b23fa18efc08c8f72e1a0cca",
+        "glossary_version": "vi-en-food-v2",
+        "status": "translated"
+      }
+    },
+    {
+      "id": "11360303",
+      "title_en": "Fish and Taro Soup with Fragrant Cinnamon",
+      "description_en": "How to make my family’s absolutely delicious braised sweet potato fish soup with pineapple ;) #ebepvang The sweet potato fish from the Da Nang coast is incredibly fresh (also known as “fish powder” in many places). Cooked in a soup with pineapple, it’s piping hot right out of the pot and tastes amazing.",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "edc3a56e1d02444572e3ea1d5c10f24b3b1ad000de142d98cbf3fda813abbf4f",
+        "glossary_version": "vi-en-food-v2",
+        "status": "translated"
+      }
+    },
+    {
+      "id": "11362964",
+      "title_en": "Stir-fried Chinese broccoli with shrimp",
+      "description_en": "Here’s how to make my family’s absolutely delicious stir-fried Chinese broccoli with shrimp ;) #bepvang Homegrown Chinese broccoli, fresh and tender, with each stalk crisp and crunchy, stir-fried with sweet shrimp.",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "d6520edd1fbf9776b4f7cbb00a9e0adc6518ea7ced4928609c0b54e67c3b28ba",
+        "glossary_version": "vi-en-food-v2",
+        "status": "translated"
+      }
+    },
+    {
+      "id": "11384501",
+      "title_en": "Sour Grouper Stew",
+      "description_en": "How to Make My Family’s Absolutely Delicious Spicy Grouper Soup ;) #ebepvang Grouper has firm, chewy flesh—on a hot summer day, nothing beats a bowl of this spicy soup.",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "c1f7dc5dc4f718125a361a8616d5994fb48dff0c6b00e37ac9668c35cb1eac4d",
+        "glossary_version": "vi-en-food-v2",
+        "status": "translated"
+      }
+    },
+    {
+      "id": "11394052",
+      "title_en": "Stir-Fried Chinese Broccoli with Beef",
+      "description_en": "How to make my family’s absolutely delicious stir-fried Chinese broccoli with beef ;) #ebepvang Chinese broccoli has a slightly bitter taste, but it pairs perfectly with beef when stir-fried and is loved by many.",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "6e2bedb3c3bc8bb39cfb753cbba35c506022aca4dec2cb70b517795828f2181c",
+        "glossary_version": "vi-en-food-v2",
+        "status": "translated"
+      }
+    },
+    {
+      "id": "11395688",
+      "title_en": "Shrimp Porridge",
+      "description_en": "How to Make Our Family’s Absolutely Delicious Shrimp Congee ;) #ebepvang The shrimp congee is cooked until smooth, and since it’s made with fresh ocean shrimp, it’s very sweet.",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "e3874371ea5973054c968171d62a9aac1dea9b5fb0d0220952bca22b67ca0e98",
+        "glossary_version": "vi-en-food-v2",
+        "status": "translated"
+      }
+    },
+    {
+      "id": "11395806",
+      "title_en": "Fried Eggs with Catfish",
+      "description_en": "How to make my family’s absolutely delicious fried catfish and egg dish ;) #ebepvang Fry the fresh catfish immediately after buying it with chicken eggs; eat it while it’s still hot for a rich and delicious flavor.",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "34f01bb7ad005f077cb2e32c80e66a74c933776922b04e97d18417cf793708a9",
+        "glossary_version": "vi-en-food-v2",
+        "status": "translated"
+      }
+    },
+    {
+      "id": "11396230",
+      "title_en": "Braised mackerel with chili peppers",
+      "description_en": "How to make my family’s absolutely delicious braised mackerel with banana and chili peppers ;) #cookpadapron2025 This season, the mackerel in our local waters is fresh and shiny, and the prices are low—so why not take advantage of it while mackerel is in season? (Week 33)",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "3407bf9f183ae2000cdd947aed46c3bb5471682adccee8b82fbfbca544fe2558",
+        "glossary_version": "vi-en-food-v2",
+        "status": "translated"
+      }
+    },
+    {
+      "id": "11401931",
+      "title_en": "Dried Beef Salad",
+      "description_en": "How to Make Our Family’s Delicious Dried Beef Salad ;) #SacMauDonTet Almost every year during Tet, our family buys shredded dried beef. Although dried beef salad is just a snack, it really appeals to many people’s taste buds.",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "09f0b1384232a5a856ddf3c0c454f334f23030b3ec31db0fbc72c3bf42dfc8b8",
+        "glossary_version": "vi-en-food-v2",
+        "status": "translated"
+      }
+    },
+    {
+      "id": "11401959",
+      "title_en": "Snakehead fish vermicelli",
+      "description_en": "How to make my family’s absolutely delicious snakehead fish noodle soup ;) #10years1journey Snakehead fish noodle soup must be spicy, with onions, shallots, and chili peppers to really bring out the delicious flavor. (September)",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "22d6d6dfd46ffb7d79cc82035f38333bd3127785d41e4193946e6ccd214e03b4",
+        "glossary_version": "vi-en-food-v2",
+        "status": "translated"
+      }
+    },
+    {
+      "id": "11402851",
+      "title_en": "Braised Beef with Vegetables",
+      "description_en": "How to Make Our Family’s Absolutely Delicious Beef Brisket Stew with Vegetables ;) #12thangbepvui Tender beef brisket, stewed with vegetables, served with warm bread.",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "dbcc09ca0e200b8ef92fefdb46e4687a341c7515a85d66b3012160f362aee659",
+        "glossary_version": "vi-en-food-v2",
+        "status": "translated"
+      }
+    },
+    {
+      "id": "11418172",
+      "title_en": "Stir-fried cabbage with shrimp",
+      "description_en": "How to make my family’s absolutely delicious stir-fried cabbage with shrimp ;) #ebepvang Stir-fried cabbage with fresh shrimp is very sweet and goes great with hot rice.",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "2f9427e59fa299a6c68869979679adf47f942d6951744661a600924e970ba9c2",
+        "glossary_version": "vi-en-food-v2",
+        "status": "translated"
+      }
+    },
+    {
+      "id": "11422634",
+      "title_en": "Stir-fried morning glory shoots with garlic",
+      "description_en": "How to make my family’s absolutely delicious stir-fried morning glory shoots with garlic ;) #ebepvang We grow a few pots of morning glory on our rooftop; the tender, vibrant green shoots are very soft. Instead of boiling them, I sometimes stir-fry them with garlic to mix things up.",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "2ce6513507aa4e8f5cb1d6a8e846096c67dea0ddc21532b4f66c9bc835f4e7c3",
+        "glossary_version": "vi-en-food-v2",
+        "status": "translated"
+      }
+    },
+    {
+      "id": "11431559",
+      "title_en": "Braised Spotted Mackerel in Broth",
+      "description_en": "How to make my family’s absolutely delicious braised spotted mackerel ;) #ebepvang Fatty spotted mackerel, plump and round, braised and served with rice.",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "b8911c8a74137e54aaf4d6b03c8b31a77ab4fef18695109ab9bc4f38e376c762",
+        "glossary_version": "vi-en-food-v2",
+        "status": "translated"
+      }
+    },
+    {
+      "id": "11466127",
+      "title_en": "Mackerel cooked with pickled mustard greens",
+      "description_en": "How to make my family’s absolutely delicious mackerel and pickled mustard greens dish ;) #12thangbepvui Fresh mackerel in a sour soup—the fish is tender, the broth is sweet. I cook it with homemade pickled mustard greens and add a little dill to bring out the aroma.",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "b348084aafea7a30b040e8160063d307de85a445fc877085dacbe41445e5bcc8",
+        "glossary_version": "vi-en-food-v2",
+        "status": "translated"
+      }
+    },
+    {
+      "id": "11466708",
+      "title_en": "Fried red sea bream",
+      "description_en": "How to make my family’s absolutely delicious fried red sea bass ;) #bepvang I live by the sea, so I often get to enjoy all kinds of fresh, delicious seafood.",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "c0592355dcdb024dfe89b57b0b38cc5f963d667ee4df2b9407e5bafc58c976fb",
+        "glossary_version": "vi-en-food-v2",
+        "status": "translated"
+      }
+    },
+    {
+      "id": "11467547",
+      "title_en": "Water Spinach and Luffa Soup with Shrimp",
+      "description_en": "How to make our family’s absolutely delicious water spinach and loofah soup with shrimp ;) #bepvang Both the water spinach and the loofah are homegrown, so I feel completely at ease—cooked with shrimp, it makes for a light and refreshing soup.",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "8fd69567273460315514e82339c124ca11853fe8b89b91d24e2d2962bd2c4e78",
+        "glossary_version": "vi-en-food-v2",
+        "status": "translated"
+      }
+    },
+    {
+      "id": "11489438",
+      "title_en": "Stir-fried rice noodles with bamboo shoots and mushrooms",
+      "description_en": "How to make my family’s absolutely delicious stir-fried rice noodles with bamboo shoots and mushrooms ;) #ebepvang Stir-fried rice noodles with bamboo shoots and mushrooms are a great option for vegetarian days.",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "b06d99286fa5de03c80a7185f402366827c94e1c7e7e3664e33b7cb32f64e86a",
+        "glossary_version": "vi-en-food-v2",
+        "status": "translated"
+      }
+    },
+    {
+      "id": "11489487",
+      "title_en": "Instant noodles with beef and shrimp",
+      "description_en": "How to Make My Family’s Absolutely Delicious Beef and Jumbo Shrimp Noodle Soup ;) #ebepvang During the Tet holiday and afterward, when you’re feeling a bit tired of the usual holiday foods, this noodle soup is a great way to switch things up.",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "f52da067558974c4f81fa14897f9e4c0524829520d302db1ccb1de3a763c9927",
+        "glossary_version": "vi-en-food-v2",
+        "status": "translated"
+      }
+    },
+    {
+      "id": "11491155",
+      "title_en": "Vegetarian Braised Chicken-Leg Mushrooms with Ginger",
+      "description_en": "How to make my family’s absolutely delicious Vegetarian Chicken-Leg Mushrooms Braised with Ginger ;) Chicken-leg mushrooms braised with ginger is a light, flavorful vegetarian dish that’s very easy to make. This dish is especially comforting on cold, rainy days.",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "c26b1fc3eb83ab62822d224a6af29c2c30f4cd2a6ec1345b410df2694916a3f7",
+        "glossary_version": "vi-en-food-v2",
+        "status": "translated"
+      }
+    },
+    {
+      "id": "11513126",
+      "title_en": "Stir-Fried Beef Noodles with Lemongrass",
+      "description_en": "How to make my family’s absolutely delicious stir-fried beef with lemongrass noodles ;) When you come over to our house",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "f116ebc05e91fbaeaaa3ff244c3257cd4fd856571fec52247c12e3b4f16058c3",
+        "glossary_version": "vi-en-food-v2",
+        "status": "translated"
+      }
+    },
+    {
+      "id": "11530617",
+      "title_en": "Braised papaya with pork",
+      "description_en": "How to make my family’s absolutely delicious braised papaya and pork dish ;) #ebepvang Braised papaya with pork is very sweet.",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "e2c7dadf2c74d861178dac3777591875b49ed9eba35e8d7e01b1173affc910fc",
+        "glossary_version": "vi-en-food-v2",
+        "status": "translated"
+      }
+    },
+    {
+      "id": "11567531",
+      "title_en": "Bitter Melon Soup with Thác Lác Fish Cakes",
+      "description_en": "How to make my family’s absolutely delicious bitter melon and thác lác fish cake soup ;) #ebepvang We grow our own bitter melon on the rooftop, and this variety pairs perfectly with thác lác fish cakes.",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "d597adfec53f105b695f39867a11ea1f46d9992074ac9881d7df231883c1336b",
+        "glossary_version": "vi-en-food-v2",
+        "status": "translated"
+      }
+    },
+    {
+      "id": "11567593",
+      "title_en": "Bean sprouts and scallions stir-fried with beef",
+      "description_en": "How to make my family’s delicious stir-fried bean sprouts and water spinach with beef ;) #ebepvang Sweet bean sprouts are combined with water spinach and stir-fried with beef to create a delicious dish to serve with rice.",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "2fb1eeee25867cb2e02b0cc9f090e2dca901a720dacaa7bdf21a621949231993",
+        "glossary_version": "vi-en-food-v2",
+        "status": "translated"
+      }
+    },
+    {
+      "id": "11693377",
+      "title_en": "Pork Ribs with Ram Me Sauce",
+      "description_en": "How to Make Our Family's Absolutely Delicious Stir-Fried Pork Ribs ;) #vetula",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "8de1dcca856be7d2d5cf1383f6726beb1444703c4beb43049d0d6d343034c668",
+        "glossary_version": "vi-en-food-v2",
+        "status": "translated"
+      }
+    },
+    {
+      "id": "11733580",
+      "title_en": "Braised Catfish",
+      "description_en": "How to make my family’s absolutely delicious braised Cá phèn đổng ;) #bepvang If the Cá phèn đổng is large, I usually fry it and eat it with garlic and chili fish sauce; for medium-sized ones, I braise them, adding a little spicy chili, and the fish broth goes great with rice—it’s really delicious.",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "544ec5dc3aafa86a0fcd19268ff2342b24fcef883a29a794dccb3a4cde225d75",
+        "glossary_version": "vi-en-food-v2",
+        "status": "translated"
+      }
+    },
+    {
+      "id": "11752230",
+      "title_en": "Fried black seabass",
+      "description_en": "How to make my family’s absolutely delicious fried black seabass ;) #bepvang Fatty black seabass, fried and drizzled with chili-garlic fish sauce, served with rice.",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "d209270045fd87e4aac46df39b435fe0f667903da95b0cfbebe3a5420d6dd281",
+        "glossary_version": "vi-en-food-v2",
+        "status": "translated"
+      }
+    },
+    {
+      "id": "11783679",
+      "title_en": "Pork Rinds Tossed with Rice Flakes",
+      "description_en": "How to Make Our Family’s Delicious Pork Skin Salad with Roasted Rice Flakes ;)",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "58fe79954a839251161f049e9a2d2a621ab6ed403a0211566d87d714cd8c7db3",
+        "glossary_version": "vi-en-food-v2",
+        "status": "translated"
+      }
+    },
+    {
+      "id": "11879403",
+      "title_en": "Green Banana and Shrimp Soup",
+      "description_en": "How to Make My Family’s Absolutely Delicious Green Banana and Shrimp Soup ;) #ebepvang When making soup with raw green bananas and shrimp, perilla leaves are an essential accompaniment.",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "0e80b55417314e9aa309a187daa3e919e02d93e39a4ddfc6f56d82cba08bd355",
+        "glossary_version": "vi-en-food-v2",
+        "status": "translated"
+      }
+    },
+    {
+      "id": "11879532",
+      "title_en": "Char-grilled anchovies in vinegar",
+      "description_en": "How to Make Our Family’s Absolutely Delicious Vinegar-Dipped Black Anchovies ;) #ebepvang Black anchovies are in season now—fresh and glossy—and they’re delicious dipped in vinegar and wrapped in rice paper.",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "827bfb4b28a16369017efbd29be38edd4aba5479915da07f9e4b2d32eb98b144",
+        "glossary_version": "vi-en-food-v2",
+        "status": "translated"
+      }
+    },
+    {
+      "id": "12020604",
+      "title_en": "Bình Định-Style Shrimp Rolls Wrapped in Rice Paper with Fresh Vegetables",
+      "description_en": "How to make my family’s absolutely delicious Bình Định-style Shrimp Rolls with Rice Paper and Fresh Vegetables ;) #bepvang A delicious yet easy dish since the main ingredients are store-bought 🤣 A 500g package lasts for 2 days—one day dipped in fish sauce with garlic, chili, lime, and sugar, and the other day dipped in tamarind fish sauce.",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "ff756c392260667829f316d6492259ae7b9b822cbacf1b76d34516fadfdc6bdc",
+        "glossary_version": "vi-en-food-v2",
+        "status": "translated"
+      }
+    },
+    {
+      "id": "12020752",
+      "title_en": "Braised Pork with Eggs",
+      "description_en": "How to make my family’s absolutely delicious braised pork and eggs ;) #bepvang Actually, I’m not really a fan of braised pork and eggs 😂 because it’s rich and heavy (it’s good in small portions). This season, my roommate’s mom gave me two pots of braised pork and eggs—they were really delicious, and I even picked up a few tips, hehe.",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "eee3d85208f3dd2347916ab2a9bc4126e075ce1214bd4f5954e9f2470974c4d4",
+        "glossary_version": "vi-en-food-v2",
+        "status": "translated"
+      }
+    },
+    {
+      "id": "12024894",
+      "title_en": "Beef Soup with Bean Sprouts and Tomatoes",
+      "description_en": "How to make my family’s absolutely delicious Beef Soup with Bean Sprouts &amp; Tomatoes 🍅 ;) #bepvang Q4—the busy season for agencies, mega campaigns, and nonstop bidding—so I’ve been feeling a bit overwhelmed, guys. I’m posting an old recipe from my drafts because I haven’t cooked a thing all week. This dish is easy, though...",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "47283d5b59aae58586e96b3834a6e3d8772d5b9dd985880b149659d8c9ec8acd",
+        "glossary_version": "vi-en-food-v2",
+        "status": "translated"
+      }
+    },
+    {
+      "id": "12126741",
+      "title_en": "Braised Pork Ribs in Fish Sauce",
+      "description_en": "How to make our family’s absolutely delicious Braised Pork Ribs in Fish Sauce ;) #bepvang",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "3f6573a52e1a091a7adc2a25ffef4eab8d2759a0e83ca31f36d11562c9d94190",
+        "glossary_version": "vi-en-food-v2",
+        "status": "translated"
+      }
+    },
+    {
+      "id": "12126748",
+      "title_en": "Braised Spotted Mackerel with a Savory Sauce",
+      "description_en": "Here’s how to make our family’s absolutely delicious Braised Spotted Mackerel with Plenty of Broth ;) “Kho mẳn” is a braising method from Central Vietnam, featuring plenty of broth and less fish. When I was little, my mom would often make this dish in the evening and reheat it the next morning. I’d buy 1 kg of bún to eat with it for a change of pace instead of buying takeout. In the morning, I’d eat the bún with the fish stew broth,...",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "72b8aec698612900d0a7f98c0accaf8d8cd4aa53533ca89072d80165aa05a3de",
+        "glossary_version": "vi-en-food-v2",
+        "status": "translated"
+      }
+    },
+    {
+      "id": "12126758",
+      "title_en": "Seafood Spring Rolls Served with Fresh Vegetables and Sweet-and-Sour Fish Sauce",
+      "description_en": "How to make my family’s absolutely delicious Seafood Spring Rolls served with fresh vegetables and sweet-and-sour fish sauce ;) #bepvang",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "3aad951320be379e62e2e24028439234deae802150b6042f6db40ba65b854646",
+        "glossary_version": "vi-en-food-v2",
+        "status": "translated"
+      }
+    },
+    {
+      "id": "12127000",
+      "title_en": "Stir-Fried Snow Peas with Pork",
+      "description_en": "How to make my family’s absolutely delicious Stir-Fried Snow Peas with Pork ;) #bepvang",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "e41bd5fa92b077a782ac197d807390cbd131474797b4f5e076632030c3e97503",
+        "glossary_version": "vi-en-food-v2",
+        "status": "translated"
+      }
+    },
+    {
+      "id": "12127068",
+      "title_en": "Chả Lụa, Sweet and Spicy Shrimp (Braised)—Absolutely Delicious",
+      "description_en": "How to Make Chả Lụa and Braised Shrimp (Kho) Absolutely delicious—the best from our home ;) #bepvang I had some leftover Chả Lụa, which had been sitting for a while so it wasn’t quite as good anymore, and a few shrimp left over from when we had Thai hot pot, so I braised them with a little Hội An pork broth. All neatly stored in one compartment of the fridge.",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "de91c0b319c802dd0dd01c1cae04c707b443afe4cf2f2524a49489ba89ef0303",
+        "glossary_version": "vi-en-food-v2",
+        "status": "translated"
+      }
+    },
+    {
+      "id": "12127221",
+      "title_en": "Boiled Mustard Greens with Braised Fish Sauce Dip",
+      "description_en": "How to make my family’s absolutely delicious Boiled Mustard Greens with Braised Fish Sauce ;) #bepvang These are the mustard greens my aunt grew in her garden. I took the opportunity during my trip back to the countryside to bring them up to Saigon so I wouldn’t have to spend money buying greens at the market 🤣",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "3f34b53e9bdc8f63c504f0a48dbb16cf4b65f02e8ef71b80211a341f1304dae3",
+        "glossary_version": "vi-en-food-v2",
+        "status": "translated"
+      }
+    },
+    {
+      "id": "12441894",
+      "title_en": "Beef Stir-Fry",
+      "description_en": "How to Make Our Family’s Delicious Beef Stew ;) #12ThangBepVui This nutritious beef stew, with its sweet broth, makes for a quick and easy breakfast.",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "6be183299f9530c785fc9e1bac404b6dda8c390245f864b2dedf7c452ef3dda5",
+        "glossary_version": "vi-en-food-v2",
+        "status": "translated"
+      }
+    },
+    {
+      "id": "12548380",
+      "title_en": "Lao-Style Lemongrass Meat Rolls",
+      "description_en": "How to Make My Family’s Delicious Lao-Style Lemongrass Meat Rolls ;) I found this recipe online and decided to give it a try. The ingredients are familiar, but the lemongrass is incredibly fragrant, and the way it’s presented—like little cocoons—is so cute.",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "8dda2348f2f699ba075fbdfa275ee61a69e18877170856124f25c0547ea0688e",
+        "glossary_version": "vi-en-food-v2",
+        "status": "translated"
+      }
+    },
+    {
+      "id": "12774822",
+      "title_en": "Braised pork belly with bamboo shoots",
+      "description_en": "How to make my family’s absolutely delicious braised pork belly with bamboo shoots ;)",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "d6d9aa8da9efa8606042cdb3279ca849a0ef0a432cd66868adeeec9fe73870d3",
+        "glossary_version": "vi-en-food-v2",
+        "status": "translated"
+      }
+    },
+    {
+      "id": "13068679",
+      "title_en": "Thịt Khìa",
+      "description_en": "How to make my family’s absolutely delicious braised pork ;) Braised pork in coconut water for bún bì (or cơm tấm bì, bì cuốn…). The braised pork can be used to make rolls with rice paper, fresh vegetables, and sweet-and-sour fish sauce.",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "579e997116e1057b4922da70cb9ccd89aaac708c7b8aa20487780381e9fe2bb2",
+        "glossary_version": "vi-en-food-v2",
+        "status": "translated"
+      }
+    },
+    {
+      "id": "13124639",
+      "title_en": "Stir-Fried Beef with Rice Vermicelli in Soy Sauce",
+      "description_en": "How to make my family’s absolutely delicious stir-fried beef with rice vermicelli in soy sauce ;)",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "95ec0154c55711367b47cb115d5570ba9cfc9b8056d971eb31de09f819b3af3e",
+        "glossary_version": "vi-en-food-v2",
+        "status": "translated"
+      }
+    },
+    {
+      "id": "13162257",
+      "title_en": "Pepper Elder Salad with Sardines",
+      "description_en": "How to make my family’s absolutely delicious Pepper Elder Salad with Sardines ;) After a few days of heavy, meat-heavy meals, a plate of mixed vegetable salad is the first thing that comes to mind. #ebepvang",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "e4f95539b82d57a82b6fa0dd834e088996fbce337e71d8e7682989615c0bfbcc",
+        "glossary_version": "vi-en-food-v2",
+        "status": "translated"
+      }
+    },
+    {
+      "id": "13236741",
+      "title_en": "Steamed anchovies wrapped in rice paper",
+      "description_en": "How to make my family’s absolutely delicious steamed black anchovies wrapped in rice paper ;) #12thangbepvui Around March and April is the season for anchovies. As summer begins, they become less abundant, but if you go to the market on the right day, you’ll find them very fresh. Take the fresh fish home, steam it, and wrap it in rice paper right away—it’s quick and simple, but absolutely delicious.",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "0d8aa2dfb897f28bfe574285865f7f43f1dd70cff8135db18cac7fe7408df670",
+        "glossary_version": "vi-en-food-v2",
+        "status": "translated"
+      }
+    },
+    {
+      "id": "13270345",
+      "title_en": "Grilled Dìa Fish with Mắm Nhỉ Sauce",
+      "description_en": "How to make our family’s absolutely delicious Grilled Dìa Fish with Mắm Nhỉ ;) #CookpadApron2025",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "b482d3e6b16808533f58bbb1c3cfeb14bbd4962157ae25bd1e9854540a4507c8",
+        "glossary_version": "vi-en-food-v2",
+        "status": "translated"
+      }
+    },
+    {
+      "id": "13284037",
+      "title_en": "Mackerel Head Stewed with É Leaves",
+      "description_en": "How to make my family’s absolutely delicious Mackerel Head Stew with É Leaves ;) #TapDeVang23",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "ba0ee3f6b48a6eb0fc6fd4901c0113e8e509401a87fd01c8f98252a541a3e600",
+        "glossary_version": "vi-en-food-v2",
+        "status": "translated"
+      }
+    },
+    {
+      "id": "13319979",
+      "title_en": "Fried Eggs with Beef",
+      "description_en": "How to make my family’s absolutely delicious Fried Eggs with Beef ;) #CookpadApron2025 #dontulanh",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "e7d10ac157e020b5489661cae9d96a4cfd525ff39d1d16d502a56b7a22de07bd",
+        "glossary_version": "vi-en-food-v2",
+        "status": "translated"
+      }
+    },
+    {
+      "id": "13334066",
+      "title_en": "Salted Squid Rice with Ram Me",
+      "description_en": "How to Make Our Family’s Delicious Salted Squid Fried Rice ;) #TapDeVang23",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "49318a44b54cd1e9c42ae6fd9b7812a177dc7717ec81eddb94c37b35d1e2ae68",
+        "glossary_version": "vi-en-food-v2",
+        "status": "translated"
+      }
+    },
+    {
+      "id": "13342455",
+      "title_en": "Chinese Cabbage Soup with Ground Meat",
+      "description_en": "How to Make My Family’s Absolutely Delicious Minced Pork and Napa Cabbage Soup ;) #CookpadApron2025 Week 11",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "2c3bb6500f3b7ba69715a9a9872b992ec6fa09a2776d9bd035f6b453544c6711",
+        "glossary_version": "vi-en-food-v2",
+        "status": "translated"
+      }
+    },
+    {
+      "id": "13354636",
+      "title_en": "Sour Soup with Black Grouper Heads",
+      "description_en": "How to Make Our Family’s Absolutely Delicious Black Grouper Head Sour Soup ;) #10Years1Journey September",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "57d7135efdc16b790c5515f746e8b9130d65a157fe777d5eb343467b2c9251ea",
+        "glossary_version": "vi-en-food-v2",
+        "status": "translated"
+      }
+    },
+    {
+      "id": "13367307",
+      "title_en": "Young Mustard Greens and Catfish Soup",
+      "description_en": "How to Make Our Family’s Delicious Young Mustard Greens and Catfish Soup ;) #TapDeVang23",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "4b084b19f74633729099773dd78f685fc6351053d7be50795e1e83c51fbae5f9",
+        "glossary_version": "vi-en-food-v2",
+        "status": "translated"
+      }
+    },
+    {
+      "id": "13372175",
+      "title_en": "Minced Pork with Taro",
+      "description_en": "How to make SP.0664—my family’s absolutely delicious Minced Pork with Taro ;) I’ve been busy fighting the pandemic these past few days, so I haven’t been able to come up with any new recipes. Instead, I’ve been cooking simple yet unique dishes to make mealtime more enjoyable #bepvang",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "45af3e4a82e7608593f93d71949650a0638d653234248dee93adf8704e70fddb",
+        "glossary_version": "vi-en-food-v2",
+        "status": "translated"
+      }
+    },
+    {
+      "id": "13401978",
+      "title_en": "Forest Bitter Melon Soup Stuffed with Fish Cake and Bamboo Shoots",
+      "description_en": "How to make my family’s absolutely delicious Wild Bitter Melon Soup Stuffed with Fish Cake and Bamboo Shoots ;) #beptetvinha",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "c260b1c9d5d8c8380714d61671ed168906801c3302d801b9f4411ad6c5438b04",
+        "glossary_version": "vi-en-food-v2",
+        "status": "translated"
+      }
+    },
+    {
+      "id": "13411529",
+      "title_en": "Rice Flour Dumplings with Shrimp Filling",
+      "description_en": "How to Make My Family's Delicious Shrimp-Filled Rice Flour Dumplings ;) #goitronyeuthuong",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "2e52c3ec1761875ecc4a02087f257ddd893436ca552fbce08e9fb04d12852586",
+        "glossary_version": "vi-en-food-v2",
+        "status": "translated"
+      }
+    },
+    {
+      "id": "13422604",
+      "title_en": "Thoroughly Marinated Veal Salad",
+      "description_en": "How to Make SP.0755 - Our Family's Absolutely Delicious Tender Veal Salad ;) #TapDeVang23",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "29228a8ded17374880a69ba68dade46e949e1c1d2a2c493205deaf767dd11157",
+        "glossary_version": "vi-en-food-v2",
+        "status": "translated"
+      }
+    },
+    {
+      "id": "13422919",
+      "title_en": "Papaya and Mackerel Soup",
+      "description_en": "How to make my family’s absolutely delicious Papaya and Mackerel Soup ;) #Muanuocnoi",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "eda1fe227b8040127b2fa958fa27f482cf1a1e474ed623b9e97a2dde052e2ba5",
+        "glossary_version": "vi-en-food-v2",
+        "status": "translated"
+      }
+    },
+    {
+      "id": "13430227",
+      "title_en": "Stir-Fried Pork Tenderloin with Sugar Radish",
+      "description_en": "How to make SP.0693—Delicious Stir-Fried Pork Tenderloin with Daikon Radish, my family’s specialty ;) It’s another gloomy day with a light drizzle, and this dish goes perfectly with plain rice porridge—but since I don’t like rice porridge, I usually make this to eat with cold rice. #bepvang",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "24ec519b178854ae9f241370a67b58f7ed74b32e41cdd27e845360810dbd277b",
+        "glossary_version": "vi-en-food-v2",
+        "status": "translated"
+      }
+    },
+    {
+      "id": "13437801",
+      "title_en": "Stir-Fried Beef with Soy Sauce and Onions",
+      "description_en": "How to make SP.0689 - Our family’s absolutely delicious Stir-Fried Beef with Soy Sauce and Onions ;) It’s been a long time since I’ve had this dish—stir-frying with a little soy sauce makes it so tasty and really goes well with rice. Back then, I didn’t know what soy sauce was and had never tried it, but now that I know, it’s really delicious and has a unique flavor. #bepvang",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "99284cb123f02be1dd7bcce8ef0478c28bb5e4bf266f1f7ae43a93f7c604987f",
+        "glossary_version": "vi-en-food-v2",
+        "status": "translated"
+      }
+    },
+    {
+      "id": "13454885",
+      "title_en": "Water Spinach Soup with Shrimp Paste",
+      "description_en": "How to Make Our Family’s Absolutely Delicious Water Spinach and Shrimp Soup ;) #refreshinggreens #GlobalApron2024",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "d30600f37b561a94290c22190080b99ddce61b153915b3b6e3100aa3d44c4dec",
+        "glossary_version": "vi-en-food-v2",
+        "status": "translated"
+      }
+    },
+    {
+      "id": "13468437",
+      "title_en": "Instant Noodles with Water Spinach",
+      "description_en": "How to Make Our Family’s Absolutely Delicious Shrimp Noodles with Water Spinach ;)",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "cd4475a9d5fa7cec01d4f34d12dd07205acd13f2f9ae05cfc523fd7ec888b8e1",
+        "glossary_version": "vi-en-food-v2",
+        "status": "translated"
+      }
+    },
+    {
+      "id": "13474289",
+      "title_en": "Stir-Fried Bitter Greens with Garlic",
+      "description_en": "How to make SP.0692 – My family’s absolutely delicious Stir-Fried Bitter Greens with Garlic ;) It rained so early this year that the bitter greens growing in the garden are lush and green, so I took a basket out to pick some, brought them inside to stir-fry with garlic, and served them with kho quẹt for dinner. #bepvang",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "7006c5f5bff3db8b625c29b8c563fbd6d2dd8984922a0720666b5a9ec4363e60",
+        "glossary_version": "vi-en-food-v2",
+        "status": "translated"
+      }
+    },
+    {
+      "id": "13489963",
+      "title_en": "Steamed Ocean Squid Tentacles with Ginger",
+      "description_en": "How to make SP.0754 - Delicious Steamed Ocean Squid Tentacles with Ginger, our family’s specialty ;) #TapDeVang23",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "947dae0020393f8a7e2f02bbe872d9f1caa7e089974ff409988cd6bead9e1c4c",
+        "glossary_version": "vi-en-food-v2",
+        "status": "translated"
+      }
+    },
+    {
+      "id": "13490585",
+      "title_en": "Tuna Rice Vermicelli Soup",
+      "description_en": "How to make my family’s absolutely delicious Tuna Rice Noodle Soup ;) #CookpadApron2025",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "fe0695aa9a9aa140afa79b336b370724008309ae6cb66f936030bb232e335022",
+        "glossary_version": "vi-en-food-v2",
+        "status": "translated"
+      }
+    },
+    {
+      "id": "13491002",
+      "title_en": "Salted Tuna Fish",
+      "description_en": "How to Make Our Family’s Absolutely Delicious Salted Tuna Dish ;) #GlobalApron2024 #AprilMeals",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "198f204cd101f4243bf41e6e45a6c86b42e4f23878db1c6d7f2eb4bd4227f5e0",
+        "glossary_version": "vi-en-food-v2",
+        "status": "translated"
+      }
+    },
+    {
+      "id": "13515964",
+      "title_en": "Water spinach soup, braised pork with green peppercorns, pickled mustard greens",
+      "description_en": "Here’s how to make our family’s delicious water spinach soup, braised pork with green peppercorns, and pickled mustard greens ;) Enjoying braised pork with green peppercorns in the winter really warms the stomach—especially with a bowl of water spinach soup served with pickled eggplant… Oh my, it’s so nostalgic!!! #bepvang",
+      "_meta": {
+        "provider": "deepl",
+        "source_hash": "6507763a04db2f751de50f9b951d85dd3b88c9f1606aabbb2fb7cc1323b65046",
+        "glossary_version": "vi-en-food-v2",
+        "status": "translated"
+      }
+    }
+  ],
+  "failures": [],
+  "provider_counts": {
+    "deepl": 100
+  }
+}

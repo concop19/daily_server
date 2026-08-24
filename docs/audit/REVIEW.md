@@ -70,7 +70,7 @@ Với các file migration/setup: chỉ flag nếu **severity CRITICAL** (ví d�
 [ ] Mọi route mới PHẢI có @require_auth (trừ /health)
 [ ] Mọi float/int từ request.args PHẢI có try/except và range check
 [ ] Mọi request.get_json() PHẢI có None check trước khi .get()
-[ ] Mọi DB connection PHẢI được close trong finally block
+[ ] Mọi thao tác persist JSON PHẢI có lock, encoding UTF-8 và xử lý lỗi phù hợp
 [ ] SUPABASE_SERVICE_ROLE_KEY KHÔNG được xuất hiện trong logs hay responses
 [ ] Mọi route POST mới PHẢI có rate limiting
 [ ] Endpoint /admin/* PHẢI có cả @require_auth VÀ @require_admin
@@ -96,20 +96,19 @@ float(request.args.get("lat"))    # ← thiếu try/except
 int(request.args.get("limit"))    # ← thiếu try/except
 ```
 
-### 5.3 DB Connection Leak (HIGH)
+### 5.3 JSON Persistence Failure (HIGH)
 ```python
-# NGUY HIỂM: db.close() bị skip khi exception
-db = get_db()
-result = db.execute(...)    # ← nếu crash ở đây
-db.close()                  # ← bị bỏ qua
+# NGUY HIỂM: ghi đè file bằng payload chưa được validate
+path.write_text(json.dumps(payload))
+# Cần lock, UTF-8 và xử lý lỗi để không làm mất device_tokens.json
 ```
 
-### 5.4 f-string trong SQL (CRITICAL nếu có)
+### 5.4 Dynamic query trong external storage (CRITICAL nếu có)
 ```python
-# NGUY HIỂM: SQL injection
-db.execute(f"SELECT * FROM dishes WHERE nation='{nation}'")
-# AN TOÀN:
-db.execute("SELECT * FROM dishes WHERE nation=?", (nation,))
+# NGUY HIỂM: ghép chuỗi trực tiếp vào URL/filter Supabase
+requests.get(f"{SUPABASE_URL}/rest/v1/request_log?uid={uid}")
+# AN TOÀN: dùng params= để requests encode giá trị
+requests.get(url, params={"uid": f"eq.{uid}"})
 ```
 
 ### 5.5 Secret trong Response (CRITICAL)

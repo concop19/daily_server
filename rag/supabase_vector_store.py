@@ -110,19 +110,17 @@ class SupabaseVectorStore:
         self._raise_response_error(response, "upsert vector")
         return len(rows)
 
-    def query(
+    def query_by_embedding(
         self,
-        query: str,
-        embedder: Any,
+        query_embedding: list[float],
         n_results: int = 5,
         where: dict[str, Any] | None = None,
     ) -> dict[str, Any]:
         if n_results < 1:
             raise ValueError("n_results phải >= 1.")
-        query_vector = embedder.embed_query(query)
         filter_group = (where or {}).get("group")
         payload = {
-            "query_embedding": query_vector,
+            "query_embedding": query_embedding,
             "match_threshold": float(
                 os.environ.get("RAG_MATCH_THRESHOLD", "0.0")
             ),
@@ -148,4 +146,16 @@ class SupabaseVectorStore:
                 [1.0 - float(row.get("similarity", 0.0)) for row in rows]
             ],
         }
+
+    def query(
+        self,
+        query: str,
+        embedder: Any,
+        n_results: int = 5,
+        where: dict[str, Any] | None = None,
+    ) -> dict[str, Any]:
+        if n_results < 1:
+            raise ValueError("n_results phải >= 1.")
+        query_vector = embedder.embed_query(query)
+        return self.query_by_embedding(query_vector, n_results=n_results, where=where)
 

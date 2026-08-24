@@ -161,7 +161,56 @@ def _fmt(value: Any, digits: int = 2) -> str | None:
         return str(value)
 
 
-def build_answer(question_id: str, dish: dict[str, Any], ingredients: list[dict[str, Any]]) -> str:
+def _build_answer_en(question_id: str, dish: dict[str, Any], ingredients: list[dict[str, Any]]) -> str:
+    """English deterministic fallback used when the LLM provider is unavailable."""
+    if question_id == "general_nutrition":
+        parts = []
+        if dish.get("energy_per_serving") is not None:
+            parts.append(f"energy {_fmt(dish['energy_per_serving'])} kcal")
+        if dish.get("sodium_per_serving") is not None:
+            parts.append(f"sodium {_fmt(dish['sodium_per_serving'])} mg")
+        if dish.get("adj_glycemic_load") is not None:
+            parts.append(f"GL {_fmt(dish['adj_glycemic_load'])}")
+        return f"For the full recipe, the available metrics are {', '.join(parts) or 'not enough quantified data'}. These are estimates based on the ingredients, gram quantities, and cooking method. The actual amount changes with serving size. This information is for reference only and does not replace medical advice."
+    if question_id == "diabetes":
+        value = _fmt(dish.get("adj_glycemic_load"))
+        return f"The estimated glycemic load for the full recipe is GL {value or 'not available'}. Portion size and carbohydrate content matter, so this is only a reference and not a personal medical conclusion."
+    if question_id == "hypertension":
+        value = _fmt(dish.get("sodium_per_serving"))
+        return f"The full recipe contains approximately {value or 'an unavailable amount'} mg of sodium. Sodium may come from ingredients, salt, fish sauce, and other seasonings; daily intake and serving size should also be considered."
+    if question_id == "gout":
+        value = _fmt(dish.get("gout_risk_score"))
+        return f"The dish has an internal gout-risk score of {value or 'not available'}. This is an estimate from ingredients and quantities, not an absolute purine measurement or a medical conclusion."
+    if question_id == "calories":
+        return f"The full recipe contains approximately {_fmt(dish.get('energy_per_serving')) or 'an unavailable amount'} kcal. The amount you eat in one sitting may be smaller, so serving size and your total daily intake still matter."
+    if question_id == "weight_loss":
+        return f"The full recipe contains approximately {_fmt(dish.get('energy_per_serving')) or 'an unavailable amount'} kcal, with an estimated satiety score of {_fmt(dish.get('adj_satiety_score', dish.get('dish_satiety_score'))) or 'not available'}. These metrics do not determine suitability by themselves; portion size and total daily energy matter too."
+    if question_id == "energy_goal":
+        return f"The full recipe contains approximately {_fmt(dish.get('energy_per_serving')) or 'an unavailable amount'} kcal. Whether it meets your personal energy goal also depends on portion size, activity, and your daily needs."
+    if question_id == "satiety":
+        return f"The estimated satiety score is {_fmt(dish.get('adj_satiety_score', dish.get('dish_satiety_score'))) or 'not available'}. It is inferred from ingredients and quantities, so the real feeling of fullness varies by person and serving size."
+    if question_id == "ibs":
+        names = [str(item.get("name")) for item in ingredients if item.get("name")]
+        return f"There is no separate IBS score in the current data. Notable ingredients include {', '.join(names[:4]) or 'no loaded ingredient data'}. Tolerance varies by person, so use this as a reference only."
+    if question_id == "allergy_check":
+        names = [str(item.get("name")) for item in ingredients if item.get("name")]
+        return f"The listed ingredients include: {', '.join(names[:8]) or 'no loaded ingredient data'}. Compare them with your allergies and consider cross-contact; do not assume the dish is safe without checking each ingredient."
+    if question_id == "diet_type":
+        names = [str(item.get("name")) for item in ingredients if item.get("name")]
+        return f"The recorded ingredients include: {', '.join(names[:8]) or 'no loaded ingredient data'}. Dietary suitability depends on the full ingredient list, seasonings, and preparation method, not only the dish name."
+    if question_id == "ingredient_impact":
+        names = [str(item.get("name")) for item in ingredients if item.get("name")]
+        return f"The ingredients used for the dish metrics include: {', '.join(names[:8]) or 'no loaded ingredient data'}. Their impact depends on both the ingredient type and gram quantity."
+    if question_id == "cooking_method":
+        return f"The dish is scored with cooking_method_id {dish.get('cooking_method_id', 'not available')}. Cooking can change water content, concentration, and nutrient retention; this is an estimate from the current data."
+    if question_id == "weather_fit":
+        return "The recommendation uses weather-related signals such as hydration, warming, and cooling scores calculated from the ingredients, quantities, and cooking method. This explains the recommendation logic but is not a guarantee of suitability for everyone."
+    return "The current data is not sufficient to answer this question reliably. This information is for reference only and does not replace medical advice."
+
+
+def build_answer(question_id: str, dish: dict[str, Any], ingredients: list[dict[str, Any]], language: str = "vi") -> str:
+    if str(language).lower().split("-", 1)[0] == "en":
+        return _build_answer_en(question_id, dish, ingredients)
     if question_id == "general_nutrition":
         parts = []
         if dish.get("energy_per_serving") is not None:

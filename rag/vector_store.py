@@ -71,6 +71,25 @@ class NutritionVectorStore:
         )
         return len(chunks)
 
+    def query_by_embedding(
+        self,
+        query_embedding: list[float] | Any,
+        n_results: int = 5,
+        where: dict[str, Any] | None = None,
+    ) -> dict[str, Any]:
+        """Retrieve nearest chunks using a precomputed embedding vector."""
+        if n_results < 1:
+            raise ValueError("n_results phải >= 1.")
+        vector = query_embedding.tolist() if hasattr(query_embedding, "tolist") else list(query_embedding)
+        kwargs: dict[str, Any] = {
+            "query_embeddings": [vector],
+            "n_results": n_results,
+            "include": ["documents", "metadatas", "distances"],
+        }
+        if where:
+            kwargs["where"] = where
+        return self.collection.query(**kwargs)
+
     def query(
         self,
         query: str,
@@ -79,18 +98,10 @@ class NutritionVectorStore:
         where: dict[str, Any] | None = None,
     ) -> dict[str, Any]:
         """Retrieve the nearest chunks for a user query."""
-
         if n_results < 1:
             raise ValueError("n_results phải >= 1.")
-        query_vector = embedder.embed_query(query).tolist()
-        kwargs: dict[str, Any] = {
-            "query_embeddings": [query_vector],
-            "n_results": n_results,
-            "include": ["documents", "metadatas", "distances"],
-        }
-        if where:
-            kwargs["where"] = where
-        return self.collection.query(**kwargs)
+        query_vector = embedder.embed_query(query)
+        return self.query_by_embedding(query_vector, n_results=n_results, where=where)
 
 
 def build_index(

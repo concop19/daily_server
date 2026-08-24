@@ -10,10 +10,10 @@ Backend server là **lớp xử lý trung tâm** — không lưu trữ profile n
 mà chủ yếu nhận dữ liệu từ client, tính toán, rồi trả kết quả.
 
 ```
-Mobile Client ──(JWT)──► Flask API ──► SQLite (recipe DB)
-                                  └──► Supabase (request_log)
+Mobile Client ──(JWT)──► Flask API ──► JSON DataStore (data/*.json)
+                                  └──► Supabase (request_log, feedback, weather_cache)
                                   └──► OpenWeatherMap API
-                                  └──► SQLite device_tokens
+                                  └──► data/device_tokens.json
 ```
 
 ---
@@ -40,18 +40,22 @@ dữ liệu nhạy cảm của user (profile, metrics) **không bao giờ đư�
 
 ---
 
-## 3. Dữ liệu Weather Cache (SQLite)
+## 3. Dữ liệu Weather Cache
 
-Bảng `weather_cache` (trong `recipe.db`):
+Weather cache sử dụng hai lớp:
+
+- **L1:** dictionary trong memory của process, ưu tiên tốc độ và mất khi restart.
+- **L2:** bảng `weather_cache` trên Supabase, dùng để phục hồi cache sau restart/deploy.
 
 | Cột | Nội dung | Thời gian giữ |
 |---|---|---|
-| `lat`, `lon` | Tọa độ GPS (làm tròn 2 chữ số thập phân) | Tự động expire sau 1 giờ |
-| `weather_json` | Temp, humidity, condition, AQI | Tự động expire sau 1 giờ |
-| `fetched_at` | Timestamp UTC | Xóa khi row expire |
+| `grid_key` | Khóa ô GPS đã làm tròn | Dùng chung cho các request trong cùng ô |
+| `weather_vector` | Các chỉ số thời tiết đã chuẩn hóa | Tự động expire theo adaptive TTL |
+| `temperature`, `condition`, `aqi`, `wind_speed` | Metadata thời tiết | Lưu cùng cache row |
+| `fetched_at`, `expires_at` | Timestamp UTC | Cache miss khi hết hạn |
 
-> **Lưu ý**: `lat/lon` được làm tròn đến độ chính xác ~1km trước khi dùng làm cache key.
-> Không lưu tọa độ chính xác từng mét. Không liên kết tọa độ với `uid`.
+> **Lưu ý**: GPS được snap vào grid trước khi dùng làm cache key. Không lưu tọa độ
+> chính xác từng mét và không liên kết weather cache với `uid`.
 
 ---
 
@@ -82,7 +86,7 @@ Bảng `request_log` trên Supabase ghi lại:
 
 ## 5. Device Tokens (Push Notification)
 
-Bảng `device_tokens` (SQLite `recipe.db`):
+File `data/device_tokens.json` chứa danh sách device token:
 
 | Cột | Nội dung | PII? |
 |---|---|---|
@@ -95,7 +99,7 @@ Bảng `device_tokens` (SQLite `recipe.db`):
 
 **Xóa token**: Khi Expo trả về `DeviceNotRegistered`, token bị xóa tự động (`fcm_service.py`).
 
-**Không có cột `uid`**: `device_tokens` chỉ liên kết với `device_id` — không thể
+**Không có cột `uid`**: `device_tokens.json` chỉ liên kết với `device_id` — không thể
 map ngược về Supabase user account từ bảng này.
 
 ---
@@ -170,11 +174,11 @@ Server **không** thu thập:
 
 | Dữ liệu | Lưu tại |
 |---|---|
-| `recipe.db` (SQLite) | Server local (on-premise hoặc VPS) |
+| Các file `data/*.json` | Server local, được load vào memory khi process chạy |
 | `request_log` | Supabase cloud (region tùy cấu hình project) |
 | Auth data (email, JWT) | Supabase cloud |
-| Weather cache | Server local SQLite |
-| Push tokens | Server local SQLite |
+| Weather cache | L1 server memory + L2 Supabase |
+| Push tokens | Server local `data/device_tokens.json` |
 
 > Khi deploy production, cần xác định Supabase region phù hợp (ưu tiên Singapore `ap-southeast-1` cho user Việt Nam).
 
@@ -185,13 +189,13 @@ Server **không** thu thập:
 ### Nếu DB bị compromise
 1. Rotate Supabase Service Role Key ngay lập tức
 2. Invalidate tất cả JWT đang active (qua Supabase dashboard)
-3. Xóa `device_tokens` table và yêu cầu client re-register
+3. Xóa hoặc quarantine `data/device_tokens.json` và yêu cầu client re-register
 4. Review `request_log` để xác định scope của breach
 
 ### Dữ liệu nhạy cảm nhất cần bảo vệ
 1. **Supabase Service Role Key** (trong `.env`) — full access DB, không được commit git
 2. **`request_log.uid`** — có thể dùng để profile activity của user cụ thể
-3. **`device_tokens.fcm_token`** — có thể gửi notification giả
+3. **`data/device_tokens.json.fcm_token`** — có thể gửi notification giả
 
 ---
 
@@ -203,7 +207,7 @@ File `.env` (không commit vào git):
 SUPABASE_URL=https://xxx.supabase.co
 SUPABASE_SERVICE_ROLE_KEY=eyJ...       ← KHÔNG chia sẻ
 OPENWEATHER_API_KEY=...                ← Quota riêng, rotate khi lộ
-DB_PATH=/path/to/recipe.db
+# Catalog được đọc từ thư mục data/ trong project
 ```
 
 Kiểm tra `.gitignore` đã có `.env` trước khi push.
@@ -216,7 +220,7 @@ Kiểm tra `.gitignore` đã có `.env` trước khi push.
 |---|---|---|
 | Purge `request_log` sau 90 ngày | 🔴 Cao | Implement Supabase Row Policy hoặc cron |
 | Xóa `device_tokens` khi user delete account | 🔴 Cao | Cần endpoint hoặc webhook từ Supabase Auth |
-| Tách `lat/lon` khỏi `device_tokens` | 🟡 Trung bình | Vị trí đăng ký token không cần thiết lưu lâu dài |
+| Tách `lat/lon` khỏi `device_tokens.json` | 🟡 Trung bình | Vị trí đăng ký token không cần thiết lưu lâu dài |
 | CORS: thay `"*"` bằng domain production | 🔴 Cao | Hiện tại chỉ an toàn vì app mobile (không browser) |
 | Supabase region = `ap-southeast-1` | 🟡 Trung bình | Giảm latency + data sovereignty VN |
 | Privacy Policy công khai (App Store) | 🔴 Cao | Bắt buộc khi publish |
