@@ -9,6 +9,7 @@ import math
 
 import data_store
 from weather import compute_weather_vector, get_current_season
+from protein_classifier import classify_dish_protein
 
 try:
     from advice_engine import build_explanation
@@ -205,6 +206,8 @@ def compute_personal_vector(p: dict) -> dict:
         "diet_type":            p.get("diet_type", "omnivore"),
         "allergies":            p.get("allergies", []),
         "max_prep_time":        int(p.get("max_prep_time", 60)),
+        "familiarity_filter":   p.get("familiarity_filter", "daily_comfort"),
+        "min_familiarity_score": float(p.get("min_familiarity_score", 0.90)),
     }
 
 
@@ -296,6 +299,8 @@ def build_constraint_profile(pv: dict, db=None) -> dict:
         "age":                    pv.get("age", 30),
         "max_prep_time":          pv.get("max_prep_time", 60),
         "disease_flags":          df,
+        "familiarity_filter":     pv.get("familiarity_filter", "daily_comfort"),
+        "min_familiarity_score":  pv.get("min_familiarity_score", 0.90),
     }
 
 
@@ -424,6 +429,17 @@ def filter_dishes(db=None, cuisine_scope: str = "vietnam",
         if profile["diet_type"] == "vegetarian" and not d.get("is_vegetarian"):
             continue
 
+        # ── Familiarity filter (Mặc định: Chỉ nhận daily_comfort & score >= 0.90) ─
+        fam_filter = profile.get("familiarity_filter", "daily_comfort") if profile else "daily_comfort"
+        if fam_filter != "all":
+            if d.get("familiarity_level") != fam_filter:
+                continue
+
+        min_fam_score = profile.get("min_familiarity_score", 0.90) if profile else 0.90
+        if min_fam_score is not None and min_fam_score > 0.0:
+            if float(d.get("familiarity_score") or 0.0) < min_fam_score:
+                continue
+
         passed.append(d)
     return passed
 
@@ -453,11 +469,15 @@ def resolve_taste_weight(pv: dict, loc: dict) -> dict:
 # ── STEP 08 — Score ──────────────────────────────────────────────────────────
 def _dv(dish, adj, raw=None):
     v = dish.get(adj)
-    if v is not None: return float(v)
-    if raw:
+    if v is not None:
+        val = float(v)
+    elif raw:
         v = dish.get(raw)
-        if v is not None: return float(v)
-    return 0.0
+        val = float(v) if v is not None else 0.0
+    else:
+        val = 0.0
+    # Chuẩn hóa trong khoảng [0.0, 1.0], ngăn hệ số hấp (>1.0) làm méo điểm
+    return min(1.0, max(0.0, val))
 
 
 def _normalize_dish_energy(dish: dict, calorie_target: float) -> float:
@@ -581,7 +601,6 @@ def score_dish(dish: dict, demand: dict, soft_mult: float, taste_weight: dict,
     """
     DIMS = [
         ("hydration_need",        "adj_hydration_score",   "dish_hydration_score"),
-        ("electrolyte_need",      "adj_hydration_score",   None),
         ("thermoregulation_need", "adj_thermogenic_score", "dish_thermogenic_score"),
         ("warming_food_need",     "adj_warming_score",     "dish_warming_score"),
         ("cooling_food_need",     "adj_cooling_score",     "dish_cooling_score"),
@@ -690,6 +709,72 @@ def _fallback_explanation(dish: dict) -> dict:
     }
 
 
+def diversify_ranking(
+    sorted_ids: list,
+    dish_map: dict,
+    scores: dict,
+    page_size: int = 10,
+) -> list:
+    """
+    Re-rank sorted_ids theo cơ chế điều hòa nhóm đạm (Protein Group Diversification).
+    Đảm bảo trong mỗi trang (page_size, mặc định 10 món):
+    - Nhóm hải sản (seafood) không bị áp đảo (tối đa 2 - 3 món / trang 10 món).
+    - Các món đạm gia đình quen thuộc (thịt heo, gia cầm, thịt bò, trứng & đậu) được luân phiên đưa lên.
+    """
+    if len(sorted_ids) <= 3:
+        return sorted_ids
+
+    diversified = []
+    remaining = list(sorted_ids)
+
+    # Pre-classify candidates
+    dish_groups = {did: classify_dish_protein(dish_map[did]) for did in sorted_ids if did in dish_map}
+    group_counts: dict[str, int] = {}
+
+    while remaining:
+        best_did = None
+        best_effective_score = -1e9
+
+        # Cửa sổ ứng viên top 40 để vừa giữ chất lượng điểm cao, vừa đủ nhóm đạm
+        window_size = min(len(remaining), 40)
+        candidates = remaining[:window_size]
+
+        for did in candidates:
+            grp = dish_groups.get(did, 'other')
+            count = group_counts.get(grp, 0)
+
+            # Hệ số suy giảm tần suất xuất hiện trong 1 trang:
+            # - seafood suy giảm nhanh hơn (0.72^count) để tránh tràn ngập hải sản
+            # - pork, poultry là món cơm nhà hàng ngày nên suy giảm nhẹ (0.88^count)
+            # - egg_tofu, beef, other suy giảm vừa (0.85^count)
+            if grp == 'seafood':
+                decay = 0.72 ** count
+            elif grp in ('pork', 'poultry'):
+                decay = 0.88 ** count
+            else:
+                decay = 0.85 ** count
+
+            eff_score = scores.get(did, 0.0) * decay
+            if eff_score > best_effective_score:
+                best_effective_score = eff_score
+                best_did = did
+
+        if best_did is None:
+            best_did = remaining[0]
+
+        diversified.append(best_did)
+        remaining.remove(best_did)
+
+        grp = dish_groups.get(best_did, 'other')
+        group_counts[grp] = group_counts.get(grp, 0) + 1
+
+        # Reset đếm nhóm ở mỗi trang (10 món) để trang kế tiếp tiếp tục phân bổ đa dạng
+        if len(diversified) % page_size == 0:
+            group_counts = {}
+
+    return diversified
+
+
 def rank_and_explain(scores: dict, dish_pool: list, boosts: dict, demand: dict,
                      profile: dict, top_k: int = 20,
                      page: int = 1, page_size: int = 10,
@@ -698,6 +783,10 @@ def rank_and_explain(scores: dict, dish_pool: list, boosts: dict, demand: dict,
                      db=None, temperature=None, language: str = "vi") -> tuple[list, list, int, int, bool]:
     sorted_ids = sorted(scores, key=lambda x: scores[x], reverse=True)
     dish_map   = {d["id"]: d for d in dish_pool}
+
+    # Áp dụng Re-ranking Đa dạng hóa nhóm đạm (Protein Group Diversification)
+    sorted_ids = diversify_ranking(sorted_ids, dish_map, scores, page_size=page_size)
+
     _loc    = loc    or {"traditional_compatibility": 0.8}
     _season = season or get_current_season()
     _basket = basket_ingredient_ids or set()

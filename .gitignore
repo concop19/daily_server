@@ -49,3 +49,12 @@ logs/
 # Migration scripts (không cần trên production)
 migrate_to_supabase.py
 seed_advice_templates.py
+
+# Development & Benchmark scripts (không chạy trên production/logic chính)
+scripts/
+
+# Intermediate data batches & backups
+*.bak
+data/dish_batches_txt/
+data/labeled_json/
+
