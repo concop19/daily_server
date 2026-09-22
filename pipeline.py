@@ -218,8 +218,10 @@ def compute_demand(wv: dict, pv: dict, climate_type: str) -> dict:
     e  = min(1.0, 0.6 * h + 0.4 * act_n)
     th = max(wv["heat_stress_index"], wv["cold_stress_index"])
     en = pv["energy_need"] * (1 - 0.1 * wv["heat_stress_index"] + 0.1 * wv["cold_stress_index"])
-    w  = min(1.0, 0.6 * wv["cold_stress_index"] + 0.4 * (1 - wv["heat_stress_index"]))
-    c  = min(1.0, 0.6 * wv["heat_stress_index"] + 0.4 * (1 - wv["cold_stress_index"]))
+    # Warming and cooling are responses to actual thermal stress. The old
+    # inverse terms made both needs non-zero in pleasant weather.
+    w  = wv["cold_stress_index"]
+    c  = wv["heat_stress_index"]
     mod = CLIMATE_MODIFIER.get(climate_type, {"warming": 1.0, "cooling": 1.0, "hydration": 1.0})
     h = min(1.0, h * mod["hydration"])
     w = min(1.0, w * mod["warming"])
@@ -244,6 +246,7 @@ def compute_demand(wv: dict, pv: dict, climate_type: str) -> dict:
         "energy_need":           round(en, 2),
         "warming_food_need":     round(w,  4),
         "cooling_food_need":     round(c,  4),
+        "comfortable":           round(wv.get("comfortable", 0.0), 4),
         "high_energy_need":      high_energy_need,   # BMI < 18.5: ưu tiên calo cao
         "low_calorie_need":      low_calorie_need,   # BMI > 25:   ưu tiên satiety
         # Disease control needs — dùng trong explanation, không dùng trong DIMS scoring

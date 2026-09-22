@@ -93,15 +93,34 @@ def _ow_condition_vi(raw: dict) -> str:
 
 # ── Core computation ─────────────────────────────────────────────────────────
 def compute_weather_vector(t, humidity, wind, pressure, aqi, uv, season) -> dict:
-    tn   = _norm(t,        10.0, 42.0)
     hn   = _norm(humidity, 20.0, 100.0)
     wn   = _norm(wind,     0.0,  80.0)
     aqin = _norm(aqi,      0.0,  300.0)
     uvn  = _norm(uv,       0.0,  11.0)
     pn   = _norm(pressure, 980.0, 1020.0)
 
-    heat_stress = min(1.0, 0.6 * tn + 0.4 * hn)
-    cold_stress = min(1.0, max(0.0, 1.0 - tn) * 0.7 + wn * 0.3)
+    # 22–26°C is the neutral comfort zone used by the food recommender.
+    # Humidity worsens genuine heat, but cannot by itself turn a pleasant
+    # 25°C day into heat stress.
+    heat_temp = _norm(t, 26.0, 37.0)
+    heat_humidity_factor = 0.65 + 0.35 * hn
+    heat_stress = min(1.0, heat_temp * heat_humidity_factor)
+
+    # Cold stress starts below the comfort zone. Humidity and wind amplify
+    # discomfort only after the temperature is already cool.
+    cold_temp = _norm(22.0 - t, 0.0, 14.0)
+    cold_weather_factor = 0.65 + 0.20 * wn + 0.15 * hn
+    cold_stress = min(1.0, cold_temp * cold_weather_factor)
+
+    if 22.0 <= t <= 26.0:
+        temp_comfort = 1.0
+    elif t < 22.0:
+        temp_comfort = _norm(t, 18.0, 22.0)
+    else:
+        temp_comfort = 1.0 - _norm(t, 26.0, 30.0)
+    # Very high humidity makes an otherwise mild day less comfortable.
+    humidity_comfort_factor = 1.0 - 0.25 * _norm(humidity, 85.0, 100.0)
+    comfortable = max(0.0, min(1.0, temp_comfort * humidity_comfort_factor))
     dehydration = min(1.0, 0.5 * heat_stress + 0.3 * wn + 0.2 * aqin)
     season_ox   = 0.8 if season == "summer" else 0.3
     oxidative   = min(1.0, 0.4 * uvn + 0.3 * aqin + 0.3 * season_ox)
@@ -116,6 +135,7 @@ def compute_weather_vector(t, humidity, wind, pressure, aqi, uv, season) -> dict
         "oxidative_stress_risk": round(oxidative,   4),
         "infection_risk":        round(infection,   4),
         "immune_load":           round(immune_load, 4),
+        "comfortable":           round(comfortable, 4),
     }
 
 

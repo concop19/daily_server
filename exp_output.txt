@@ -1,0 +1,9 @@
+headline: Tôm hấp bia — phù hợp với điều kiện hôm nay
+active_reasons: ['weather_cooling']
+weather_reason: Nhiệt độ 25°C cao — nên ưu tiên món có tính mát.
+dish_match: Tôm hấp bia có tính mát, giúp hạ nhiệt tự nhiên từ bên trong (điểm mát: 70%). Tôm hấp bia có hàm lượng nước cao (điểm bù nước: 80%), giúp cơ thể duy trì độ ẩm tốt.
+nutrition_note: None
+ingredient_source_note: None
+ingredient_note: None
+seasonal_note: None
+tags: ['💧 Bù nước', '🧊 Thanh nhiệt', '🔥 Ấm', '⚡ Nấu nhanh']

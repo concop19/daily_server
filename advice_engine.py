@@ -434,7 +434,10 @@ def _build_weather_reason(demand: dict, temperature: float | None,
         (k, v) for k, v in _dominant_demands(demand, top_k=4)
         if k in WEATHER_DIMS
     ]
-    dim, val = weather_tops[0] if weather_tops else ("hydration_need", 0.0)
+    if demand.get("comfortable", 0.0) >= 0.7:
+        dim, val = "comfortable", demand["comfortable"]
+    else:
+        dim, val = weather_tops[0] if weather_tops else ("hydration_need", 0.0)
     temp_str = f"{temperature:.0f}" if temperature else "?"
     fallbacks = {
         "hydration_need":    f"Hôm nay {temp_str}°C, cơ thể cần bù nước nhiều hơn bình thường.",
@@ -443,6 +446,7 @@ def _build_weather_reason(demand: dict, temperature: float | None,
         "infection_risk":    "Thời tiết giao mùa dễ ốm — tăng cường miễn dịch qua bữa ăn.",
         "cold_stress_index": f"Gió lạnh và nhiệt độ {temp_str}°C — cơ thể cần bổ sung đủ năng lượng.",
         "electrolyte_need":  f"Thời tiết {temp_str}°C, hoạt động nhiều — cần bổ sung điện giải.",
+        "comfortable":       f"Thời tiết {temp_str}°C dễ chịu — hãy chọn món bạn thích.",
     }
     return _get_best_template(
         db, "weather", dim, val,
@@ -794,7 +798,7 @@ def build_explanation(
 
     # ── Step 3: Weather reason — chỉ build nếu có weather reason active ─────
     weather_reason = None
-    if active_reasons & WEATHER_REASONS:
+    if active_reasons & WEATHER_REASONS or demand.get("comfortable", 0.0) >= 0.7:
         weather_reason = _build_weather_reason(demand, temperature, db, language=language)
 
     # ── Step 4: Dish match — build khi có weather HOẶC disease reason active ─

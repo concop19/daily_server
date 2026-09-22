@@ -27,7 +27,7 @@
 
 ### 1. 🌤️ Weather-Aware Recommendation (Nhận thức Thời tiết)
 - Tích hợp **OpenWeatherMap API** lấy nhiệt độ, độ ẩm, tốc độ gió, chỉ số chất lượng không khí (AQI).
-- Quy đổi dữ liệu thời tiết thực thành 6 chỉ số sinh lý: `heat_stress`, `dehydration_risk`, `cold_stress`, `oxidative_stress`, `infection_risk`, `immune_load`.
+- Quy đổi dữ liệu thời tiết thực thành 7 chỉ số: `heat_stress`, `dehydration_risk`, `cold_stress`, `oxidative_stress`, `infection_risk`, `immune_load`, `comfortable`.
 - Cơ chế **Adaptive TTL Cache**: Tự động rút ngắn thời gian cache (15–60 phút) khi thời tiết khắc nghiệt (AQI > 150, nhiệt độ > 40°C, gió > 50km/h).
 
 ### 2. 🩺 Health & Pathology Filtering (Bảo vệ Sức khỏe & Lọc Bệnh lý)

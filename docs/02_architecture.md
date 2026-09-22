@@ -108,7 +108,7 @@ in-process, không có message queue hay microservice.
   Override dict → L1 in-memory cache → L2 Supabase → OpenWeather API → Hardcode fallback
 
 **Hàm chính:**
-- compute_weather_vector() — Chuẩn hoá 7 biến khí tượng → 6 chỉ số [0,1]
+- compute_weather_vector() — Chuẩn hoá 7 biến khí tượng → 7 chỉ số [0,1]
 - fetch_and_cache_weather() — Dùng cho GET /api/weather (trả full flat + vector)
 - get_or_compute_weather() — Dùng nội bộ trong pipeline (trả chỉ vector)
 - _adaptive_ttl() — TTL ngắn hơn khi thời tiết cực đoan
@@ -169,7 +169,8 @@ in-process, không có message queue hay microservice.
   "cold_stress_index":     float [0,1],   # lạnh + gió
   "oxidative_stress_risk": float [0,1],   # UV + AQI + mùa hè
   "infection_risk":        float [0,1],   # áp suất thấp + AQI
-  "immune_load":           float [0,1]    # tổng tải miễn dịch
+  "immune_load":           float [0,1],   # tổng tải miễn dịch
+  "comfortable":           float [0,1]    # vùng nhiệt độ dễ chịu
 }
 ```
 
